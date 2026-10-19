@@ -10,7 +10,7 @@ import NewEventSteps from "@/components/NewEventSteps";
 import { LINKS } from "@/content/library";
 import P from "@/content/brand/projections.json";
 import { getBrandPlans, getCaptions, getEvents, getLibrary, libraryCount, originals } from "@/lib/content";
-import { isUpcoming } from "@/lib/format";
+import { UpcomingCount } from "@/components/WhenAware";
 import { ver } from "@/lib/ver";
 
 const months = P.engine.base.months.map((m) => m.month);
@@ -27,7 +27,6 @@ export default function Overview() {
   const totalAssets = libs.reduce((n, l) => n + libraryCount(l), 0) + scopes.reduce((n, s) => n + getCaptions(s).length, 0);
   const count = (k: "images" | "flyers" | "videos" | "reels") => libs.reduce((n, l) => n + originals(l[k]).length, 0);
   const captionCount = scopes.reduce((n, s) => n + getCaptions(s).length, 0);
-  const upcoming = events.filter((e) => isUpcoming(e.date, builtAt)).length;
   const latest = campaigns[0];
   const previews = latest ? originals(getLibrary(latest.slug).images).slice(0, 5).map((a) => ({ a, src: `${latest.media}/images/${a.file}${ver(a)}`, href: `/events/${latest.slug}/creative#images` })) : [];
   const PLANS = getBrandPlans();
@@ -55,7 +54,7 @@ export default function Overview() {
           <div className="relative mt-16 max-w-4xl">
             <div aria-hidden className="dots pointer-events-none absolute -bottom-8 -right-8 hidden h-16 w-16 lg:block" />
             <dl className="relative grid grid-cols-2 gap-px overflow-hidden rounded-[1.25rem] border border-gray bg-gray shadow-[0_24px_48px_-36px_rgba(74,74,74,.5)] md:grid-cols-4">
-              <div className="flex flex-col justify-between bg-white p-6"><dt className="text-base leading-snug">Upcoming events</dt><dd className="stat mt-2 text-[2.75rem]">{upcoming}</dd></div>
+              <div className="flex flex-col justify-between bg-white p-6"><dt className="text-base leading-snug">Upcoming events</dt><dd className="stat mt-2 text-[2.75rem]"><UpcomingCount dates={events.map((e) => e.date)} builtAt={builtAt} /></dd></div>
               <div className="flex flex-col justify-between bg-white p-6"><dt className="text-base leading-snug">Events on record</dt><dd className="stat mt-2 text-[2.75rem]">{events.length}</dd></div>
               <div className="flex flex-col justify-between bg-white p-6"><dt className="text-base leading-snug">Creative assets</dt><dd className="stat mt-2 text-[2.75rem]"><span data-count={totalAssets}>{totalAssets}</span></dd></div>
               <div className="flex flex-col justify-between bg-white p-6"><dt className="text-base leading-snug">Members in 12 months (base)</dt><dd className="stat mt-2 text-[2.75rem]"><span data-count={sc("base").summary.members_12mo} data-dec="1">{sc("base").summary.members_12mo}</span></dd></div>

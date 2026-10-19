@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import DaysStat from "@/components/DaysStat";
+import { PhaseLabel, ResultsNote } from "@/components/WhenAware";
 import EventFunnel from "@/components/EventFunnel";
 import { Icon } from "@/components/Icon";
 import { getCaptions, getCities, getEvent, getEventProjections, getLibrary, libraryCount, originals, type City, type EventRec } from "@/lib/content";
-import { apDate, isUpcoming } from "@/lib/format";
+import { apDate } from "@/lib/format";
 import { ver } from "@/lib/ver";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -44,7 +45,6 @@ export default async function EventOverview({ params }: { params: Promise<{ slug
   const e = getEvent(slug)!;
   const city = getCities()[e.citySlug];
   const builtAt = Date.now();
-  const past = !isUpcoming(e.date, builtAt);
 
   if (e.kind === "record") return (
     <main className="mx-auto max-w-7xl px-5 md:px-8">
@@ -87,7 +87,7 @@ export default async function EventOverview({ params }: { params: Promise<{ slug
         <div aria-hidden className="shape-circle pointer-events-none absolute -right-24 -top-24 hidden h-72 w-72 opacity-50 lg:block" />
         <div className="relative mx-auto grid max-w-7xl gap-12 px-5 pb-20 pt-16 md:px-8 md:pb-24 md:pt-20 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:gap-16">
           <div>
-            <p className="eyebrow">{past ? "Past event" : "Upcoming event"} · {when(e)}</p>
+            <p className="eyebrow"><PhaseLabel date={e.date} builtAt={builtAt} /> · {when(e)}</p>
             <h1 className="display h-bar h-bar-lg mt-7 max-w-3xl text-[clamp(2.375rem,4.2vw,3.75rem)] leading-[1.2]">{e.headline ?? `${e.name} in ${e.city}`}</h1>
             <p className="lede mt-8 max-w-2xl text-pretty">{e.summary}</p>
             <div className="mt-10 flex flex-wrap gap-3">
@@ -130,7 +130,7 @@ export default async function EventOverview({ params }: { params: Promise<{ slug
                 </tbody>
               </table>
             )}
-            <p className="mt-5 text-lg leading-relaxed">{act?.note ?? (past ? "Actual results aren't recorded yet. Send the studio the headcount, the intro calls booked and any signings, and they'll sit next to the projection." : "Actual results are filled in after the event.")}</p>
+            <p className="mt-5 text-lg leading-relaxed">{act?.note ?? <ResultsNote date={e.date} builtAt={builtAt} />}</p>
           </div>
         </div>
       </section>

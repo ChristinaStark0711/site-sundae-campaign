@@ -1,14 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Icon } from "./Icon";
-import { getCities, getEventProjections, getLibrary, libraryCount, type EventRec } from "@/lib/content";
+import { getCaptions, getCities, getEventProjections, getLibrary, libraryCount, type EventRec } from "@/lib/content";
 import { apDate } from "@/lib/format";
 
 // One event on the Events page and the overview: the city photo (openly licensed, credited), the date, the venue and
 // what the event's page holds.
 export default function EventCard({ e, upcoming }: { e: EventRec; upcoming: boolean }) {
   const city = getCities()[e.citySlug];
-  const count = e.kind === "campaign" ? libraryCount(getLibrary(e.slug)) : 0;
+  const count = e.kind === "campaign" ? libraryCount(getLibrary(e.slug)) + getCaptions(e.slug).length : 0; // same count as the event page
   const pj = e.kind === "campaign" ? getEventProjections(e.slug) : null;
   return (
     <article className="card hover-lift group flex flex-col overflow-hidden">

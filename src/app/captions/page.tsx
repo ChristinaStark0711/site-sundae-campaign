@@ -18,7 +18,7 @@ export default function Captions() {
         <p className="lede mt-7 max-w-3xl">The always-on membership captions are below. Each event&apos;s captions live with that event. Replace <code className="rounded-md border border-gray bg-mist px-1.5 font-bold">{"{membership link}"}</code> with the membership page. No earnings claims anywhere.</p>
         {events.length > 0 && (
           <nav className="mt-10 flex flex-wrap gap-2.5" aria-label="Event captions">
-            {events.map((e) => <Link key={e.slug} href={`/events/${e.slug}/captions`} className="btn btn-outline btn-sm">{e.city} · {apDate(e.date, { year: false })} · {getCaptions(e.slug).length} captions <Icon name="arrow-right" /></Link>)}
+            {events.map((e) => <Link key={e.slug} href={`/events/${e.slug}/captions`} className="btn btn-outline btn-sm">{e.city} · {apDate(e.date, { year: false })} · {getCaptions(e.slug).length} {getCaptions(e.slug).length === 1 ? "caption" : "captions"} <Icon name="arrow-right" /></Link>)}
           </nav>
         )}
       </header>

@@ -17,7 +17,7 @@ export default async function EventCaptions({ params }: { params: Promise<{ slug
     <main className="mx-auto max-w-7xl px-5 md:px-8">
       <header className="py-16 md:py-24">
         <p className="eyebrow">Captions · {e.city}</p>
-        <h1 className="display h-bar h-bar-lg mt-5 max-w-4xl text-[clamp(2.375rem,4.6vw,4rem)]">{caps.length} captions, written for each platform.</h1>
+        <h1 className="display h-bar h-bar-lg mt-5 max-w-4xl text-[clamp(2.375rem,4.6vw,4rem)]">{caps.length} {caps.length === 1 ? "caption" : "captions"}, written for each platform.</h1>
         <p className="lede mt-7 max-w-3xl">{e.host}&apos;s founder voice on LinkedIn, tighter copy for Instagram and Facebook, one-liners for X. Replace <code className="rounded-md border border-gray bg-mist px-1.5 font-bold">{"{RSVP link}"}</code> with the event page link. No earnings claims anywhere.</p>
       </header>
       <section className="border-t border-gray py-16">

@@ -17,7 +17,8 @@
 //                 + <name>-poster.jpg (at spec.poster, else min(total-0.5, 2.2) s)
 // Prints one line of JSON to stdout; exits non-zero on any failure (missing asset, page error, blocked request, timeout).
 // Chromium: $CHROME_PATH, else Playwright's bundled Chromium (the full chromium build, as used for every delivery).
-// All network access except the local engine server is blocked.
+// All network access except the local engine server is blocked (WebSockets included). The change pipeline audits
+// every candidate source with JavaScript switched off before it is rendered (engine/change/audit.mjs).
 import { chromium } from 'playwright';
 import fs from 'node:fs';
 import os from 'node:os';
@@ -66,7 +67,7 @@ export function checkHtmlSource(html) {
   const out = [];
   if (/<script/i.test(html)) out.push('contains <script> (creative sources are static HTML)');
   const ext = html.match(/https?:\/\/[^\s"')<]+/gi); if (ext) out.push(`external reference(s): ${[...new Set(ext)].join(', ')}`);
-  const on = html.match(/\son[a-z]+\s*=/gi); if (on) out.push(`inline event handler(s): ${[...new Set(on.map(s => s.trim()))].join(', ')}`);
+  const on = html.match(/[\s/"']on[a-z]+\s*=/gi); if (on) out.push(`inline event handler(s): ${[...new Set(on.map(s => s.trim()))].join(', ')}`);
   const refs = [...html.matchAll(/\b(?:href|src)\s*=\s*"([^"]*)"|\b(?:href|src)\s*=\s*'([^']*)'|url\(\s*([^)]*?)\s*\)/gi)].map(m => (m[1] ?? m[2] ?? m[3]).replace(/^['"]|['"]$/g, ''));
   for (const r of refs) {
     if (!r || r.startsWith('data:') || r.startsWith('#')) continue;
@@ -130,14 +131,17 @@ export function chromePath() {
 export const launch = () => chromium.launch({ executablePath: chromePath() });
 
 // A page that can only reach the local engine server; everything else is aborted and recorded.
-export async function openPage(browser, origin, { width, height, scale = 1 }) {
-  const context = await browser.newContext({ viewport: { width, height }, deviceScaleFactor: scale });
+// `js: false` loads a page with JavaScript switched off (used by engine/change/audit.mjs to inspect a source safely).
+export async function openPage(browser, origin, { width, height, scale = 1, js = true }) {
+  const context = await browser.newContext({ viewport: { width, height }, deviceScaleFactor: scale, javaScriptEnabled: js });
   const issues = { blocked: [], http: [], failed: [], pageErrors: [] };
   await context.route('**/*', route => {
     const u = route.request().url();
     if (u.startsWith(origin + '/')) return route.continue();
     issues.blocked.push(u); return route.abort('blockedbyclient');
   });
+  // WebSockets bypass context.route, so they are intercepted separately and closed
+  await context.routeWebSocket(() => true, ws => { issues.blocked.push(ws.url()); ws.close().catch(() => {}); });
   const page = await context.newPage();
   const local = u => { try { return decodeURI(u.slice(origin.length)); } catch { return u.slice(origin.length); } };
   page.on('response', r => { if (r.status() >= 400) issues.http.push(`${r.status()} ${local(r.url())}`); });

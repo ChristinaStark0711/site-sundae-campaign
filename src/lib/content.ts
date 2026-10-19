@@ -37,7 +37,7 @@ type Scenario = Record<string, number> & { assumptions: Record<string, number> }
 export type EventProjections = { generated: string; notes: string[]; seat_cap: number; scenarios: Record<"conservative" | "base" | "aggressive", Scenario> };
 export type ChangeRequest = {
   id: string; at: string; asset: string; assetTitle?: string; mode: "update" | "variant"; text: string; name?: string;
-  status: "done" | "held" | "failed"; summary?: string; reason?: string; result?: { id: string; file: string }; approved?: boolean; finishedAt?: string;
+  status: "done" | "held" | "failed"; summary?: string; reason?: string; result?: { id: string; file: string }; proposal?: { preview: string; changes: string[]; variantTitle?: string }; approved?: boolean; finishedAt?: string;
 };
 
 // A scope is "brand" or an event slug. Asset keys are "<scope path>/<kind>/<id>", e.g. "events/<slug>/images/01" or "brand/reels/R8".

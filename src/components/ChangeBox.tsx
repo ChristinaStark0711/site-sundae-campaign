@@ -39,7 +39,7 @@ export default function ChangeBox({ asset, title, video = false }: { asset: stri
       <label htmlFor={`${uid}-t`} className="text-base font-bold">Request a change</label>
       <textarea id={`${uid}-t`} value={text} onChange={(e) => setText(e.target.value)} rows={2} maxLength={500} required minLength={3}
         placeholder={video ? "e.g. Make the last scene say “Final seats”" : "e.g. Make the headline bigger"}
-        className="mt-2 block w-full resize-y rounded-xl border border-slate bg-white px-3.5 py-2.5 text-base leading-snug text-ink placeholder:text-ink/70 focus:border-blue focus:outline-none" />
+        className="mt-2 block w-full resize-y rounded-xl border border-slate bg-white px-3.5 py-2.5 text-base leading-snug text-ink placeholder:text-ink focus:border-blue focus:outline-none" />
       {/* honeypot: hidden from people, filled by bots */}
       <input type="text" name="website" value={hp} onChange={(e) => setHp(e.target.value)} tabIndex={-1} autoComplete="off" aria-hidden className="absolute left-[-9999px] h-px w-px opacity-0" />
       <fieldset className="mt-3">
@@ -54,7 +54,7 @@ export default function ChangeBox({ asset, title, video = false }: { asset: stri
         </div>
       </fieldset>
       <p className="mt-2.5 text-base leading-snug" aria-live="polite">
-        {st.kind === "idle" && (mode === "variant" ? "A new version with your change appears next to this one." : "This one is replaced with your change.")}
+        {st.kind === "idle" && <>{mode === "variant" ? "A new version with your change appears next to this one." : "This one is replaced with your change."} Requests are listed publicly in the change log below.</>}
         {st.kind === "sending" && "Sending your request…"}
         {st.kind === "sent" && <>Sent. The {mode === "variant" ? "variation shows up next to this one" : "updated version shows up here"} in about {video ? "15 to 20" : "5 to 10"} minutes. Refresh then. Request <span className="font-bold">{st.id}</span>.</>}
         {st.kind === "error" && <>{st.msg}{st.offline && text.trim() && <> <button type="button" onClick={copy} className="link">{copied ? "Copied" : "Copy request"}</button></>}</>}

@@ -1,19 +1,20 @@
 // Step 4 of the creative-change workflow: refuse to commit anything apply.mjs was not supposed to write.
-// Every changed path must be on .request/out/allowed.json, files must be a sensible size, and no added text may look
+// Every changed path must be on .request/out/allowed.json (deletions only where it lists them), files must be a sensible size, and no added text may look
 // like a credential. Exit 1 stops the workflow before the commit.
 import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { OUT, REPO, readJSON } from './lib.mjs';
 
-const allowed = new Set(readJSON(path.join(OUT, 'allowed.json')));
+const { paths, deleted } = readJSON(path.join(OUT, 'allowed.json'));
+const allowed = new Set(paths), mayDelete = new Set(deleted || []);
 const status = execFileSync('git', ['status', '--porcelain', '-uall', '-z'], { cwd: REPO }).toString().split('\0').filter(Boolean);
 const changed = status.map((l) => l.slice(3));
 const errors = [];
 for (const p of changed) {
-  if (!allowed.has(p)) errors.push(`unexpected change: ${p}`);
   const full = path.join(REPO, p);
-  if (!fs.existsSync(full)) { errors.push(`unexpected deletion: ${p}`); continue; }
+  if (!fs.existsSync(full)) { if (!mayDelete.has(p)) errors.push(`unexpected deletion: ${p}`); continue; }
+  if (!allowed.has(p)) errors.push(`unexpected change: ${p}`);
   const size = fs.statSync(full).size;
   const limit = /\.mp4$/.test(p) ? 80e6 : /\.(jpg|pdf)$/.test(p) ? 25e6 : 400e3;
   if (size > limit) errors.push(`${p} is ${(size / 1e6).toFixed(1)} MB (limit ${(limit / 1e6).toFixed(1)} MB)`);
