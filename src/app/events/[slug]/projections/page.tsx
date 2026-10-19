@@ -44,7 +44,7 @@ export default async function EventProjectionsPage({ params }: { params: Promise
                 <thead><tr><th />{KS.map((k) => <th key={k} className="!text-right"><span className="inline-flex items-center gap-2"><Key k={k} />{SCENARIO[k].name}</span></th>)}</tr></thead>
                 <tbody>{ROWS.map(([l, key, f]) => <tr key={l}><td>{l}</td>{KS.map((k) => <td key={k} className={`text-right ${k === "base" ? "font-bold" : ""}`}>{f(pj.scenarios[k][key])}</td>)}</tr>)}</tbody>
               </table>
-              <p className="mt-4 text-base leading-relaxed">Seats are capped at {pj.seat_cap}. Projections generated {apDate(pj.generated)}.</p>
+              <p className="mt-4 text-base leading-relaxed">Attendance is capped at {pj.seat_cap} seats; approvals can run higher to allow for no-shows. Projections generated {apDate(pj.generated)}.</p>
             </div>
             <EventFunnel pj={pj} />
           </div>

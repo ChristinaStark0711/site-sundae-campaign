@@ -2,7 +2,7 @@
   "generated": "2026-10-01",
   "notes": [
     "All inputs are labeled assumptions from industry benchmark ranges, not Sundae data.",
-    "Seats are capped at the venue layout (60 for this dinner); the approved-seat count never exceeds it."
+    "Attendance is capped at the venue layout: 60 seats for this dinner. Approvals can run higher, up to 60 divided by the show rate (about 86 in the base case), to allow for no-shows."
   ],
   "seat_cap": 60,
   "scenarios": {

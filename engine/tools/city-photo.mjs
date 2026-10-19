@@ -12,8 +12,10 @@
 //     (id, size, license, title, creator, landing URL) and saves small previews plus
 //     candidates.json to a temp directory it prints. --only runs just the --query terms.
 //
-//   node engine/tools/city-photo.mjs pick <slug> <openverseId> --name "<City>" --state <ST>
+//   node engine/tools/city-photo.mjs pick <citySlug> <openverseId> --name "<City>" --state <ST>
 //        --alt "<plain description>" [--focus "50% 40%"] [--allow-sa] [--max-width 1600]
+//     <citySlug> is the event.json "citySlug": the city slug plus the state, e.g. san-diego-ca (check-event.mjs
+//     looks the photo up by it). pick refuses a slug that does not end in -<st>.
 //        [--quality 85] [--min-width 1024] [--no-upgrade] [--force]
 //     Downloads the image (for Flickr, first a larger 2048/1600 px copy from the photo's public
 //     sizes page when the owner allows it; then the original URL; then Openverse's full-size
@@ -343,7 +345,7 @@ async function cmdSearch(positional, opts) {
   const self = fileURLToPath(import.meta.url);
   const rel = relative(process.cwd(), self);
   const shown = rel && !rel.startsWith("..") ? rel : self;
-  console.log(`Next: look at the previews, confirm the place on the landing page, then\n  node ${shown} pick <slug> <openverseId> --name "${city}" --state ${st} --alt "..." [--focus "50% 50%"]`);
+  console.log(`Next: look at the previews, confirm the place on the landing page, then\n  node ${shown} pick ${slugify(city)}-${st.toLowerCase()} <openverseId> --name "${city}" --state ${st} --alt "..." [--focus "50% 50%"]`);
 }
 
 // ---------------------------------------------------------------- pick
@@ -384,7 +386,7 @@ print(json.dumps({"srcWidth": src_w, "srcHeight": src_h, "width": clean.width, "
 
 async function cmdPick(positional, opts) {
   const [slug, id] = positional;
-  if (!slug || !id) die('usage: pick <slug> <openverseId> --name "<City>" --state <ST> --alt "..." [--focus "50% 50%"]');
+  if (!slug || !id) die('usage: pick <citySlug, e.g. san-diego-ca> <openverseId> --name "<City>" --state <ST> --alt "..." [--focus "50% 50%"]');
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) die(`slug must be lowercase-kebab (got "${slug}")`);
   if (!/^[0-9a-f-]{36}$/i.test(id)) die(`openverseId must be the full Openverse UUID (got "${id}")`);
   const name = typeof opts.name === "string" ? opts.name.trim() : "";
@@ -393,6 +395,7 @@ async function cmdPick(positional, opts) {
   const focus = typeof opts.focus === "string" ? opts.focus.trim() : "50% 50%";
   if (!name) die("--name is required");
   if (!STATES[state]) die("--state must be a two-letter US state code");
+  if (!slug.endsWith(`-${state.toLowerCase()}`)) die(`slug must be the event's citySlug, the city plus the state (e.g. "${slugify(name || slug)}-${state.toLowerCase()}"); got "${slug}"`);
   if (!alt) die("--alt is required (a plain description of what the photo shows)");
   if (!/^\d{1,3}(?:\.\d+)?% \d{1,3}(?:\.\d+)?%$/.test(focus)) die(`--focus must look like "50% 40%" (got "${focus}")`);
   const maxWidth = intOpt(opts, "max-width", 1600);
@@ -489,10 +492,11 @@ const HELP = `city-photo: open-licensed city photos from Openverse for the Event
 
   search "<City>, <ST>" [--query "extra terms"]... [--only] [--limit 16] [--min-width 1024]
          [--source flickr] [--exclude-source wikimedia] [--allow-sa] [--no-previews] [--out <dir>]
-  pick <slug> <openverseId> --name "<City>" --state <ST> --alt "..." [--focus "50% 50%"]
+  pick <citySlug> <openverseId> --name "<City>" --state <ST> --alt "..." [--focus "50% 50%"]
          [--allow-sa] [--max-width 1600] [--quality 85] [--min-width 1024] [--no-upgrade] [--force]
 
-Writes public/media/cities/<slug>.jpg and upserts src/content/cities.json (repo: ${REPO_ROOT}).`;
+<citySlug> is event.json's "citySlug" (city plus state, e.g. san-diego-ca). Writes public/media/cities/<citySlug>.jpg
+and upserts src/content/cities.json (repo: ${REPO_ROOT}).`;
 
 const [cmd, ...rest] = process.argv.slice(2);
 const { positional, opts } = parseArgs(rest);

@@ -17,12 +17,24 @@ engine/
   kit/                               shared, served at /kit/
     base.css  local-fonts.css  fonts/*.woff2          Merriweather + Lato only (BRAND-SPEC §3)
     assets/*                                          photos, cutouts, QR codes, wordmarks
+    assets.json                                       who owns each kit file (brand, person, or one event)
     engine.js  engine.css  gsap.min.js                the motion engine (scenes → one paused GSAP timeline)
-    aiclips/*.mp4                                     the 9 Kling B-roll clips (frames extracted on demand)
+    aiclips/*.mp4                                     the Kling B-roll clips (frames extracted on demand)
+  tools/                             the event tools: new-event, check-event, render-event, event-model, city-photo
+                                     (usage at the top of each) and their shared helpers in ap.mjs
+  change/                            the change-request pipeline behind the box under each asset (change/README.md)
+  held/                              proposals a change request is holding for the owner; created when one is held
+  BRAND.md                           the brand rules condensed from BRAND-SPEC.md (the change pipeline's model reads it)
   serve.mjs   render.mjs   lint.mjs
   package.json  package-lock.json                     playwright 1.56.1 (Chromium 141, build 1194)
   .cache/  out/  node_modules/                        git-ignored
 ```
+
+Rendered files are published from `public/<media>/<kind>/`, where `<media>` is the `media` field of the event's
+`event.json`: `/media` for the Manhattan Beach dinner and the brand set (so `public/media/<kind>/`), and
+`/media/events/<slug>` for every later event (`public/media/events/<slug>/<kind>/`). A new event keeps the
+template's file names, so rendering it into `public/media/<kind>/` would overwrite Manhattan Beach's published files.
+`tools/render-event.mjs` reads the folder and the delivered name from the event's own files; use it.
 
 The asset ID is the file name: `images/05B.html` is library image `05B`, `videos/V1.json` is `V1`, `reels/R7.json`
 is `R7`. The kind comes from the parent folder name (`images|flyers|videos|reels`).
@@ -36,11 +48,21 @@ node engine/serve.mjs  [port]      # browse by hand: /creatives/…/01.html, /__
 ```
 
 `<source>` is resolved against the cwd, then against `engine/`, and must live inside `engine/`. `<out-dir>` is
-relative to the cwd. `--name` defaults to the source's own basename; pass the delivered file name, e.g.
+relative to the cwd: the event's `public/<media>/<kind>/` (see [Layout](#layout)). `--name` defaults to the source's
+own basename; pass the delivered file name (the `file` in the event's `library.json`, without its extension). For
+Manhattan Beach, whose media folder is `/media`:
 
 ```bash
 node engine/render.mjs engine/creatives/events/manhattan-beach-2026-10-08/images/01.html public/media/images --name 01-save-your-seat
 node engine/render.mjs engine/creatives/events/manhattan-beach-2026-10-08/reels/R7.json public/media/reels --name reel-07-seats-limited
+```
+
+For any event (or `brand`), `tools/render-event.mjs` does this from the catalogue: the right folder, the delivered
+names, then `lint.mjs` on every asset (videos and Reels at their poster frame). It stops with exit 2, rendering
+nothing, on an unknown kind or an id that matches nothing.
+
+```bash
+node engine/tools/render-event.mjs <slug|brand> [--kinds images,flyers,videos,reels] [--ids 01,02,V1]
 ```
 
 | Kind | Output (the delivered formats) |
@@ -84,11 +106,15 @@ identical stills in testing too.
 
 ## Add or change an asset
 
-- **Change one:** edit its source, then render it with `--preview` and look. Run `lint.mjs`, then render it for
-  real into `public/media/<kind>/` with `--name <delivered basename>`.
-- **New event:** copy `creatives/events/manhattan-beach-2026-10-08/` to `creatives/events/<new-slug>/`. In each
-  HTML file, edit the facts (date, time, venue, city) in the copy. In each spec, add an `event` block (below) and
-  change any scene text that names the old event. Name new files with their library ID.
+- **Change one:** edit its source, then render it with `--preview` and look. Then render it for real with
+  `node engine/tools/render-event.mjs <slug|brand> --kinds <kind> --ids <ID>`, which writes it to the event's own
+  `public/<media>/<kind>/` under its delivered name and lints it. (By hand: `render.mjs` into that folder with
+  `--name <delivered basename>`, then `lint.mjs`.)
+- **New event:** do not copy a folder by hand. `node engine/tools/new-event.mjs` scaffolds it from an existing event
+  (the catalogue without variations, the sources with the facts swapped and an `event` block in every spec,
+  captions, plans, `event.json` and projections) and lists every template fact it still finds; the studio's
+  `/sundae-new-event` agent runs the whole job, through `tools/check-event.mjs` and the push. Usage is at the top of
+  each tool.
 - **New asset:** put the source in the right `<kind>` folder (the kind comes from the folder name). For a still,
   keep `width:Npx;height:Npx` on `html,body`. New photos go in `kit/assets/`, new clips in `kit/aiclips/`.
 
@@ -128,14 +154,15 @@ optional top-level `event` object:
 - Dates are recognised generically (any weekday; `Jan.`/`Feb.`/`Aug.`/`Sept.`/`Oct.`/`Nov.`/`Dec.`; a full month name
   followed by a day; any `a.m.`/`p.m.`). A recognised date in an eyebrow over a photo, or in the brand-bar `tag`,
   becomes a blue date chip.
-- The `josh` scene's defaults (Josh Stech's title and bio) are host facts, not event facts. Override them per scene
-  (`kicker`, `title`, `sub`, `facts`) if an event has a different host.
+- The `josh` scene is a host scene, not an event fact: its defaults are Josh Stech's title and bio, and it always
+  shows his cutout (`josh-polo-cutout.png`), whatever the text says. For an event with a different host, replace the
+  scene (`check-event.mjs` fails while one is left) and set `hostLine` (`new-event.mjs --host` does).
 
 ## CI
 
 ```bash
 cd engine && npm ci && npx playwright install --with-deps chromium
-node render.mjs creatives/events/<slug>/images/01.html ../public/media/images --name 01-save-your-seat
+node tools/render-event.mjs <slug> --kinds images --ids 01
 ```
 
 Also required: `ffmpeg` (with libx264) and `python3` with Pillow (`pip install pillow`). With no `CHROME_PATH`,
@@ -158,7 +185,3 @@ Done on 2026-10-19 with chromium-1194:
   levels across a clip scene, ~52 dB). The pre-change engine.js shows the same two modes. It is invisible.
 - Flyer 05 is rendered from the current generator output. The studio README's "legacy `top:400px`" file is
   the pre-brand-refresh design and does **not** match the delivered flyer.
-
-Site build note: Tailwind v4 auto-detects sources, so it also scans `engine/`. That adds 5 utilities (`inline
-italic resize ring shrink`, +427 B of CSS) and no visual change. To exclude the folder, add
-`@source not "../../engine";` to `src/app/globals.css`.

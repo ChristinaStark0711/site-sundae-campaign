@@ -69,5 +69,9 @@
       "blurb": "Owners and deadlines from tonight through month 2 — and what Sundae must supply."
     }
   ],
-  "actuals": null
+  "actuals": null,
+  "_allow": [
+    "Sacramento",
+    "Echo & Rig"
+  ]
 }
