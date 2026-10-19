@@ -1,10 +1,18 @@
 "use client";
-import { useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { isUpcoming } from "@/lib/format";
 
 // Splits the events into upcoming and past by today's date in the visitor's browser, so an event moves to "Past"
 // the day after it happens even before the site is rebuilt. The first paint uses the build date.
 export type BoardItem = { slug: string; date: string; asUpcoming: React.ReactNode; asPast: React.ReactNode };
+
+// The cards arrive already rendered by the page, so the board tells their titles its level through context: h3 under
+// the h2 group headings (/events), h4 under the h3 ones when the board is a sub-section (the overview).
+const Sub = createContext(false);
+export function EventCardTitle({ className, children }: { className: string; children: React.ReactNode }) {
+  const H = useContext(Sub) ? "h4" : "h3";
+  return <H className={className}>{children}</H>;
+}
 
 export default function EventsBoard({ items, builtAt, empty, limitPast, sub = false }: { items: BoardItem[]; builtAt: number; empty: React.ReactNode; limitPast?: number; sub?: boolean }) {
   const [now, setNow] = useState(builtAt);
@@ -16,7 +24,7 @@ export default function EventsBoard({ items, builtAt, empty, limitPast, sub = fa
   const H = sub ? "h3" : "h2";
   const hc = sub ? "section-title text-[1.5rem]" : "display h-bar text-[2rem] md:text-[2.5rem]";
   return (
-    <>
+    <Sub.Provider value={sub}>
       <section aria-labelledby="ev-up">
         <div className="flex flex-wrap items-baseline justify-between gap-4"><H id="ev-up" className={hc}>Upcoming events</H><span className="text-lg">{up.length ? `${up.length} on the calendar` : "None booked yet"}</span></div>
         {up.length ? <div className={`${sub ? "mt-6" : "mt-10"} grid gap-6 md:grid-cols-2 xl:grid-cols-3`}>{up.map((i) => <div key={i.slug} className="grid">{i.asUpcoming}</div>)}</div> : <div className={sub ? "mt-6" : "mt-10"}>{empty}</div>}
@@ -25,6 +33,6 @@ export default function EventsBoard({ items, builtAt, empty, limitPast, sub = fa
         <div className="flex flex-wrap items-baseline justify-between gap-4"><H id="ev-past" className={hc}>Past events</H><span className="text-lg">{pastAll.length} on record</span></div>
         <div className={`${sub ? "mt-6" : "mt-10"} grid gap-6 md:grid-cols-2 xl:grid-cols-3`}>{past.map((i) => <div key={i.slug} className="grid">{i.asPast}</div>)}</div>
       </section>
-    </>
+    </Sub.Provider>
   );
 }

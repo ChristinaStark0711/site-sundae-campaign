@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 
 // The tab row under an event's title bar: the event's own overview, creative, captions, plans and projections.
@@ -9,8 +10,15 @@ export default function EventTabs({ slug, firstPlan }: { slug: string; firstPlan
   const tabs: [string, string, string][] = [[b, "Overview", b], [`${b}/creative`, "Creative", `${b}/creative`], [`${b}/captions`, "Captions", `${b}/captions`]];
   if (firstPlan) tabs.push([`${b}/plans/${firstPlan}`, "Plans", `${b}/plans`]);
   tabs.push([`${b}/projections`, "Projections", `${b}/projections`]);
+  // on phones the row scrolls sideways and would always open at its start, hiding a later tab such as Projections:
+  // center the current tab in the row (the row only; the page itself doesn't move)
+  const nav = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const n = nav.current, a = n?.querySelector<HTMLElement>('[aria-current="page"]');
+    if (n && a) n.scrollLeft += a.getBoundingClientRect().left - n.getBoundingClientRect().left - (n.clientWidth - a.offsetWidth) / 2;
+  }, [path]);
   return (
-    <nav aria-label="Event sections" className="scroll-x -mx-5 px-5 md:mx-0 md:px-0">
+    <nav ref={nav} aria-label="Event sections" className="scroll-x -mx-5 px-5 md:mx-0 md:px-0">
       <div className="flex w-max gap-1.5 pb-1">
         {tabs.map(([href, label, match]) => {
           const on = match === b ? path === b : path.startsWith(match);

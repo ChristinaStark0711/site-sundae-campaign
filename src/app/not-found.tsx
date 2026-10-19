@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Icon } from "@/components/Icon";
 import { getBrandPlans, getEvents } from "@/lib/content";
@@ -5,6 +6,8 @@ import { apDate } from "@/lib/format";
 
 // House-style 404 for unknown URLs and unknown plan or event links (shared links can go stale).
 // Renders inside the root layout, so the nav (red wordmark) and footer stay in place.
+// Its own title, so the tab and history don't read like the home page (Next uses a root not-found's metadata for every 404).
+export const metadata: Metadata = { title: "Page not found" };
 export default function NotFound() {
   const links = [
     ...getEvents().map((e) => ({ href: `/events/${e.slug}`, title: `${e.city} · ${apDate(e.date)}` })),

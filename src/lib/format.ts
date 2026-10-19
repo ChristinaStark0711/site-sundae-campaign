@@ -13,19 +13,26 @@ export function apDate(iso: string, { weekday = false, year = true }: { weekday?
   return `${weekday ? wd + ", " : ""}${MONTHS[m - 1]} ${d}${year ? ", " + y : ""}`;
 }
 
-// The last instant of the event's day (or month) in Pacific time, as a UTC timestamp: an event counts as upcoming through its whole day.
-export function eventEnd(iso: string) {
-  const { y, m, d } = parts(iso);
-  const end = d ? Date.UTC(y, m - 1, d + 1) : Date.UTC(y, m, 1);
-  return end + 8 * 3600 * 1000;
+// Today's date in Pacific time (California), worked out with Intl so it follows PST and PDT: an event's labels flip at
+// midnight there whatever the visitor's own time zone, and day counts are whole calendar days.
+const PT = new Intl.DateTimeFormat("en-US", { timeZone: "America/Los_Angeles", year: "numeric", month: "numeric", day: "numeric" });
+function pacificToday(now: number) {
+  const p: Record<string, number> = {};
+  for (const { type, value } of PT.formatToParts(now)) p[type] = Number(value);
+  return { y: p.year, m: p.month, d: p.day };
 }
-export const isUpcoming = (iso: string, now: number) => eventEnd(iso) > now;
 
-// Whole days from now until the event's day (0 on the day itself); negative once it has passed.
+// An event counts as upcoming through its whole day, and a month-only event through the last day of that month.
+export function isUpcoming(iso: string, now: number) {
+  const e = parts(iso), t = pacificToday(now);
+  return e.y * 10000 + e.m * 100 + (e.d || 31) >= t.y * 10000 + t.m * 100 + t.d;
+}
+
+// Whole calendar days from today until the event's day (0 on the day itself); negative once it has passed.
+// A month-only event counts from the 1st of its month.
 export function daysUntil(iso: string, now: number) {
-  const { y, m, d } = parts(iso);
-  const start = Date.UTC(y, m - 1, d || 1) + 8 * 3600 * 1000;
-  return Math.ceil((start - now) / 86400000);
+  const e = parts(iso), t = pacificToday(now);
+  return Math.round((Date.UTC(e.y, e.m - 1, e.d || 1) - Date.UTC(t.y, t.m - 1, t.d)) / 86400000);
 }
 
 export const nbsp = (s: string) => s.replace(/ (\d)/g, " $1");
