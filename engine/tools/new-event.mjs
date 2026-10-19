@@ -4,7 +4,7 @@
 //   node engine/tools/new-event.mjs --city "San Diego" --state CA --date 2026-11-12 --time "7 p.m." \
 //     --venue "Hotel Name" [--space "The Rooftop"] [--address "123 Main St., San Diego, CA 92101"] \
 //     [--host "Josh Stech"] [--host-title "co-founder and CEO of Sundae"] [--audience "San Diego real estate operators"] \
-//     [--rsvp https://…] [--seat-cap 60] [--from manhattan-beach-2026-10-08]
+//     [--rsvp https://…] [--seat-cap 60] [--included "Dinner and drinks · Seats limited"] [--from manhattan-beach-2026-10-08]
 import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
@@ -47,7 +47,9 @@ const swap = (s) => swaps.reduce((t, [a, b]) => t.split(a).join(b), s);
 // What still points at the template after the swaps: its facts and its venue files.
 const manifest = JSON.parse(fs.readFileSync(path.join(ENGINE, 'kit/assets.json'), 'utf8'));
 const foreign = [...Object.entries(manifest.assets), ...Object.entries(manifest.clips)].filter(([, v]) => v.event && v.event !== slug).map(([k]) => k);
-const leftovers = (s) => [...new Set([Tp.weekday !== Np.weekday && Tp.weekday, `${Tp.month} ${Tp.d}`, T.venue, T.space, T.city, 'Courtyard', 'Shade', ...(T.address ? [T.address.split(',')[0]] : []), ...foreign].filter((x) => x && s.includes(x)))];
+const tPlace = T.audience?.replace(/ real estate.*$/i, '').replace(/-area$/, ''); // "Los Angeles"
+const leftovers = (s) => [...new Set([Tp.weekday !== Np.weekday && Tp.weekday, `${Tp.month} ${Tp.d}`, T.venue, T.space, T.city, tPlace, 'Courtyard', 'Shade', ...(T.address ? [T.address.split(',')[0]] : []), ...foreign].filter((x) => x && s.includes(x))
+  .concat(tPlace === 'Los Angeles' && /\bLA\b/.test(s) ? ['LA'] : []))];
 
 const report = [];
 const write = (p, s) => { fs.mkdirSync(path.dirname(p), { recursive: true }); fs.writeFileSync(p, s); const l = leftovers(s); if (l.length) report.push(`${path.relative(REPO, p)}: ${l.join(', ')}`); };
@@ -57,7 +59,10 @@ const lib = JSON.parse(fs.readFileSync(path.join(REPO, 'src/content/events', fro
 for (const k of Object.keys(lib)) lib[k] = lib[k].filter((a) => !a.variantOf).map(({ rev, updated, ...a }) => ({ ...a, use: swap(a.use), title: swap(a.title), ...(a.pair ? { pair: swap(a.pair) } : {}) }));
 fs.writeFileSync(path.join(dir, 'library.json'), JSON.stringify(lib, null, 2) + '\n');
 // creative sources
-const eventBlock = { weekday: Np.weekday, month: Np.month, day: String(Np.d), time: ev.time, venueShort: nVenueFull.replace(/ Hotel$/, ''), venueFull: nVenueFull, hotel: ev.venue, city: ev.city, cityLine: `${ev.city}, ${STATES[state] || state}`, address: ev.address };
+// The motion engine's event block (engine/README.md, "event block"): every fact a scene shows must be given, or the render
+// fails rather than falling back to the template's facts. `included` is copied from --included or the template default.
+const included = f.included && f.included !== true ? f.included : 'Dinner and drinks · Seats limited';
+const eventBlock = { weekday: Np.weekday, month: Np.month, day: String(Np.d), time: ev.time, venue: nVenueFull, venueShort: nVenueFull.replace(/ Hotel$/, ''), hotel: ev.venue, city: ev.city, cityLine: `${ev.city}, ${STATES[state] || state}`, address: ev.address?.replace(/,\s*[A-Z]{2}\s*\d{5}(?:-\d{4})?$/, ''), included, name: ev.name };
 for (const k of Object.keys(lib)) for (const a of lib[k]) {
   const ext = k === 'videos' || k === 'reels' ? 'json' : 'html';
   let s = swap(fs.readFileSync(path.join(ENGINE, 'creatives/events', from, k, `${a.id}.${ext}`), 'utf8'));
@@ -76,4 +81,6 @@ console.log(`  src/content/events/${slug}/  (event.json, library.json, captions.
 console.log(`  engine/creatives/events/${slug}/  (${Object.values(lib).reduce((n, a) => n + a.length, 0)} sources)`);
 console.log(`\nStill pointing at ${T.city} (${report.length} files) — rewrite or replace:`);
 for (const r of report) console.log('  ' + r);
+if (!ev.time || !ev.address) console.log(`\nMissing ${[!ev.time && '--time', !ev.address && '--address'].filter(Boolean).join(' and ')}: video renders will fail until the event block in each spec has them.`);
+console.log(`Confirm "${included}" (what's included) for this event; it is shown in the videos' details scene.`);
 console.log(`\nNext: city photo (engine/tools/city-photo.mjs), venue photos into engine/kit/assets/${slug}-*.jpg (+ engine/kit/assets.json), copy and plans, then engine/tools/render-event.mjs ${slug} and engine/tools/check-event.mjs ${slug}.`);

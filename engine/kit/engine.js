@@ -57,6 +57,8 @@
     throw new Error(`SPEC.event.${k} is missing, and a scene in this spec shows it`);
   };
   const whenLine = () => `${ev('weekday')}, ${ev('month')} ${ev('day')} · ${ev('time')}`; // 'Thursday, Oct. 8 · 7 p.m.'
+  // (with an event block, the date card keeps the time whole, '6:30 p.m.', if its line has to wrap; specs without a
+  // block keep the delivered markup exactly)
 
   const el = (tag, cls, html, style) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; if (style) e.style.cssText = style; return e; };
   // a date or a time: any weekday, a month abbreviation with its period (AP: Jan. Feb. Aug. Sept. Oct. Nov. Dec.;
@@ -374,7 +376,7 @@
       const box = el('div', 'wrap', '', `left:${pad}px;right:${right}px;align-items:flex-start;gap:${(V ? 3.4 : 2.6) * U}px`);
       const k = kicker(o.kicker || ev('name'), 'card'); box.appendChild(k);
       const tile = (V ? 1.35 : 1) * U;
-      const card = el('div', 'dcard', `<div style="background:var(--red);border-radius:0 ${4 * tile}px 0 0;padding:${2.2 * tile}px ${3.4 * tile}px ${2.4 * tile}px;color:#fff;text-align:center;flex:0 0 auto"><div style="font-family:var(--sans);font-weight:900;font-size:${4.2 * tile}px;line-height:1">${ev('month')}</div><div style="font-family:var(--serif);font-weight:900;font-size:${12.5 * tile}px;line-height:1;margin-top:${0.6 * tile}px">${ev('day')}</div></div><div style="display:flex;flex-direction:column;justify-content:center;gap:${1.1 * tile}px"><div class="hd" style="font-size:${(V ? 6.2 : 5.4) * U}px;line-height:1.15">${ev('weekday')} · ${ev('time')}</div><div class="sub" style="font-size:${F.sub}px;font-weight:700">${ev('venueShort')}</div><div class="body" style="font-size:${F.body}px;line-height:1.3">${ev('cityLine')}</div></div>`, `display:flex;align-items:center;gap:${3.4 * tile}px`);
+      const card = el('div', 'dcard', `<div style="background:var(--red);border-radius:0 ${4 * tile}px 0 0;padding:${2.2 * tile}px ${3.4 * tile}px ${2.4 * tile}px;color:#fff;text-align:center;flex:0 0 auto"><div style="font-family:var(--sans);font-weight:900;font-size:${4.2 * tile}px;line-height:1">${ev('month')}</div><div style="font-family:var(--serif);font-weight:900;font-size:${12.5 * tile}px;line-height:1;margin-top:${0.6 * tile}px">${ev('day')}</div></div><div style="display:flex;flex-direction:column;justify-content:center;gap:${1.1 * tile}px"><div class="hd" style="font-size:${(V ? 6.2 : 5.4) * U}px;line-height:1.15">${ev('weekday')} · ${S.event ? `<span class="nw">${ev('time')}</span>` : ev('time')}</div><div class="sub" style="font-size:${F.sub}px;font-weight:700">${ev('venueShort')}</div><div class="body" style="font-size:${F.body}px;line-height:1.3">${ev('cityLine')}</div></div>`, `display:flex;align-items:center;gap:${3.4 * tile}px`);
       box.appendChild(card);
       const t = lines(o.title || ['Seats are limited'], 'hd', V ? 11 : SQ ? 7.6 : 8, o.accent); t._wrap = box; addBar(t); box.appendChild(t);
       let s; if (o.sub) { s = el('div', 'body', o.sub); s.style.fontSize = F.body + 'px'; s.style.marginTop = -0.6 * U + 'px'; box.appendChild(s); }

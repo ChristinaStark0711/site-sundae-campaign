@@ -1,5 +1,7 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
+/* the creative engine (HTML sources rendered to images) is not part of the site */
+@source not "../../engine";
 
 /* Sundae brand tokens: Creative Guidelines (2022) p.6-11 and clients/sundae/BRAND-SPEC.md.
    Copy is #4A4A4A. Red is never a text color: it appears only as the wordmark, accent bars, shapes and dots.
