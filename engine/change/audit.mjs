@@ -4,7 +4,7 @@
 //
 //   node engine/change/audit.mjs <source-file>      (prints the audit as JSON)
 //
-// Returns { violations[], tags[], attrs[], text, visible }:
+// Returns { violations[], tags[], attrs[], text, visible, images[], paths[] }:
 //   violations  anything a creative may not contain: script or form-like elements, event-handler attributes,
 //               javascript: or outside URLs, generated text (::before/::after/::marker content, list markers),
 //               inline at-rules (@media, @import, @font-face, …), CSS functions that pull in text (attr(), counter())
@@ -12,6 +12,7 @@
 //               plus a small fixed set)
 //   text        every text node in the document (hidden ones too), Unicode-normalized (NFKC): the fact check
 //   visible     the text a viewer can actually see (stills) or sees at any scene's settled moment (videos)
+//   images      every image shown (<img> and CSS backgrounds); paths: every SVG path drawn (shapes can spell words)
 // Stills load with JavaScript switched off. Video specs load the motion engine (it needs JavaScript), but process.mjs
 // first checks every spec string against a strict markup allowlist (lib.mjs checkSource), so a spec cannot add script.
 import fs from 'node:fs';
@@ -90,7 +91,14 @@ function inspect({ rootSel, canvas }) {
     all.push(t);
     if (root.contains(p) && shown(p)) vis.push(t);
   }
-  return { violations: out.violations, tags: [...out.tags].sort(), attrs: [...out.attrs].sort(), text: all.join(' '), visible: vis.join(' ') };
+  // the images and drawn shapes a viewer sees (text inside them is invisible to the text checks)
+  const images = new Set(), paths = new Set();
+  for (const el of els) {
+    if (el.tagName === 'IMG' && el.getAttribute('src')) images.add(el.getAttribute('src'));
+    for (const pe of [null, '::before', '::after']) for (const m of (getComputedStyle(el, pe).backgroundImage || '').matchAll(/url\("?([^")]+)"?\)/g)) images.add(new URL(m[1], location.href).pathname);
+    if (el.tagName.toLowerCase() === 'path' && el.getAttribute('d')) paths.add(el.getAttribute('d').replace(/\s+/g, ' ').trim());
+  }
+  return { violations: out.violations, tags: [...out.tags].sort(), attrs: [...out.attrs].sort(), text: all.join(' '), visible: vis.join(' '), images: [...images].sort(), paths: [...paths].sort() };
 }
 
 export async function auditSource(source) {
@@ -115,17 +123,18 @@ export async function auditSource(source) {
       const r = await page.evaluate(inspect, { rootSel: '#stage', canvas });
       // what a viewer sees: the union of every scene's settled moment (the same moments the preview shows)
       // and every text it shows, sampled at each scene's settled moment and its last frame (counters finish there)
-      const seen = new Set(), texts = new Set([r.text]); let t = 0;
+      const seen = new Set(), texts = new Set([r.text]), imgs = new Set(r.images), pths = new Set(r.paths); let t = 0;
       for (const s of spec.scenes) {
         for (const at of [t + Math.min(s.dur - 0.2, 2.6), t + s.dur - 0.04]) {
           await page.evaluate((x) => window.seekTo(x), at);
           const x = await page.evaluate(inspect, { rootSel: '#stage', canvas });
-          seen.add(x.visible); texts.add(x.text);
+          seen.add(x.visible); texts.add(x.text); x.images.forEach((i) => imgs.add(i)); x.paths.forEach((d) => pths.add(d));
         }
         t += s.dur;
       }
       r.visible = [...seen].join(' ');
       r.text = [...texts].join(' ');
+      r.images = [...imgs].sort(); r.paths = [...pths].sort();
       r.violations.push(...problems(issues));
       return r;
     } finally { await context.close().catch(() => {}); }

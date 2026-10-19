@@ -33,7 +33,7 @@ if (r.status === 'done') {
   const current = A && fs.existsSync(A.source) ? crypto.createHash('sha256').update(fs.readFileSync(A.source)).digest('hex') : null;
   let plan = null;
   if (!A) failNow('The asset no longer exists, so nothing was changed.');
-  else if (r.request.mode === 'update' && current !== r.sourceHash) failNow('This asset changed while the request was being worked on, so nothing was changed. It can be sent again.');
+  else if (r.request.mode === 'update' && current !== r.sourceHash) failNow(r.request.candidate ? 'The asset changed after this proposal was made, so applying it would undo the newer change. Nothing was changed; the request can be sent again.' : 'This asset changed while the request was being worked on, so nothing was changed. It can be sent again.');
   else if (library.op === 'replace') {
     const i = list.findIndex((a) => a.id === library.entry.id);
     if (i < 0) failNow('The asset is gone from the library, so nothing was changed.');

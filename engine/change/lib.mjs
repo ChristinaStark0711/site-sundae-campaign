@@ -49,7 +49,7 @@ const FACT_RE = new RegExp([
   '\\b\\d{1,2}(?::\\d{2})?(?:-\\d{1,2}(?::\\d{2})?)?\\s?[ap]\\.?m\\.?',
   '\\$\\s?\\d[\\d,]*(?:\\.\\d+)?(?:\\s?(?:million|billion|[kKmM]))?\\+?',
   '\\b\\d{3}[-. ]\\d{3}[-. ]\\d{4}\\b',
-  '\\b[a-z0-9-]+(?:\\.[a-z0-9-]+)*\\.(?:com|app|org|net|io|co|ly|me|gg|xyz|link|info|biz|us)\\b(?:\\/[^\\s]*)?',
+  '\\b[a-z0-9][a-z0-9-]*(?:\\.[a-z0-9-]+)*\\.[a-z][a-z0-9-]{1,23}\\b(?:\\/[^\\s]*)?', // any web address or email domain, whatever its ending
   '\\b\\d[\\d,]*(?:\\.\\d+)?\\s?%',
   '\\d[\\d,]*(?:\\.\\d+)?\\+?',
   '\\b(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\\b',
@@ -66,13 +66,21 @@ export const newClaims = (oldText, newText) => minus(claimWords(newText), claimW
 // The event facts that must stay on the asset if they were on it: present in the original's visible text, gone from
 // the candidate's.
 export function missingFacts(event, oldVisible, newVisible) {
-  if (!event) return [];
   const norm = (t) => t.normalize('NFKC').replace(/\s+/g, ' ').toLowerCase();
-  const [, m, d] = (event.date || '').split('-').map(Number);
-  const MON = ['Jan.', 'Feb.', 'March', 'April', 'May', 'June', 'July', 'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec.'];
-  const keys = [d ? `${MON[m - 1]} ${d}` : null, event.time, event.venue?.split(' ')[0], event.city].filter(Boolean).map(norm);
   const o = norm(oldVisible), n = norm(newVisible);
-  return keys.filter((k) => o.includes(k) && !n.includes(k));
+  const keys = [];
+  if (event) {
+    const [, m, d] = (event.date || '').split('-').map(Number);
+    const MON = ['Jan.', 'Feb.', 'March', 'April', 'May', 'June', 'July', 'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec.'];
+    const venueCore = event.venue?.replace(new RegExp(`\\s+${event.city}$`, 'i'), ''); // "Shade Hotel Manhattan Beach" -> "Shade Hotel"
+    keys.push(d ? `${MON[m - 1]} ${d}` : null, event.time, event.venue, venueCore, event.venue?.split(' ')[0], event.space, event.city, event.address?.split(',')[0], event.host);
+  }
+  // offer metrics must read as averages (BRAND-SPEC rule 7): losing "average" or a footnote asterisk is a fact change
+  const count = (t, re) => (t.match(re) || []).length;
+  const lost = [];
+  if (count(n, /\baverages?\b/g) < count(o, /\baverages?\b/g)) lost.push('"an average of" wording');
+  if (count(n, /\*/g) < count(o, /\*/g)) lost.push('a footnote asterisk');
+  return [...new Set(keys.filter(Boolean).map(norm))].filter((k) => o.includes(k) && !n.includes(k)).concat(lost);
 }
 // Numbers a video spec shows on screen (counters such as {"num": 20000}); layout numbers are left out. Compared as
 // facts directly, because a counter animates and its rendered text depends on the moment sampled.
@@ -85,8 +93,22 @@ export function specNumbers(src) {
 }
 export const newSpecNumbers = (oldSrc, newSrc) => minus(specNumbers(newSrc), specNumbers(oldSrc)).map((t) => t.replace(/^\S+ /, ''));
 
-// Credential-like strings never reach the public log.
-export const redact = (t) => String(t).replace(/sk-ant-[A-Za-z0-9_-]{6,}|github_pat_[A-Za-z0-9_]{10,}|gh[pousr]_[A-Za-z0-9]{10,}|AKIA[0-9A-Z]{12,}|xox[abpr]-[A-Za-z0-9-]{10,}|-----BEGIN [A-Z ]*PRIVATE KEY-----[\s\S]*?(?:-----END [A-Z ]*PRIVATE KEY-----|$)|\b[A-Za-z0-9_-]{40,}\b/g, '[removed]');
+// Credential-like strings never reach the public log. Keep in step with CREDENTIAL in src/app/api/requests/route.ts
+// (which refuses them up front) and with guard.mjs (which refuses to commit them).
+export const CREDENTIALS = /sk-ant-[A-Za-z0-9_-]{6,}|github_pat_[A-Za-z0-9_]{10,}|gh[pousr]_[A-Za-z0-9]{10,}|AKIA[0-9A-Z]{12,}|ASIA[0-9A-Z]{12,}|xox[abpr]-[A-Za-z0-9-]{10,}|AIza[0-9A-Za-z_-]{30,}|[sr]k_(?:live|test)_[0-9A-Za-z]{10,}|SK[0-9a-fA-F]{32}|-----BEGIN [A-Z ]*PRIVATE KEY-----[\s\S]*?(?:-----END [A-Z ]*PRIVATE KEY-----|$)|(?=[A-Za-z0-9/+=]*\d)(?=[A-Za-z0-9/+=]*[a-z])(?=[A-Za-z0-9/+=]*[A-Z])[A-Za-z0-9/+=]{32,}/g; // last: any long mixed-case token (base64-style secrets); lowercase hex hashes and hyphenated file names don't match
+export const redact = (t) => String(t).replace(CREDENTIALS, '[removed]');
+export const redactDeep = (v) => (typeof v === 'string' ? redact(v) : Array.isArray(v) ? v.map(redactDeep) : v && typeof v === 'object' ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, redactDeep(x)])) : v);
+
+// Kit files that carry text of their own (QR codes, screenshots, maps): text the rendered-text checks can't read.
+// A candidate that newly uses one, or a venue file that belongs to another event, is held as a proposal.
+export function kitImageNotes(url, scopeDir) {
+  const m = /\/kit\/assets\/([^"')?#]+)/.exec(url);
+  if (!m) return null;
+  const meta = readJSON(path.join(ENGINE, 'kit/assets.json'), { assets: {} }).assets[decodeURIComponent(m[1])] || {};
+  if (meta.text) return `adds ${m[1]}, an image with its own text`;
+  if (meta.event && `events/${meta.event}` !== scopeDir) return `adds ${m[1]}, a photo from another event`;
+  return null;
+}
 
 // Markup a video spec string may carry (the motion engine sets spec strings as HTML).
 const SPEC_TAGS = /^(?:br|b|i|em|strong|span|sup|sub|small|u)$/;

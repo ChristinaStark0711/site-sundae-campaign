@@ -14,7 +14,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { auditSource } from './audit.mjs';
-import { ENGINE, OUT, REPO, REQ, checkSource, kitAssets, kitClips, log, missingFacts, newClaims, newFacts, newSpecNumbers, nextVariantId, readJSON, resolveAsset, slugify, writeJSON } from './lib.mjs';
+import { ENGINE, OUT, REPO, REQ, checkSource, kitAssets, kitClips, kitImageNotes, log, missingFacts, newClaims, newFacts, newSpecNumbers, nextVariantId, readJSON, redact, redactDeep, resolveAsset, slugify, writeJSON } from './lib.mjs';
 
 const MODEL = process.env.CHANGE_MODEL || 'claude-opus-5-5';
 const DAILY_CAP = Number(process.env.CHANGE_DAILY_CAP || 30);
@@ -31,7 +31,7 @@ const today = new Date().toISOString().slice(0, 10);
 const base = A.entry.variantOf ? (A.lib[A.kind].find((a) => a.id === A.entry.variantOf) ?? A.entry) : A.entry;
 const sha = (t) => crypto.createHash('sha256').update(t).digest('hex');
 const original = fs.readFileSync(A.source, 'utf8');
-const sourceHash = sha(original);
+const sourceHash = req.baseHash || sha(original); // an approved proposal must still sit on the source it was made from
 
 function finish(status, extra = {}) {
   const logRec = {
@@ -40,7 +40,7 @@ function finish(status, extra = {}) {
     ...(extra.result ? { result: extra.result } : {}), ...(extra.proposal ? { proposal: extra.proposal } : {}), ...(req.approved ? { approved: true } : {}),
     finishedAt: new Date().toISOString(), model: usage.calls ? MODEL : undefined, usage: usage.calls ? usage : undefined,
   };
-  writeJSON(path.join(OUT, 'result.json'), { status, request: req, sourceHash, log: logRec, ...(extra.apply ? { apply: extra.apply } : {}), ...(extra.held ? { held: extra.held } : {}) });
+  writeJSON(path.join(OUT, 'result.json'), { status, request: req, sourceHash, log: redactDeep(logRec), ...(extra.apply ? { apply: extra.apply } : {}), ...(extra.held ? { held: extra.held } : {}) });
   log('result:', status);
   process.exit(0);
 }
@@ -146,15 +146,31 @@ async function gate(src) {
   const okTags = new Set([...BASE_TAGS, ...origAudit.tags]), okAttrs = new Set(origAudit.attrs);
   for (const t of au.tags) if (!okTags.has(t)) p.push(`adds a <${t}> element`);
   for (const a of au.attrs) if (!okAttrs.has(a) && !BASE_ATTRS.test(a)) p.push(`adds a "${a.split(':')[1]}" attribute on <${a.split(':')[0]}>`);
-  return { problems: p.slice(0, 6), file, audit: au, facts: [...new Set([...newFacts(origAudit.text, au.text), ...(A.isVideo ? newSpecNumbers(original, src) : [])])], claims: newClaims(origAudit.text, au.text), missing: missingFacts(ev, origAudit.visible, au.visible) };
+  // images and drawn shapes the original didn't have: text inside them is invisible to the text checks
+  const clipDir = (u) => u.replace(/\/f_\d+\.jpg$/, '/');
+  const had = new Set(origAudit.images.map(clipDir)), media = [];
+  for (const u of new Set(au.images.map(clipDir))) {
+    if (had.has(u)) continue;
+    const note = kitImageNotes(u, A.scopeDir);
+    if (note) media.push(note);
+    const clip = /^\/cache\/clips\/([^/]+)\//.exec(u)?.[1];
+    const owner = clip && readJSON(path.join(ENGINE, 'kit/assets.json'), { clips: {} }).clips[clip]?.event;
+    if (owner && `events/${owner}` !== A.scopeDir) media.push(`adds the ${clip} footage from another event`);
+  }
+  if (au.paths.some((d) => !origAudit.paths.includes(d) && !KNOWN_PATHS.has(d))) media.push('adds a drawn shape');
+  return { problems: p.slice(0, 6), file, audit: au, media, facts: [...new Set([...newFacts(origAudit.text, au.text), ...(A.isVideo ? newSpecNumbers(original, src) : [])])], claims: newClaims(origAudit.text, au.text), missing: missingFacts(ev, origAudit.visible, au.visible) };
 }
-const describeFacts = (g) => [...g.facts.map((t) => `adds "${t}"`), ...g.claims.map((t) => `adds "${t}"`), ...g.missing.map((t) => `drops "${t}"`)];
+const describeFacts = (g) => [...g.facts.map((t) => `adds "${t}"`), ...g.claims.map((t) => `adds "${t}"`), ...g.missing.map((t) => `drops ${/^["a]/.test(t) ? t : `"${t}"`}`), ...g.media];
+// SVG paths already used anywhere in the creative (arrows and icons): a path outside this set could spell out words
+const KNOWN_PATHS = new Set([...(function* walk(d) { for (const e of fs.readdirSync(d, { withFileTypes: true })) { const p = path.join(d, e.name); if (e.isDirectory()) yield* walk(p); else if (e.name.endsWith('.html')) for (const m of fs.readFileSync(p, 'utf8').matchAll(/\sd="([^"]+)"/g)) yield m[1].replace(/\s+/g, ' ').trim(); } })(path.join(ENGINE, 'creatives')), ...[...fs.readFileSync(path.join(ENGINE, 'kit/engine.js'), 'utf8').matchAll(/\sd="([^"]+)"/g)].map((m) => m[1].replace(/\s+/g, ' ').trim())]);
 // keep a proposal the owner can approve exactly as shown: its source and a preview image
 function holdProposal(g, reason, summary, variantTitle) {
+  // only a publishable proposal reaches the owner: it must pass the brand lint first
+  if (!lint(g.file).ok) fail('The result broke a brand rule (text color, font or contrast), so it was not published. Try rewording the request.', summary);
   const prev = render(g.file, path.join(WORK, 'held'), 'held', true)[0];
   const jpg = path.join(OUT, 'files', 'held-preview.jpg'); toJpg(prev, jpg, 1200);
   const srcCopy = path.join(OUT, 'files', `held-source.${A.ext}`); fs.copyFileSync(g.file, srcCopy);
-  finish('held', { reason, summary, proposal: { preview: `/media/held/${req.id}.jpg`, changes: describeFacts(g), ...(variantTitle ? { variantTitle } : {}) }, held: { source: path.relative(REPO, srcCopy), preview: path.relative(REPO, jpg) } });
+  finish('held', { reason, summary, proposal: { preview: `/media/held/${req.id}.jpg`, changes: describeFacts(g), baseHash: sourceHash, ...(variantTitle ? { variantTitle: redact(variantTitle) } : {}) }, held: { source: path.relative(REPO, srcCopy), preview: path.relative(REPO, jpg) } });
 }
 
 try {
@@ -182,7 +198,7 @@ try {
       g = src ? await gate(src) : { problems: ['is empty'] };
       if (g.problems.length) fail(`The edit couldn't be made safely: the result ${g.problems[0]}. Nothing was changed.`, r.summary);
     }
-    summary = r.summary; variantTitle = r.variant_title;
+    summary = r.summary; variantTitle = r.variant_title && redact(r.variant_title).replace(/\[removed\]/g, '').trim();
     const changes = describeFacts(g);
     if (changes.length) holdProposal(g, `This would change what the asset says (${changes.slice(0, 4).join('; ')}). Facts, claims and contact details need the account owner's approval.`, summary, r.variant_title);
     if (UPDATES === 'approve' && req.mode === 'update') holdProposal(g, 'Updates to a published asset wait for the account owner\'s approval.', summary, r.variant_title);
@@ -236,5 +252,7 @@ try {
   });
 } catch (e) {
   console.error(String(e?.stack || e).split('\n').slice(0, 3).join('\n')); // no request text or model output in the public log
+  // an approval that breaks for a temporary reason keeps its proposal, so the owner can simply approve it again
+  if (req.candidate) finish('held', { summary: req.summary, reason: 'The approval didn\'t go through because of a temporary error. Approve it again.', proposal: req.proposal });
   fail('Something went wrong while making this change, so nothing was changed. It can be sent again.');
 }

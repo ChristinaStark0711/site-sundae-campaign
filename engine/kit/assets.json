@@ -1,5 +1,5 @@
 {
-  "_note": "Who each kit file belongs to. An event's creative may use brand, person, photo and its own venue/event files only; never another event's venue photos, clips or RSVP QR code (engine/tools/check-event.mjs enforces this). New venue files are named <event-slug>-<what>.<ext>.",
+  "_note": "Who each kit file belongs to. An event's creative may use brand, person, photo and its own venue/event files only; never another event's venue photos, clips or RSVP QR code (engine/tools/check-event.mjs enforces this). New venue files are named <event-slug>-<what>.<ext>. \"text\": true marks a file that carries its own words or numbers (QR codes, screenshots, maps); the change pipeline holds any request that newly adds one, because its rendered-text checks cannot read text inside an image.",
   "assets": {
     "cy-day-rounds.jpg": {
       "use": "venue",
@@ -49,17 +49,20 @@
     "map.png": {
       "use": "venue",
       "event": "manhattan-beach-2026-10-08",
-      "what": "Map of the Manhattan Beach venue area"
+      "what": "Map of the Manhattan Beach venue area",
+      "text": true
     },
     "neighborhood.png": {
       "use": "venue",
       "event": "manhattan-beach-2026-10-08",
-      "what": "Manhattan Beach neighborhood view"
+      "what": "Manhattan Beach neighborhood view",
+      "text": true
     },
     "qr-rsvp.svg": {
       "use": "event",
       "event": "manhattan-beach-2026-10-08",
-      "what": "QR code to https://site-sundae-event.vercel.app (the Manhattan Beach RSVP page)"
+      "what": "QR code to https://site-sundae-event.vercel.app (the Manhattan Beach RSVP page)",
+      "text": true
     },
     "sac-dinner.jpg": {
       "use": "photo",
@@ -87,19 +90,23 @@
     },
     "engine-close.png": {
       "use": "brand",
-      "what": "Sundae Engine screenshot from sundae.com"
+      "what": "Sundae Engine screenshot from sundae.com",
+      "text": true
     },
     "engine-leads.png": {
       "use": "brand",
-      "what": "Sundae Engine screenshot from sundae.com"
+      "what": "Sundae Engine screenshot from sundae.com",
+      "text": true
     },
     "engine-marketplace.png": {
       "use": "brand",
-      "what": "Sundae Engine screenshot from sundae.com"
+      "what": "Sundae Engine screenshot from sundae.com",
+      "text": true
     },
     "qr-intro-call.svg": {
       "use": "brand",
-      "what": "QR code to Sundae's membership intro call (Calendly, Victoria White)"
+      "what": "QR code to Sundae's membership intro call (Calendly, Victoria White)",
+      "text": true
     },
     "sundae-icon.svg": {
       "use": "brand",

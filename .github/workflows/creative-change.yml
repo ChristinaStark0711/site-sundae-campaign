@@ -34,10 +34,10 @@ permissions:
   contents: write
   actions: read
 
-concurrency:
-  # one change at a time per asset; approvals queue together (apply.mjs refuses a change whose source moved meanwhile)
-  group: creative-change-${{ inputs.asset || 'approvals' }}
-  cancel-in-progress: false
+# No concurrency group: GitHub cancels a waiting run when a newer one joins its group, which would drop a request with
+# no log. Runs may overlap instead: apply.mjs refuses an update whose source moved meanwhile, a variation takes the next
+# free id at commit time, and push.sh re-applies on top of newer commits. The site also refuses a second request for an
+# asset that already has a run waiting or running.
 
 jobs:
   change:
@@ -54,10 +54,8 @@ jobs:
           node-version: 22
 
       - name: Read the request
+        # the inputs are read from $GITHUB_EVENT_PATH, never passed as env: GitHub prints a step's env in its public log
         env:
-          REQUEST: ${{ inputs.request }}
-          ASSET: ${{ inputs.asset }}
-          APPROVE_ID: ${{ inputs.approve }}
           GH_TOKEN: ${{ github.token }}
         run: node engine/change/intake.mjs
 
@@ -80,8 +78,11 @@ jobs:
         if: hashFiles('.request/out/result.json') != ''
         run: |
           if node -e "process.exit(require('./.request/out/result.json').status === 'done' ? 0 : 1)"; then
-            ( node engine/change/apply.mjs && node engine/change/guard.mjs && npm ci --no-audit --no-fund && npm run build ) \
-              || node engine/change/fail.mjs "The site didn't build with this change, so it was not published. It can be sent again."
+            if ! { node engine/change/apply.mjs && node engine/change/guard.mjs; }; then
+              node engine/change/fail.mjs "The change couldn't be published safely, so nothing was changed. It can be sent again."
+            elif ! { npm ci --no-audit --no-fund && npm run build; }; then
+              node engine/change/fail.mjs "The site didn't build with this change, so it was not published. It can be sent again."
+            fi
           fi
 
       - name: Commit and push

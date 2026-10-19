@@ -4,7 +4,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
-import { OUT, REPO, readJSON } from './lib.mjs';
+import { CREDENTIALS, OUT, REPO, readJSON } from './lib.mjs';
 
 const { paths, deleted } = readJSON(path.join(OUT, 'allowed.json'));
 const allowed = new Set(paths), mayDelete = new Set(deleted || []);
@@ -20,6 +20,7 @@ for (const p of changed) {
   if (size > limit) errors.push(`${p} is ${(size / 1e6).toFixed(1)} MB (limit ${(limit / 1e6).toFixed(1)} MB)`);
   if (/\.(json|html)$/.test(p)) {
     const t = fs.readFileSync(full, 'utf8');
+    if (/\.json$/.test(p) && new RegExp(CREDENTIALS.source).test(t)) errors.push(`${p} contains something that looks like a credential`);
     if (/sk-ant-[A-Za-z0-9_-]{8,}|github_pat_[A-Za-z0-9_]{20,}|gh[pousr]_[A-Za-z0-9]{30,}|-----BEGIN [A-Z ]*PRIVATE KEY/.test(t)) errors.push(`${p} contains something that looks like a credential`);
     if (/\.json$/.test(p)) { try { JSON.parse(t); } catch { errors.push(`${p} is not valid JSON`); } }
   }

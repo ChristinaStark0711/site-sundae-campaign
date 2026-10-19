@@ -1,6 +1,8 @@
 // Step 1 of the creative-change workflow: turn the trigger into .request/request.json.
-//   from the site's change box: ASSET (the asset key) and REQUEST (JSON: id, mode, text, at)
-//   owner approval of a held request: APPROVE_ID (the request id from the site's change log)
+//   from the site's change box: inputs.asset and inputs.request (JSON: id, mode, text, at)
+//   owner approval of a held request: inputs.approve (the request id from the site's change log)
+// The inputs are read from the event file GitHub writes (GITHUB_EVENT_PATH), never from step env, because GitHub prints
+// a step's env in its public log. Local tests can pass ASSET, REQUEST and APPROVE_ID as env instead.
 // Also counts this workflow's runs started today (GitHub API, GH_TOKEN with actions: read) for the daily cap, and
 // removes anything that looks like a credential from the request text before it can reach the public log.
 // An invalid trigger writes .request/skip (the workflow then stops quietly: there is nothing to log it against).
@@ -24,9 +26,12 @@ async function runsToday() {
   } catch { return 0; }
 }
 
+let inputs = { approve: process.env.APPROVE_ID, asset: process.env.ASSET, request: process.env.REQUEST };
+if (process.env.GITHUB_EVENT_PATH && fs.existsSync(process.env.GITHUB_EVENT_PATH)) inputs = readJSON(process.env.GITHUB_EVENT_PATH, {}).inputs || {};
+
 let req;
-if (process.env.APPROVE_ID) {
-  const id = process.env.APPROVE_ID.trim();
+if (inputs.approve && String(inputs.approve).trim()) {
+  const id = String(inputs.approve).trim();
   if (!ID_RE.test(id)) skip('approval id has the wrong format');
   const held = readJSON(path.join(REPO, 'src/content/requests', `${id}.json`), null);
   if (!held) skip('no logged request with that id');
@@ -36,13 +41,13 @@ if (process.env.APPROVE_ID) {
   // unclear request) the request runs again from the start, with only the daily cap waived
   const A = resolveAsset(held.asset);
   const cand = A && path.join(ENGINE, 'held', `${id}.${A.ext}`);
-  if (held.proposal && cand && fs.existsSync(cand)) Object.assign(req, { candidate: path.relative(REPO, cand), summary: held.summary, variantTitle: held.proposal.variantTitle });
+  if (held.proposal && cand && fs.existsSync(cand)) Object.assign(req, { candidate: path.relative(REPO, cand), summary: held.summary, variantTitle: held.proposal.variantTitle, proposal: held.proposal, baseHash: held.proposal.baseHash });
 } else {
   let p;
-  try { p = JSON.parse(process.env.REQUEST || 'null'); } catch { skip('request is not JSON'); }
+  try { p = JSON.parse(inputs.request || 'null'); } catch { skip('request is not JSON'); }
   if (!p || typeof p !== 'object') skip('empty request');
   const text = redact(String(p.text ?? '').replace(/\s+/g, ' ').trim());
-  req = { id: String(p.id ?? ''), asset: String(process.env.ASSET ?? ''), mode: String(p.mode ?? ''), text, at: String(p.at ?? ''), approved: false };
+  req = { id: String(p.id ?? ''), asset: String(inputs.asset ?? ''), mode: String(p.mode ?? ''), text, at: String(p.at ?? ''), approved: false };
   if (!ID_RE.test(req.id)) skip('bad id');
   if (!['update', 'variant'].includes(req.mode)) skip('bad mode');
   if (text.length < 3 || text.length > 500) skip('bad text length');

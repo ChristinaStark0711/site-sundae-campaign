@@ -15,7 +15,8 @@ const DAILY_CAP = Number(process.env.CHANGE_DAILY_CAP || 30);
 const KEYS = new Set<string>(index.keys);
 const LIMIT = 6, WINDOW = 10 * 60 * 1000; // per IP: 6 requests every 10 minutes (best effort, per server instance)
 const hits = new Map<string, number[]>();
-const CREDENTIAL = /sk-ant-[A-Za-z0-9_-]{6,}|github_pat_|gh[pousr]_[A-Za-z0-9]{10,}|AKIA[0-9A-Z]{12,}|-----BEGIN [A-Z ]*PRIVATE KEY/;
+// keep in step with CREDENTIALS in engine/change/lib.mjs (the workflow redacts with it and the guard refuses with it)
+const CREDENTIAL = /sk-ant-[A-Za-z0-9_-]{6,}|github_pat_[A-Za-z0-9_]{10,}|gh[pousr]_[A-Za-z0-9]{10,}|AKIA[0-9A-Z]{12,}|ASIA[0-9A-Z]{12,}|xox[abpr]-[A-Za-z0-9-]{10,}|AIza[0-9A-Za-z_-]{30,}|[sr]k_(?:live|test)_[0-9A-Za-z]{10,}|SK[0-9a-fA-F]{32}|-----BEGIN [A-Z ]*PRIVATE KEY|(?=[A-Za-z0-9/+=]*\d)(?=[A-Za-z0-9/+=]*[a-z])(?=[A-Za-z0-9/+=]*[A-Z])[A-Za-z0-9/+=]{32,}/;
 
 const bad = (error: string, status = 400) => NextResponse.json({ error }, { status });
 const gh = (token: string, url: string, init?: RequestInit) => fetch(`https://api.github.com/repos/${REPO}${url}`, {
