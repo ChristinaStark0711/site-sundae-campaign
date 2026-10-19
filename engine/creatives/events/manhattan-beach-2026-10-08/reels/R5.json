@@ -1,0 +1,54 @@
+{
+ "w": 1080,
+ "h": 1920,
+ "tag": "Oct. 8 \u00b7 Manhattan Beach",
+ "poster": 1.5,
+ "scenes": [
+  {
+   "type": "clip",
+   "dur": 3.2,
+   "clip": "v-twilight-guests",
+   "kicker": "Shade Hotel \u00b7 Manhattan Beach",
+   "title": [
+    "The",
+    "Courtyard"
+   ]
+  },
+  {
+   "type": "photo",
+   "dur": 3.0,
+   "img": "cy-long-tables-wall.jpg",
+   "pos": "50% 50%",
+   "kicker": "Open-air",
+   "title": [
+    "Living wall.",
+    "Long tables."
+   ]
+  },
+  {
+   "type": "clip",
+   "dur": 3.0,
+   "clip": "v-evening-guests",
+   "kicker": "Bistro-lit",
+   "title": [
+    "String lights",
+    "at dusk."
+   ]
+  },
+  {
+   "type": "photo",
+   "dur": 3.0,
+   "img": "cy-night-table.jpg",
+   "pos": "45% 50%",
+   "kicker": "Dinner and drinks",
+   "title": [
+    "Your seat",
+    "is waiting."
+   ]
+  },
+  {
+   "type": "cta",
+   "dur": 3.8
+  }
+ ]
+}

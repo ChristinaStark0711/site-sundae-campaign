@@ -1,0 +1,90 @@
+{
+ "w": 1920,
+ "h": 1080,
+ "tag": "Oct. 8 \u00b7 Manhattan Beach",
+ "poster": 10.4,
+ "scenes": [
+  {
+   "type": "clip",
+   "dur": 4.2,
+   "clip": "h-night-peek",
+   "frames": 76,
+   "kicker": "Manhattan Beach \u00b7 Thursday, Oct. 8",
+   "title": [
+    "An evening for",
+    "LA's operators"
+   ],
+   "overlay": "left"
+  },
+  {
+   "type": "title",
+   "dur": 4.2,
+   "kicker": "Sundae presents",
+   "title": [
+    "Private Dinner",
+    "& Dialogue"
+   ],
+   "accent": 1,
+   "sub": "Hosted by Sundae co-founder and CEO Josh Stech",
+   "bulbs": true
+  },
+  {
+   "type": "clip",
+   "dur": 4.4,
+   "clip": "h-evening-guests",
+   "kicker": "The venue",
+   "title": [
+    "The Courtyard",
+    "at Shade Hotel"
+   ],
+   "sub": "Dinner and drinks served",
+   "overlay": "left"
+  },
+  {
+   "type": "list",
+   "dur": 5.2,
+   "kicker": "On the table",
+   "title": [
+    "What we'll cover"
+   ],
+   "items": [
+    [
+     "Market trends",
+     "What the data says about acquisitions right now"
+    ],
+    [
+     "Where the industry is heading",
+     "Lead costs, conversion, dispositions, capital"
+    ],
+    [
+     "A stronger acquisition business",
+     "How to build one in a harder market"
+    ]
+   ],
+   "side": "cy-long-tables-wall.jpg",
+   "sidePos": "50% 50%"
+  },
+  {
+   "type": "josh",
+   "dur": 4.6,
+   "facts": [
+    "Founding partner and SVP of sales, LendingHome",
+    "Co-founder and CFO, Purpose Built Investments \u2014 1,200+ transactions",
+    "Stanford \u2014 B.A. in economics, with honors"
+   ]
+  },
+  {
+   "type": "details",
+   "dur": 4.4,
+   "img": "cy-twilight-guests.jpg",
+   "title": [
+    "Save your seat"
+   ]
+  },
+  {
+   "type": "cta",
+   "dur": 4.2,
+   "sub": "Seats are limited \u2014 every request is reviewed"
+  }
+ ]
+}

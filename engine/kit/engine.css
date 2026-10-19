@@ -1,0 +1,76 @@
+@import url('/kit/local-fonts.css');
+/* Sundae motion engine styles, per clients/sundae/BRAND-SPEC.md (deck p.05-p.31).
+   White space first: card scenes on white or mist. Merriweather headlines, Lato everything else, #4A4A4A copy.
+   Red is never a text color: it is the wordmark, the accent bar, shapes, the progress bar and highlight boxes
+   (white text inside, large only). Text over photos and AI clips sits in solid boxes (deck p.30-31), never on a dark wash. */
+:root{--red:#DB3D55;--blue:#1C51A0;--ink:#4A4A4A;--pink:#F4CCCC;--mist:#F4F7F9;--gray:#E6E6E6;--slate:#C9D2E0;--white:#FFFFFF;
+ --serif:'Merriweather',Georgia,serif;--sans:'Lato',Arial,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:var(--W);height:var(--H);overflow:hidden;background:var(--white);color:var(--ink);font-family:var(--sans);font-weight:400;-webkit-font-smoothing:antialiased}
+#stage{position:relative;width:var(--W);height:var(--H);overflow:hidden;background:var(--white)}
+.scene{position:absolute;inset:0;opacity:0;overflow:hidden;background:var(--white)}
+.scene.mist{background:var(--mist)}
+b,strong{font-weight:700}
+
+/* photos: clean rectangles or full bleed, never darkened */
+.ph{position:absolute;inset:-2%;background-size:cover;background-position:center;will-change:transform}
+.pan{position:absolute;overflow:hidden;background:var(--gray)}
+
+/* type */
+.wrap{position:absolute;display:flex;flex-direction:column}
+.kick{font-family:var(--sans);font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);line-height:1.3}
+.line{display:block;overflow:hidden;padding:.02em 0 .1em}
+.line>span{display:inline-block;white-space:nowrap;will-change:transform}
+.wrapok .line>span{white-space:normal;text-wrap:balance}
+.hd{font-family:var(--serif);font-weight:700;color:var(--ink);line-height:1.12;letter-spacing:0;font-size:calc(var(--u)*var(--ts,8))}
+.sub{font-family:var(--sans);font-weight:400;color:var(--ink);line-height:1.4;text-wrap:balance}
+.body{font-family:var(--sans);font-weight:400;color:var(--ink);line-height:1.5;text-wrap:balance}
+.it{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--ink);line-height:1.3}
+.nw{white-space:nowrap} /* phrase kept whole when a line wraps */
+
+/* red accent bar beside a card headline (every deck slide) */
+.abar{position:absolute;left:0;top:.14em;bottom:.2em;background:var(--red);transform-origin:50% 0}
+/* accent line inside a card headline: red highlight box, white text (headline sizes only) */
+.line.acc{margin-left:-.12em}
+.hl{background:var(--red);color:var(--white);padding:0 .16em .04em .12em}
+
+/* highlight boxes over photos/clips (deck p.30-31) */
+.boxed .line{padding:0;margin-bottom:.1em}
+.boxed .line.acc{margin-left:0}
+.bx{background:var(--white);color:var(--ink);padding:.1em .3em .14em}
+.bx.red{background:var(--red);color:var(--white)}
+.kick.bx{padding:.55em .75em .5em;line-height:1.1}
+.sub.bx{font-weight:700;padding:.32em .55em .36em;line-height:1.25;text-wrap:pretty}
+.label{position:absolute;background:var(--red);color:var(--white);font-family:var(--sans);font-weight:900;line-height:1.1;padding:.3em .55em .34em;white-space:nowrap;transform-origin:0 50%}
+
+/* date/time chip (blue + white), label tag (ink + white), blue button */
+.chip{display:inline-block;background:var(--blue);color:var(--white);font-family:var(--sans);font-weight:900;line-height:1.2;border-radius:calc(var(--u)*.6);padding:.3em .62em .34em;white-space:nowrap}
+.tag{display:inline-block;background:var(--ink);color:var(--white);font-family:var(--sans);font-weight:700;text-transform:uppercase;letter-spacing:.1em;line-height:1;padding:.62em .85em;border-radius:4px;white-space:nowrap}
+.pill{display:inline-flex;align-items:center;gap:.45em;white-space:nowrap;padding:calc(var(--u)*1.6) calc(var(--u)*3.2);border-radius:999px;background:var(--blue);color:var(--white);font-family:var(--sans);font-weight:700;line-height:1;font-size:calc(var(--u)*2.7)}
+.arr{width:.95em;height:.95em;flex:0 0 auto;display:inline-block}
+.rule{height:calc(var(--u)*.6);width:calc(var(--u)*7);background:var(--red);transform-origin:left center}
+
+/* wordmark: modest, padded; on a photo it sits on a solid white tab */
+.logo{display:block;height:auto}
+.wm-tab{background:var(--white);line-height:0}
+.brandbar{position:absolute;z-index:40;display:flex;align-items:center;justify-content:space-between}
+
+/* cards, lists, stats */
+.card{background:var(--white);border-radius:calc(var(--u)*1.2);padding:calc(var(--u)*3)}
+.card.blue{background:var(--blue)}
+.card.blue .kick,.card.blue .hd{color:var(--white)}
+.num{font-family:var(--serif);font-weight:700;color:var(--ink);line-height:1}
+.num .unit{font-size:.42em;margin-left:.18em}
+.check{display:flex;gap:calc(var(--u)*1.8);align-items:flex-start}
+.check i{flex:0 0 auto;width:calc(var(--u)*3.4);height:calc(var(--u)*3.4);border-radius:50%;background:var(--blue);display:grid;place-items:center;margin-top:.12em}
+.check i:after{content:'';width:calc(var(--u)*1.2);height:calc(var(--u)*.66);border-left:calc(var(--u)*.34) solid var(--white);border-bottom:calc(var(--u)*.34) solid var(--white);transform:rotate(-45deg) translate(1px,-2px)}
+.dot{flex:0 0 auto;border-radius:50%;background:var(--blue)}
+.rows{display:flex;flex-direction:column;width:100%;border-top:2px solid var(--gray)}
+.rows>div{border-bottom:2px solid var(--gray)}
+.rows .hd{text-wrap:balance}
+
+/* deck p.11 shapes, used sparingly */
+.circle{position:absolute;border-radius:50%;background:var(--slate)}
+.corner{position:absolute;background:var(--red);border-radius:0 34% 0 0}
+.dots{position:absolute;display:grid;grid-template-columns:repeat(4,var(--d));gap:var(--g)}
+.dots i{display:block;width:var(--d);height:var(--d);border-radius:50%;background:var(--blue)}

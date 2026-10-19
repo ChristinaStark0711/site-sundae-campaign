@@ -1,0 +1,59 @@
+{
+ "w": 1080,
+ "h": 1920,
+ "tag": "Oct. 8 \u00b7 Manhattan Beach",
+ "poster": 5,
+ "scenes": [
+  {
+   "type": "title",
+   "dur": 3.2,
+   "kicker": "Oct. 8 \u00b7 Shade Manhattan Beach",
+   "title": [
+    "Three reasons to be",
+    "in the Courtyard",
+    "on Oct. 8"
+   ],
+   "accent": 2,
+   "bulbs": true
+  },
+  {
+   "type": "reason",
+   "dur": 3.6,
+   "n": "01",
+   "img": "sac-dinner.jpg",
+   "pos": "45% 40%",
+   "title": [
+    "Josh's read on",
+    "the market"
+   ],
+   "sub": "Market trends and where acquisitions are heading"
+  },
+  {
+   "type": "reason",
+   "dur": 3.6,
+   "n": "02",
+   "img": "cy-evening-vertical.jpg",
+   "title": [
+    "A room of serious",
+    "LA operators"
+   ],
+   "sub": "Wholesalers, flippers and acquisition teams"
+  },
+  {
+   "type": "reason",
+   "dur": 3.6,
+   "n": "03",
+   "img": "cy-night-table.jpg",
+   "pos": "40% 50%",
+   "title": [
+    "Great food,",
+    "better conversation"
+   ],
+   "sub": "Dinner and drinks in the Courtyard at Shade"
+  },
+  {
+   "type": "cta",
+   "dur": 3.8
+  }
+ ]
+}

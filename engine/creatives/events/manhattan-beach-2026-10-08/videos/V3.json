@@ -1,0 +1,78 @@
+{
+ "w": 1920,
+ "h": 1080,
+ "tag": "Oct. 8 \u00b7 Manhattan Beach",
+ "poster": 8,
+ "scenes": [
+  {
+   "type": "title",
+   "dur": 3.4,
+   "kicker": "For LA real estate operators",
+   "title": [
+    "Finding deals",
+    "is harder."
+   ],
+   "center": true
+  },
+  {
+   "type": "title",
+   "dur": 3.2,
+   "title": [
+    "Margins are",
+    "tighter."
+   ],
+   "accent": 1,
+   "center": true,
+   "gx": 0.1
+  },
+  {
+   "type": "quote",
+   "dur": 4.8,
+   "img": "sac-dinner.jpg",
+   "pos": "50% 38%",
+   "title": [
+    "The market has changed."
+   ],
+   "sub": "The opportunity has not."
+  },
+  {
+   "type": "list",
+   "dur": 5.0,
+   "kicker": "Let\u2019s talk about it",
+   "title": [
+    "Over dinner, with Josh Stech"
+   ],
+   "items": [
+    [
+     "Market trends",
+     ""
+    ],
+    [
+     "Where the industry is heading",
+     ""
+    ],
+    [
+     "Building a stronger acquisition business",
+     ""
+    ]
+   ],
+   "side": "cy-night-table.jpg",
+   "sidePos": "45% 50%"
+  },
+  {
+   "type": "clip",
+   "dur": 4.2,
+   "clip": "h-evening-guests",
+   "kicker": "Thursday, Oct. 8 \u00b7 7 p.m.",
+   "title": [
+    "The Courtyard",
+    "at Shade Hotel"
+   ],
+   "overlay": "left"
+  },
+  {
+   "type": "cta",
+   "dur": 4.4
+  }
+ ]
+}

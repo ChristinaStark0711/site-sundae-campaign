@@ -1,0 +1,172 @@
+{
+  "_note": "Who each kit file belongs to. An event's creative may use brand, person, photo and its own venue/event files only; never another event's venue photos, clips or RSVP QR code (engine/tools/check-event.mjs enforces this). New venue files are named <event-slug>-<what>.<ext>.",
+  "assets": {
+    "cy-day-rounds.jpg": {
+      "use": "venue",
+      "event": "manhattan-beach-2026-10-08",
+      "what": "Shade Hotel Courtyard photo (Shade's own marketing photography; reuse rights to confirm with Shade)"
+    },
+    "cy-day-sails.jpg": {
+      "use": "venue",
+      "event": "manhattan-beach-2026-10-08",
+      "what": "Shade Hotel Courtyard photo (Shade's own marketing photography; reuse rights to confirm with Shade)"
+    },
+    "cy-evening-guests.jpg": {
+      "use": "venue",
+      "event": "manhattan-beach-2026-10-08",
+      "what": "Shade Hotel Courtyard photo (Shade's own marketing photography; reuse rights to confirm with Shade)"
+    },
+    "cy-evening-vertical.jpg": {
+      "use": "venue",
+      "event": "manhattan-beach-2026-10-08",
+      "what": "Shade Hotel Courtyard photo (Shade's own marketing photography; reuse rights to confirm with Shade)"
+    },
+    "cy-long-table.jpg": {
+      "use": "venue",
+      "event": "manhattan-beach-2026-10-08",
+      "what": "Shade Hotel Courtyard photo (Shade's own marketing photography; reuse rights to confirm with Shade)"
+    },
+    "cy-long-tables-wall.jpg": {
+      "use": "venue",
+      "event": "manhattan-beach-2026-10-08",
+      "what": "Shade Hotel Courtyard photo (Shade's own marketing photography; reuse rights to confirm with Shade)"
+    },
+    "cy-night-peek.jpg": {
+      "use": "venue",
+      "event": "manhattan-beach-2026-10-08",
+      "what": "Shade Hotel Courtyard photo (Shade's own marketing photography; reuse rights to confirm with Shade)"
+    },
+    "cy-night-table.jpg": {
+      "use": "venue",
+      "event": "manhattan-beach-2026-10-08",
+      "what": "Shade Hotel Courtyard photo (Shade's own marketing photography; reuse rights to confirm with Shade)"
+    },
+    "cy-twilight-guests.jpg": {
+      "use": "venue",
+      "event": "manhattan-beach-2026-10-08",
+      "what": "Shade Hotel Courtyard photo (Shade's own marketing photography; reuse rights to confirm with Shade)"
+    },
+    "map.png": {
+      "use": "venue",
+      "event": "manhattan-beach-2026-10-08",
+      "what": "Map of the Manhattan Beach venue area"
+    },
+    "neighborhood.png": {
+      "use": "venue",
+      "event": "manhattan-beach-2026-10-08",
+      "what": "Manhattan Beach neighborhood view"
+    },
+    "qr-rsvp.svg": {
+      "use": "event",
+      "event": "manhattan-beach-2026-10-08",
+      "what": "QR code to https://site-sundae-event.vercel.app (the Manhattan Beach RSVP page)"
+    },
+    "sac-dinner.jpg": {
+      "use": "photo",
+      "what": "Josh Stech presenting at the Sacramento investors dinner (Echo & Rig, September 2026), from Sundae's LinkedIn post; may be used anywhere as a photo of a past Sundae dinner, captioned as Sacramento"
+    },
+    "josh-drphil.jpg": {
+      "use": "person",
+      "person": "Josh Stech",
+      "what": "Josh Stech photo from sundae.com; use when Josh hosts or is featured"
+    },
+    "josh-headshot.jpg": {
+      "use": "person",
+      "person": "Josh Stech",
+      "what": "Josh Stech photo from sundae.com; use when Josh hosts or is featured"
+    },
+    "josh-polo-crop.png": {
+      "use": "person",
+      "person": "Josh Stech",
+      "what": "Josh Stech photo from sundae.com; use when Josh hosts or is featured"
+    },
+    "josh-polo-cutout.png": {
+      "use": "person",
+      "person": "Josh Stech",
+      "what": "Josh Stech photo from sundae.com; use when Josh hosts or is featured"
+    },
+    "engine-close.png": {
+      "use": "brand",
+      "what": "Sundae Engine screenshot from sundae.com"
+    },
+    "engine-leads.png": {
+      "use": "brand",
+      "what": "Sundae Engine screenshot from sundae.com"
+    },
+    "engine-marketplace.png": {
+      "use": "brand",
+      "what": "Sundae Engine screenshot from sundae.com"
+    },
+    "qr-intro-call.svg": {
+      "use": "brand",
+      "what": "QR code to Sundae's membership intro call (Calendly, Victoria White)"
+    },
+    "sundae-icon.svg": {
+      "use": "brand",
+      "what": "Sundae logo file"
+    },
+    "sundae-wordmark-red.svg": {
+      "use": "brand",
+      "what": "Sundae logo file"
+    },
+    "sundae-wordmark-white.svg": {
+      "use": "brand",
+      "what": "Sundae logo file"
+    },
+    "sundae-wordmark.svg": {
+      "use": "brand",
+      "what": "Sundae logo file"
+    },
+    "sundae-wordmark-cream.svg": {
+      "use": "retired",
+      "what": "Cream wordmark: cream is not a brand color; do not use"
+    }
+  },
+  "clips": {
+    "h-day-sails": {
+      "use": "venue",
+      "event": "manhattan-beach-2026-10-08",
+      "what": "Kling 3.0 image-to-video B-roll animated from Shade's real Courtyard photo"
+    },
+    "h-evening-guests": {
+      "use": "venue",
+      "event": "manhattan-beach-2026-10-08",
+      "what": "Kling 3.0 image-to-video B-roll animated from Shade's real Courtyard photo"
+    },
+    "h-long-tables-wall": {
+      "use": "venue",
+      "event": "manhattan-beach-2026-10-08",
+      "what": "Kling 3.0 image-to-video B-roll animated from Shade's real Courtyard photo"
+    },
+    "h-night-peek": {
+      "use": "venue",
+      "event": "manhattan-beach-2026-10-08",
+      "what": "Kling 3.0 image-to-video B-roll animated from Shade's real Courtyard photo (use only the first ~2.5 s; later frames invent a wall)"
+    },
+    "h-night-table": {
+      "use": "venue",
+      "event": "manhattan-beach-2026-10-08",
+      "what": "Kling 3.0 image-to-video B-roll animated from Shade's real Courtyard photo"
+    },
+    "h-twilight-guests": {
+      "use": "venue",
+      "event": "manhattan-beach-2026-10-08",
+      "what": "Kling 3.0 image-to-video B-roll animated from Shade's real Courtyard photo"
+    },
+    "v-evening-guests": {
+      "use": "venue",
+      "event": "manhattan-beach-2026-10-08",
+      "what": "Kling 3.0 image-to-video B-roll animated from Shade's real Courtyard photo"
+    },
+    "v-night-peek": {
+      "use": "venue",
+      "event": "manhattan-beach-2026-10-08",
+      "what": "Kling 3.0 image-to-video B-roll animated from Shade's real Courtyard photo (use only the first ~2.5 s; later frames invent a wall)"
+    },
+    "v-twilight-guests": {
+      "use": "venue",
+      "event": "manhattan-beach-2026-10-08",
+      "what": "Kling 3.0 image-to-video B-roll animated from Shade's real Courtyard photo"
+    }
+  }
+}

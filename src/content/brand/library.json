@@ -1,0 +1,57 @@
+{
+  "images": [
+    {
+      "id": "10",
+      "title": "The Sundae Engine",
+      "file": "10-the-sundae-engine.jpg",
+      "spec": "1080×1350 · 4:5",
+      "use": "Always-on membership ads and organic posts",
+      "pair": "M01 · M02"
+    }
+  ],
+  "flyers": [
+    {
+      "id": "05",
+      "title": "Membership one-pager",
+      "file": "05-membership-one-pager.jpg",
+      "pdf": "05-membership-one-pager.pdf",
+      "spec": "8.5×11 in",
+      "use": "On every table and in the post-dinner email (QR code to schedule an intro call)"
+    }
+  ],
+  "videos": [
+    {
+      "id": "V5",
+      "title": "The Sundae Engine (membership)",
+      "file": "video-05-the-sundae-engine.mp4",
+      "poster": "video-05-the-sundae-engine-poster.jpg",
+      "dur": "34s",
+      "aspect": "16:9",
+      "spec": "1920×1080",
+      "use": "Always-on membership ads and landing page"
+    },
+    {
+      "id": "V8",
+      "title": "Sundae by the numbers",
+      "file": "video-08-membership-by-the-numbers.mp4",
+      "poster": "video-08-membership-by-the-numbers-poster.jpg",
+      "dur": "25s",
+      "aspect": "16:9",
+      "spec": "1920×1080",
+      "use": "Always-on membership ads and YouTube"
+    }
+  ],
+  "reels": [
+    {
+      "id": "R8",
+      "title": "Stop building. Start scaling.",
+      "file": "reel-08-stop-building-start-scaling.mp4",
+      "poster": "reel-08-stop-building-start-scaling-poster.jpg",
+      "dur": "20s",
+      "aspect": "9:16",
+      "spec": "1080×1920",
+      "use": "Always-on membership Reels and ads",
+      "pair": "M04"
+    }
+  ]
+}

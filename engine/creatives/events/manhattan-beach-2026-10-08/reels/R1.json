@@ -1,0 +1,47 @@
+{
+ "w": 1080,
+ "h": 1920,
+ "tag": "Oct. 8 \u00b7 Manhattan Beach",
+ "poster": 4,
+ "scenes": [
+  {
+   "type": "title",
+   "dur": 2.8,
+   "kicker": "LA real estate operators",
+   "title": [
+    "If you wholesale",
+    "or flip in LA\u2026"
+   ],
+   "accent": 1,
+   "bulbs": true
+  },
+  {
+   "type": "clip",
+   "dur": 3.4,
+   "clip": "v-night-peek",
+   "frames": 76,
+   "kicker": "Thursday, Oct. 8",
+   "title": [
+    "you're invited",
+    "to dinner."
+   ]
+  },
+  {
+   "type": "josh",
+   "dur": 3.4,
+   "kicker": "With"
+  },
+  {
+   "type": "details",
+   "dur": 3.8,
+   "img": "cy-evening-vertical.jpg",
+   "title": [
+    "The details"
+   ]
+  },
+  {
+   "type": "cta",
+   "dur": 3.6
+  }
+ ]
+}

@@ -1,0 +1,61 @@
+{
+ "w": 1080,
+ "h": 1920,
+ "tag": "Sundae Membership",
+ "poster": 3,
+ "scenes": [
+  {
+   "type": "title",
+   "dur": 3.4,
+   "kicker": "For experienced operators",
+   "title": [
+    "Stop building.",
+    "Start scaling."
+   ],
+   "accent": 1,
+   "bulbs": true
+  },
+  {
+   "type": "pillars",
+   "dur": 6.4,
+   "kicker": "The Sundae Engine",
+   "title": [
+    "Leads. Conversion.",
+    "Profit."
+   ],
+   "items": [
+    [
+     "Generate more leads",
+     "Proven marketing and smarter targeting."
+    ],
+    [
+     "Close more deals",
+     "Faster response and automated follow-up."
+    ],
+    [
+     "Maximize profit",
+     "Buyer reach and capital solutions."
+    ]
+   ]
+  },
+  {
+   "type": "bring",
+   "dur": 6.0,
+   "title": [
+    "Better together"
+   ]
+  },
+  {
+   "type": "cta",
+   "title": [
+    "Stop building.",
+    "Start scaling."
+   ],
+   "accent": 1,
+   "sub": "Sundae Membership for experienced real estate operators",
+   "when": "Territories are limited",
+   "pill": "See if your market is open \u2192",
+   "dur": 4.4
+  }
+ ]
+}

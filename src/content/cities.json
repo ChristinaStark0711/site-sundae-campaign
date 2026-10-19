@@ -1,0 +1,40 @@
+{
+  "manhattan-beach-ca": {
+    "name": "Manhattan Beach",
+    "state": "CA",
+    "file": "/media/cities/manhattan-beach-ca.jpg",
+    "width": 1600,
+    "height": 1200,
+    "alt": "The Manhattan Beach Pier and its Roundhouse at sunset, seen from the sand, with the pier reflected in the wet beach under a cloudy sky.",
+    "focus": "50% 62%",
+    "credit": {
+      "title": "manhattan beach pier sunset unfiltered",
+      "creator": "Sean V Work",
+      "creatorUrl": "https://www.flickr.com/photos/185287522@N03",
+      "license": "CC BY 2.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+      "sourceUrl": "https://www.flickr.com/photos/185287522@N03/49798282107",
+      "provider": "flickr"
+    },
+    "openverseId": "4f36203c-864f-453f-8455-1c898cd2b92e"
+  },
+  "sacramento-ca": {
+    "name": "Sacramento",
+    "state": "CA",
+    "file": "/media/cities/sacramento-ca.jpg",
+    "width": 1600,
+    "height": 1067,
+    "alt": "Downtown Sacramento's skyline rising behind the gold Tower Bridge and the Sacramento River on a clear day, with treetops in the foreground.",
+    "focus": "40% 52%",
+    "credit": {
+      "title": "Sacramento, CA skyline",
+      "creator": "Quintin Soloviev",
+      "creatorUrl": "https://commons.wikimedia.org/wiki/User:Quintin_Soloviev",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=187836852",
+      "provider": "wikimedia"
+    },
+    "openverseId": "e10a86a5-ceda-495f-8240-bf15a60f6071"
+  }
+}

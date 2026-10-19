@@ -1,0 +1,98 @@
+{
+ "w": 1920,
+ "h": 1080,
+ "tag": "Sundae Membership",
+ "poster": 6.4,
+ "scenes": [
+  {
+   "type": "title",
+   "dur": 4.2,
+   "kicker": "Sundae Membership",
+   "title": [
+    "Stop building.",
+    "Start scaling."
+   ],
+   "accent": 1,
+   "center": true
+  },
+  {
+   "type": "pillars",
+   "dur": 7.4,
+   "kicker": "The Sundae Engine",
+   "title": [
+    "Built for acquisition, conversion and profit"
+   ],
+   "items": [
+    [
+     "Generate more leads",
+     "Proven marketing, smarter targeting, data-driven optimization."
+    ],
+    [
+     "Close more deals",
+     "Faster response, automated follow-up, proven sales workflows."
+    ],
+    [
+     "Maximize profit",
+     "Buyer reach, capital solutions, shared operating expertise."
+    ]
+   ]
+  },
+  {
+   "type": "bring",
+   "dur": 7.2,
+   "title": [
+    "You know your market."
+   ]
+  },
+  {
+   "type": "stats",
+   "dur": 6.4,
+   "kicker": "Why operators choose Sundae",
+   "title": [
+    "The engine behind every member"
+   ],
+   "items": [
+    {
+     "value": "$100",
+     "num": 100,
+     "prefix": "$",
+     "suffix": "",
+     "label": "in marketing investment, reaching homeowners since 2018",
+     "unit": "million+"
+    },
+    {
+     "value": "20,000+",
+     "num": 20000,
+     "suffix": "+",
+     "label": "property investors on the Sundae Marketplace"
+    },
+    {
+     "value": "National",
+     "label": "brand built to earn homeowner trust"
+    }
+   ]
+  },
+  {
+   "type": "title",
+   "dur": 4.2,
+   "kicker": "Better together",
+   "title": [
+    "More deals. Better conversion.",
+    "Less complexity."
+   ],
+   "accent": 1
+  },
+  {
+   "type": "cta",
+   "title": [
+    "Stop building.",
+    "Start scaling."
+   ],
+   "accent": 1,
+   "sub": "Sundae Membership for experienced real estate operators",
+   "when": "Territories are limited",
+   "pill": "See if your market is open \u2192",
+   "dur": 5.0
+  }
+ ]
+}

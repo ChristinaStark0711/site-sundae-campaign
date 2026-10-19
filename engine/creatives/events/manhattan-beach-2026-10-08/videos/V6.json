@@ -1,0 +1,41 @@
+{
+ "w": 1080,
+ "h": 1080,
+ "tag": "Oct. 8 \u00b7 Manhattan Beach",
+ "poster": 2,
+ "scenes": [
+  {
+   "type": "clip",
+   "dur": 4.2,
+   "clip": "h-day-sails",
+   "kicker": "Shade Hotel \u00b7 Manhattan Beach",
+   "title": [
+    "The Courtyard"
+   ]
+  },
+  {
+   "type": "clip",
+   "dur": 4.2,
+   "clip": "h-long-tables-wall",
+   "kicker": "Open-air \u00b7 bistro-lit",
+   "title": [
+    "Set for a",
+    "private dinner"
+   ]
+  },
+  {
+   "type": "clip",
+   "dur": 4.2,
+   "clip": "h-evening-guests",
+   "kicker": "Thursday, Oct. 8 \u00b7 7 p.m.",
+   "title": [
+    "For LA real estate",
+    "operators"
+   ]
+  },
+  {
+   "type": "cta",
+   "dur": 4.6
+  }
+ ]
+}

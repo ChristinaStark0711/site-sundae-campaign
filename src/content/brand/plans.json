@@ -1,0 +1,30 @@
+[
+  {
+    "slug": "membership-organic",
+    "file": "03-franchise-organic-plan.md",
+    "group": "Membership engine",
+    "title": "Organic engine — always on",
+    "blurb": "Marketplace advantage, founder-led LinkedIn, video, the monthly city-dinner roadshow, plus search and AI answers."
+  },
+  {
+    "slug": "membership-paid",
+    "file": "04-franchise-paid-plan.md",
+    "group": "Membership engine",
+    "title": "Paid engine — daily lead flow",
+    "blurb": "Funnel, $25,000-a-month channel plan, speed-to-lead, 90-day testing roadmap, guardrails and reporting."
+  },
+  {
+    "slug": "shai",
+    "file": "05-shai-playbook.md",
+    "group": "Run it on SHAI",
+    "title": "SHAI playbook",
+    "blurb": "Which of SHAI's 97 agents runs each job, day-0 setup, approvals and the time Sundae spends each week."
+  },
+  {
+    "slug": "compliance",
+    "file": "08-compliance.md",
+    "group": "Run it on SHAI",
+    "title": "Compliance guardrails",
+    "blurb": "FTC Franchise Rule, California registration, earnings claims, TCPA and CAN-SPAM, ad-platform rules and media rights."
+  }
+]

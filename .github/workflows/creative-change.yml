@@ -1,0 +1,88 @@
+# Creative change: runs when someone types a change in the box under a creative on the hub (the site's /api/requests
+# sends a repository_dispatch), or when the owner approves a held request (Actions > Creative change > Run workflow,
+# with the request id from the site's change log).
+#
+# Secrets (repo Settings > Secrets and variables > Actions):
+#   ANTHROPIC_API_KEY   required: pays for the AI edit (a few model calls per request; usage is logged per request)
+#   VERCEL_DEPLOY_HOOK  optional: a Vercel deploy hook URL, called after the push in case the push alone doesn't deploy
+# Variables (same page, Variables tab, all optional): CHANGE_MODEL (default claude-opus-5-5), CHANGE_DAILY_CAP (default 30)
+#
+# Safety: the AI never runs a tool or a command. It returns a new source file; deterministic scripts check it (no
+# scripts or outside URLs, only kit files, no new facts unless approved, brand lint), render it with the network
+# blocked, and guard.mjs refuses any change outside the asset's own files. Request text is never printed to this log
+# (the repo is public, and so are these logs).
+name: Creative change
+
+on:
+  repository_dispatch:
+    types: [creative-change]
+  workflow_dispatch:
+    inputs:
+      request_id:
+        description: "Approve a held request: its id from the site's change log (e.g. 20261019-213000-ab12)"
+        required: true
+
+permissions:
+  contents: write
+
+concurrency:
+  # one change at a time per asset, so two edits to the same asset never start from the same source
+  group: creative-change-${{ github.event.client_payload.asset || inputs.request_id }}
+  cancel-in-progress: false
+
+jobs:
+  change:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Read the request
+        env:
+          PAYLOAD: ${{ toJSON(github.event.client_payload) }}
+          APPROVE_ID: ${{ inputs.request_id }}
+        run: node engine/change/intake.mjs
+
+      - name: Install the render engine
+        if: hashFiles('.request/request.json') != ''
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg python3-pil > /dev/null
+          cd engine && npm ci --no-audit --no-fund && npx playwright install --with-deps chromium
+
+      - name: Make the change
+        if: hashFiles('.request/request.json') != ''
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CHANGE_MODEL: ${{ vars.CHANGE_MODEL }}
+          CHANGE_DAILY_CAP: ${{ vars.CHANGE_DAILY_CAP }}
+        run: node engine/change/process.mjs
+
+      - name: Check the site still builds with the change
+        if: hashFiles('.request/out/result.json') != ''
+        run: |
+          if node -e "process.exit(require('./.request/out/result.json').status === 'done' ? 0 : 1)"; then
+            ( node engine/change/apply.mjs && node engine/change/guard.mjs && npm ci --no-audit --no-fund && npm run build ) \
+              || node engine/change/fail.mjs "The site didn't build with this change, so it was not published. It can be sent again."
+          fi
+
+      - name: Commit and push
+        if: always() && hashFiles('.request/request.json') != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          [ -f .request/out/result.json ] || node engine/change/fail.mjs
+          bash engine/change/push.sh
+
+      - name: Deploy hook (optional)
+        if: success() && hashFiles('.request/out/result.json') != ''
+        env:
+          HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
+        run: |
+          if [ -n "$HOOK" ]; then curl -fsS -X POST "$HOOK" > /dev/null && echo "deploy hook called"; else echo "no deploy hook set; the push deploys"; fi

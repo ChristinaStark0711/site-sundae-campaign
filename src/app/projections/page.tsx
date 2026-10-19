@@ -1,49 +1,29 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { LineChart, StackedBars } from "@/components/Charts";
 import { SCENARIO, SERIES } from "@/content/palette";
 import Calculator from "@/components/Calculator";
 import { Icon } from "@/components/Icon";
-import P from "@/content/projections.json";
+import { KS, KS_PHONE, Key, money, ScenarioCard, type ScenarioName as K } from "@/components/ScenarioKey";
+import P from "@/content/brand/projections.json";
+import { getEventProjections, getEvents } from "@/lib/content";
+import { apDate } from "@/lib/format";
 
 export const metadata: Metadata = { title: "Projections" };
-type K = "conservative" | "base" | "aggressive";
-const KS: K[] = ["conservative", "base", "aggressive"];
-// phones get one card per scenario instead of a four-column table; the base case leads
-const KS_PHONE: K[] = ["base", "conservative", "aggressive"];
-const money = (v: number) => "$" + Math.round(v).toLocaleString("en-US");
 const months = P.engine.base.months.map((m) => m.month);
 const scen = (k: K, values: number[]) => ({ ...SCENARIO[k], values });
 
 const To = () => <Icon name="arrow-right" label="to" />;
 
-const Key = ({ k }: { k: K }) => {
-  const s = SCENARIO[k];
-  return <svg width="24" height="10" aria-hidden className="shrink-0"><line x1="1" x2="23" y1="5" y2="5" stroke={s.color} strokeWidth={4} strokeLinecap="round" strokeDasharray={"dash" in s ? "6 4" : undefined} /></svg>;
-};
-
 const REV_NOTE = "*Revenue uses placeholder fees. Benchmark check: U.S. franchise systems commonly spend about $10,000 to $30,000 in marketing per unit sold; the base case lands at about $10,300 per member because Sundae's marketplace list and dinners add low-cost organic demand.";
 
-const ScenarioCard = ({ k, sub, rows }: { k: K; sub?: string; rows: [string, string][] }) => (
-  <div className={`card p-5 ${k === "base" ? "!border-blue" : ""}`}>
-    <p className="flex items-center gap-2.5 font-bold"><Key k={k} />{SCENARIO[k].name}</p>
-    {sub && <p className="mt-0.5 text-base">{sub}</p>}
-    <dl className="tnum mt-3 text-base leading-snug">
-      {rows.map(([l, v]) => <div key={l} className="flex items-baseline justify-between gap-4 border-b border-gray py-2.5 last:border-b-0"><dt>{l}</dt><dd className="shrink-0 text-right font-bold">{v}</dd></div>)}
-    </dl>
-  </div>
-);
-
 export default function Projections() {
-  const evRows: [string, keyof typeof P.event.base, (v: number) => string][] = [
-    ["Paid budget (six days)", "paid_budget", money], ["Cost per application", "paid_cpl", money], ["Paid applications", "paid_applications", String],
-    ["Organic applications", "organic_applications", String], ["Total applications", "applications", String], ["Approved seats", "approved_seats", String],
-    ["Attendees", "attendees", String], ["Intro calls booked", "intro_calls", String], ["Members signed within about 45 days", "members_signed_45d", (v) => v.toFixed(1)], ["Paid cost per attendee", "cost_per_attendee", money],
-  ];
   const sumRows: [string, keyof typeof P.engine.base.summary, (v: number) => string][] = [
     ["Ad spend (12 months)", "ad_spend_12mo", money], ["Leads (12 months)", "leads_12mo", (v) => v.toLocaleString("en-US")], ["Average leads per day", "avg_leads_per_day", (v) => v.toFixed(1)],
     ["Intro calls held", "intro_calls_held_12mo", (v) => v.toLocaleString("en-US")], ["Members signed", "members_12mo", (v) => v.toFixed(1)], ["Ad spend per member", "ad_cost_per_member", money],
     ["Exit run rate (members a month)", "exit_run_rate_members_per_month", (v) => v.toFixed(1)], ["Initial-fee revenue*", "initial_fee_revenue_12mo", money], ["Recurring revenue*", "recurring_revenue_12mo", money], ["Total revenue (12 months)*", "total_revenue_12mo", money],
   ];
+  const evs = getEvents().flatMap((e) => { const pj = getEventProjections(e.slug); return pj ? [{ e, pj }] : []; });
   return (
     <main className="mx-auto max-w-7xl px-5 md:px-8">
       <header className="py-16 md:py-24">
@@ -54,34 +34,26 @@ export default function Projections() {
         </div>
       </header>
 
-      <section className="border-t border-gray py-16" aria-labelledby="ev">
-        <p className="eyebrow">The Oct. 8 dinner</p>
-        <h2 id="ev" className="display h-bar mt-4 text-[2.25rem] md:text-[2.625rem]">From applications to signed members</h2>
-        <div className="mt-10 grid gap-6 xl:grid-cols-[1.2fr_1fr]">
-          <div className="grid gap-4 md:hidden">
-            {KS_PHONE.map((k) => <ScenarioCard key={k} k={k} rows={evRows.map(([l, key, f]) => [l, f(P.event[k][key] as number)])} />)}
+      {evs.length > 0 && (
+        <section className="border-t border-gray py-16" aria-labelledby="ev">
+          <p className="eyebrow">Per event</p>
+          <h2 id="ev" className="display h-bar mt-4 text-[2.25rem] md:text-[2.625rem]">Each dinner has its own budget and projections</h2>
+          <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+            {evs.map(({ e, pj }) => (
+              <Link key={e.slug} href={`/events/${e.slug}/projections`} className="card hover-lift group flex flex-col p-7">
+                <p className="eyebrow">{e.city} · {apDate(e.date)}</p>
+                <dl className="tnum mt-4 grid grid-cols-3 gap-3 text-base leading-snug">
+                  <div><dt>Paid budget</dt><dd className="mt-1 text-xl font-bold">{money(pj.scenarios.base.paid_budget)}</dd></div>
+                  <div><dt>Guests</dt><dd className="mt-1 text-xl font-bold">{pj.scenarios.base.attendees}</dd></div>
+                  <div><dt>Members</dt><dd className="mt-1 text-xl font-bold">{pj.scenarios.base.members_signed_45d.toFixed(1)}</dd></div>
+                </dl>
+                <p className="mt-3 text-base">Base case</p>
+                <span className="mt-5 inline-flex items-center gap-1.5 text-lg font-bold text-blue"><span className="underline decoration-1 underline-offset-4 group-hover:decoration-2">Open</span><Icon name="arrow-right" /></span>
+              </Link>
+            ))}
           </div>
-          <div className="card scroll-x hidden p-6 md:block md:p-7">
-            <table className="dtable min-w-[560px]">
-              <thead><tr><th />{KS.map((k) => <th key={k} className="!text-right"><span className="inline-flex items-center gap-2"><Key k={k} />{SCENARIO[k].name}</span></th>)}</tr></thead>
-              <tbody>{evRows.map(([l, key, f]) => <tr key={l}><td>{l}</td>{KS.map((k) => <td key={k} className={`text-right ${k === "base" ? "font-bold" : ""}`}>{f(P.event[k][key] as number)}</td>)}</tr>)}</tbody>
-            </table>
-          </div>
-          <div className="card p-6 md:p-7">
-            <p className="section-title">Base-case funnel</p>
-            <p className="mt-1 text-base">Each step as a share of applications</p>
-            <div className="mt-6 grid gap-4">
-              {([["Applications", P.event.base.applications], ["Approved seats", P.event.base.approved_seats], ["Attendees", P.event.base.attendees], ["Intro calls", P.event.base.intro_calls], ["Members (about 45 days)", P.event.base.members_signed_45d]] as [string, number][]).map(([l, v]) => (
-                <div key={l}>
-                  <div className="flex justify-between text-base"><span>{l}</span><strong className="tnum">{Number.isInteger(v) ? v : v.toFixed(1)}</strong></div>
-                  <div className="mt-1.5 h-3 rounded-full bg-mist"><div className="h-3 rounded-full bg-blue" style={{ width: `${Math.max(2, (v / P.event.base.applications) * 100)}%` }} /></div>
-                </div>
-              ))}
-            </div>
-            <p className="mt-7 text-lg leading-relaxed">Assumes 55% of applications approved, a 70% show rate with SHAI confirmations, 30% of attendees booking an intro call and 18% of those signing after the FDD period.</p>
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       <section className="border-t border-gray py-16" aria-labelledby="eng">
         <p className="eyebrow">The always-on membership engine · 12 months</p>
