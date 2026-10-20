@@ -183,9 +183,8 @@ async function gate(src) {
   const had2 = new Set(markProblems(origAudit)); for (const m of markProblems(au)) if (!had2.has(m)) p.push(m);
   const both = (x) => `${x.text}\n${x.reader}`;
   const scripts = newScripts(both(origAudit), both(au));
-  if (scripts.length) media.push(`uses letters from another alphabet (${scripts.slice(0, 3).join(' ')}), which can make an address look like Sundae's`);
   return {
-    problems: p.slice(0, 6), file, audit: au, media,
+    problems: p.slice(0, 6), file, audit: au, media, scripts,
     facts: [...new Set([...newFacts(both(origAudit), both(au)), ...(A.isVideo ? newSpecNumbers(original, src) : [])])],
     claims: newClaims(both(origAudit), both(au)),
     missing: [...missingFacts(ev, origAudit.visible, au.visible), ...lostWording(origAudit.reader, au.reader, origAudit.visible, au.visible).map((x) => `§${x}`), ...newNames(ev, `${origAudit.reader}\n${origAudit.readerRaw || ''}`, `${au.reader}\n${au.readerRaw || ''}`).map((x) => `+${x}`)],
@@ -195,7 +194,8 @@ async function gate(src) {
 // styles, then new numbers and addresses), in full: the owner approves against this list (proposal.changes).
 const describeFacts = (g) => [
   ...g.missing.filter((t) => !t.startsWith('§') && !t.startsWith('+')).map((t) => `drops "${t}"`), ...g.missing.filter((t) => t.startsWith('§')).map((t) => t.slice(1)),
-  ...g.missing.filter((t) => t.startsWith('+')).map((t) => `names ${t.slice(1)}`), ...g.claims.map((t) => `adds "${t}"`), ...g.media, ...g.facts.map((t) => `adds "${t}"`)];
+  ...g.missing.filter((t) => t.startsWith('+')).map((t) => `names ${t.slice(1)}`), ...g.claims.map((t) => `adds "${t}"`), ...g.media,
+  ...(g.scripts?.length ? [`uses letters from another alphabet (${g.scripts.slice(0, 3).join(' ')}), which can make an address look like Sundae's`] : []), ...g.facts.map((t) => `adds "${t}"`)];
 // The public change log shows the kinds of change only, never the new words themselves: a held proposal must not put
 // a phone number, an address or a claim on the hub before the owner has looked at it.
 const heldReason = (g) => {
@@ -205,6 +205,7 @@ const heldReason = (g) => {
     g.missing.some((t) => t.startsWith('+')) && 'adds a name',
     g.claims.length && 'adds a claim, offer or contact prompt',
     g.media.length && 'adds an image with its own text or changes how parts are shown',
+    g.scripts?.length && 'uses letters from another alphabet',
     g.facts.length && 'adds a number, date, time or address',
   ].filter(Boolean);
   return `This needs the account owner's approval: it ${kinds.join('; ')}.`;

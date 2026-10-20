@@ -10,7 +10,7 @@
 //               inline at-rules (@media, @import, @font-face, …), CSS functions that pull in text (attr(), counter())
 //   tags/attrs  the element and attribute names present (process.mjs only allows what the original already uses,
 //               plus a small fixed set)
-//   text        every text node in the document (hidden ones too), Unicode-normalized (NFKC): the fact check
+//   text        every text node in the document (hidden ones too), one per line, Unicode-normalized (NFKC): the fact check
 //   visible     the text a viewer can actually see (stills) or sees at any scene's settled moment (videos)
 //   reader      the text as a reader sees it (innerText: words split by inline markup are whole again); readerRaw:
 //               the same with text-transform switched off
@@ -171,7 +171,7 @@ function inspect({ rootSel, canvas }) {
   // the same text with text-transform switched off: a name styled into lowercase still reads as a name here
   const plainCase = document.createElement('style'); plainCase.textContent = '*{text-transform:none!important}'; document.head.appendChild(plainCase);
   const readerRaw = (root.innerText || '').normalize('NFKC'); plainCase.remove();
-  return { violations: out.violations, tags: [...out.tags].sort(), attrs: [...out.attrs].sort(), text: all.join(' '), visible: vis.join(' '), reader, images: [...images].sort(), paths: [...paths].sort(), skeleton, risky: [...risky].sort(), red, marks, readerRaw };
+  return { violations: out.violations, tags: [...out.tags].sort(), attrs: [...out.attrs].sort(), text: all.join('\n'), visible: vis.join(' '), reader, images: [...images].sort(), paths: [...paths].sort(), skeleton, risky: [...risky].sort(), red, marks, readerRaw };
 }
 
 export async function auditSource(source) {
@@ -209,7 +209,7 @@ export async function auditSource(source) {
         t += s.dur;
       }
       r.visible = [...seen].join(' ');
-      r.text = [...texts].join(' ');
+      r.text = [...texts].join('\n');
       r.reader = [...readers].join('\n');
       r.readerRaw = [...raws].join('\n');
       r.images = [...imgs].sort(); r.paths = [...pths].sort();
