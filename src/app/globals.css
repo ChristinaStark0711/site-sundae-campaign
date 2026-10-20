@@ -1,5 +1,7 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
+/* the creative engine (HTML sources rendered to images) is not part of the site */
+@source not "../../engine";
 
 /* Sundae brand tokens: Creative Guidelines (2022) p.6-11 and clients/sundae/BRAND-SPEC.md.
    Copy is #4A4A4A. Red is never a text color: it appears only as the wordmark, accent bars, shapes and dots.
@@ -138,5 +140,9 @@ html.lenis, html.lenis body { height: auto; }
 .prose-plan :where(pre code) { background: transparent; border: 0; padding: 0; font-weight: 400; font-size: 1rem; }
 .prose-plan :where(hr) { border-top-width: 1px; }
 
-a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid var(--color-blue); outline-offset: 3px; }
+/* /creative: while the old-link note is open (src/app/creative/page.tsx), the footer gets room so the note never covers it */
+body:has(#old-link-note:not([hidden])) footer { padding-bottom: 10rem; }
+@media (min-width: 768px) { body:has(#old-link-note:not([hidden])) footer { padding-bottom: 6.5rem; } }
+
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus-visible, .scroll-x:focus-visible { outline: 3px solid var(--color-blue); outline-offset: 3px; }
 @media (prefers-reduced-motion: reduce) { [data-reveal], [data-stagger] > * { opacity: 1 !important; transform: none !important; } }

@@ -75,12 +75,12 @@ function Legend({ series, bar }: { series: Series[]; bar?: boolean }) {
   );
 }
 
-function Table({ labels, series, fmt, decimals }: { labels: string[]; series: Series[]; fmt: (v: number) => string; decimals?: boolean }) {
+function Table({ title, labels, series, fmt, decimals }: { title: string; labels: string[]; series: Series[]; fmt: (v: number) => string; decimals?: boolean }) {
   // when a column holds decimals, show every value with one decimal so the column lines up (18.0, not 18)
   const one = (v: number) => v.toLocaleString("en-US", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
   const f = (s: Series) => (decimals && s.values.some((v) => !Number.isInteger(v)) ? one : fmt);
   return (
-    <div className="scroll-x">
+    <div className="scroll-x" tabIndex={0} role="region" aria-label={`${title} table`}>
       <table className="dtable min-w-[520px]">
         <thead><tr><th>Month</th>{series.map((s) => <th key={s.name} className="!text-right">{s.name}</th>)}</tr></thead>
         <tbody>{labels.map((l, i) => <tr key={l}><td>{monthFull(l)}</td>{series.map((s) => <td key={s.name} className="text-right">{f(s)(s.values[i])}</td>)}</tr>)}</tbody>
@@ -144,7 +144,7 @@ export function LineChart({ title, sub, labels, series, format = "number", heigh
       <Head title={title} sub={sub} table={table} setTable={setTable} />
       {series.length > 1 && <div className="mb-4"><Legend series={series} /></div>}
       <div ref={box}>
-        {table ? <Table labels={labels} series={series} fmt={fmt.full} decimals={format === "number"} /> : (
+        {table ? <Table title={title} labels={labels} series={series} fmt={fmt.full} decimals={format === "number"} /> : (
           <div className="relative" style={{ height: H }}>
             <svg ref={svgRef} viewBox={`0 0 ${W} ${H}`} width="100%" height={H} className="tnum block touch-none" onPointerMove={onMove} onPointerLeave={() => setHover(null)} role="img" aria-label={`${title}. ${series.map((s) => `${s.name}: ${fmt.full(s.values[s.values.length - 1])} by ${monthFull(labels[labels.length - 1])}`).join("; ")}`}>
               {ticks.map((t, k) => (
@@ -190,7 +190,7 @@ export function StackedBars({ title, sub, labels, series, format = "number", hei
       <Head title={title} sub={sub} table={table} setTable={setTable} />
       <div className="mb-4"><Legend series={series} bar /></div>
       <div ref={box}>
-        {table ? <Table labels={labels} series={[...series, { name: "Total", color: INK, values: totals }]} fmt={fmt.full} decimals={format === "number"} /> : (
+        {table ? <Table title={title} labels={labels} series={[...series, { name: "Total", color: INK, values: totals }]} fmt={fmt.full} decimals={format === "number"} /> : (
           <div className="relative" style={{ height: H }}>
             <svg viewBox={`0 0 ${W} ${H}`} width="100%" height={H} className="tnum block" role="img" aria-label={`${title}. Total by ${monthFull(labels[labels.length - 1])}: ${fmt.full(totals[totals.length - 1])}`} onPointerLeave={() => setHover(null)}>
               {ticks.map((t, k) => <g key={t}><line x1={padL} x2={W - padR} y1={y(t)} y2={y(t)} stroke={k === 0 ? BASELINE : GRID} strokeWidth={k === 0 ? 1.5 : 1} /><text x={padL - 10} y={y(t)} textAnchor="end" dominantBaseline="middle" fontSize={FS} fill={INK}>{fmt.short(t)}</text></g>)}

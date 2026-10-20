@@ -1,0 +1,80 @@
+@import url('/kit/local-fonts.css');
+/* Sundae creatives: tokens and classes per clients/sundae/BRAND-SPEC.md (deck: research/brand/pages p-05..p-31).
+   White space first. Merriweather headlines, Lato everything else. #4A4A4A copy. Red is never a text color:
+   it appears as the wordmark, accent bars, shapes and highlight boxes (white text inside, large only). */
+:root{
+  --red:#DB3D55; --blue:#1C51A0; --ink:#4A4A4A; --pink:#F4CCCC; --mist:#F4F7F9; --gray:#E6E6E6; --slate:#C9D2E0; --white:#FFFFFF;
+  --serif:'Merriweather',Georgia,serif; --sans:'Lato',Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--white);color:var(--ink);font-family:var(--sans);font-weight:400;-webkit-font-smoothing:antialiased}
+.canvas{position:relative;overflow:hidden;background:var(--white);color:var(--ink)}
+.canvas.mist{background:var(--mist)}
+b,strong{font-weight:700}
+
+/* photos: clean rectangles or full bleed, never darkened */
+.photo{position:absolute;background-repeat:no-repeat;background-size:cover;background-position:center}
+.photo.r{border-radius:12px}
+
+/* wordmark: modest, padded; on a photo it sits on a solid white field (.wm-tab) */
+.wm{display:block;height:auto}
+.wm-tab{position:absolute;background:var(--white);line-height:0}
+.icon-tile{position:absolute;background:var(--red);display:grid;place-items:center;line-height:0}
+.icon-tile svg{display:block}
+
+/* type */
+.eyebrow{font-family:var(--sans);font-weight:700;text-transform:uppercase;letter-spacing:.1em;line-height:1.35;color:var(--ink)}
+.eyebrow.blue{color:var(--blue)}
+.h{font-family:var(--serif);font-weight:700;line-height:1.2;letter-spacing:0;color:var(--ink)}
+.h.reg{font-weight:400}
+.h.i{font-style:italic;font-weight:400}
+.h-lato{font-family:var(--sans);font-weight:900;line-height:1.2;color:var(--ink)}
+.sub{font-family:var(--sans);font-weight:400;line-height:1.4;color:var(--ink)}
+.body{font-family:var(--sans);font-weight:400;line-height:1.6;color:var(--ink)}
+.white{color:var(--white)}
+
+/* red accent bar beside a headline (every deck slide) */
+.accent{position:relative;padding-left:var(--gap,32px)}
+.accent:before{content:'';position:absolute;left:0;top:.08em;bottom:.12em;width:var(--bar,8px);background:var(--red)}
+
+/* highlight boxes (deck p.30-31): white box + gray text, red box + large bold white text, blue box + white text */
+.box{display:inline-block;background:var(--white);color:var(--ink);font-family:var(--sans);font-weight:900;line-height:1.2;padding:.28em .5em .32em}
+.box.red{background:var(--red);color:var(--white)}
+.box.blue{background:var(--blue);color:var(--white)}
+.box.ink{background:var(--ink);color:var(--white)}
+.box.serif{font-family:var(--serif);font-weight:700}
+.tilt{transform:rotate(-4deg);transform-origin:left center}
+
+/* blue button / pill and date chip */
+.btn{white-space:nowrap;display:inline-flex;align-items:center;gap:.45em;padding:.66em 1.2em .7em;border-radius:999px;background:var(--blue);color:var(--white);font-family:var(--sans);font-weight:700;line-height:1;letter-spacing:.01em}
+.btn .arr,.arr{width:.95em;height:.95em;flex:0 0 auto;display:inline-block;vertical-align:-.1em}
+.chip{display:inline-block;background:var(--blue);color:var(--white);font-family:var(--sans);font-weight:900;line-height:1.2;border-radius:6px;padding:.26em .55em .3em;white-space:nowrap}
+.tag{display:inline-block;background:var(--ink);color:var(--white);font-family:var(--sans);font-weight:700;text-transform:uppercase;letter-spacing:.1em;line-height:1;padding:.6em .85em;border-radius:4px;white-space:nowrap}
+
+/* fact row */
+.meta{display:flex;border-top:2px solid var(--gray);border-bottom:2px solid var(--gray)}
+.meta>div{padding:.8em 0 .85em}
+.meta>div+div{border-left:2px solid var(--gray);padding-left:.9em}
+.meta>div:not(:last-child){padding-right:.9em}
+.meta .l{font-family:var(--sans);font-weight:700;text-transform:uppercase;letter-spacing:.1em;line-height:1.3;color:var(--ink)}
+.meta .v{font-family:var(--serif);font-weight:700;line-height:1.2;color:var(--ink);white-space:nowrap}
+
+/* check list (blue dot + white tick) */
+.check{display:flex;gap:.6em;align-items:flex-start}
+.check i{flex:0 0 auto;width:1.05em;height:1.05em;border-radius:50%;background:var(--blue);display:grid;place-items:center;margin-top:.14em}
+.check i:after{content:'';width:.38em;height:.2em;border-left:.1em solid var(--white);border-bottom:.1em solid var(--white);transform:rotate(-45deg) translate(.03em,-.04em)}
+
+/* deck p.11 shapes, used sparingly */
+.shape-corner{position:absolute;background:var(--red);border-radius:0 var(--r,34%) 0 0}
+.shape-circle{position:absolute;background:var(--slate);border-radius:50%}
+.bar{position:absolute;border-radius:999px;background:var(--blue)}
+.bar.red{background:var(--red)}
+.dots{position:absolute;display:grid;grid-template-columns:repeat(4,var(--d,14px));gap:var(--g,12px)}
+.dots i{display:block;width:var(--d,14px);height:var(--d,14px);border-radius:50%;background:var(--blue)}
+
+/* panels, rules, QR tile */
+.panel{background:var(--mist)}
+.panel.pink{background:var(--pink)}
+.rule{height:2px;background:var(--gray)}
+.qr{background:var(--white);padding:10px;border-radius:10px;display:inline-block;line-height:0;border:2px solid var(--gray)}
+.qr img{display:block}

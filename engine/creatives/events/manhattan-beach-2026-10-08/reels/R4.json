@@ -1,0 +1,58 @@
+{
+ "w": 1080,
+ "h": 1920,
+ "tag": "Oct. 8 \u00b7 Manhattan Beach",
+ "poster": 7,
+ "scenes": [
+  {
+   "type": "title",
+   "dur": 2.6,
+   "title": [
+    "Finding deals",
+    "is harder."
+   ]
+  },
+  {
+   "type": "title",
+   "dur": 2.6,
+   "title": [
+    "Margins are",
+    "tighter."
+   ],
+   "accent": 1,
+   "gx": 0.0
+  },
+  {
+   "type": "quote",
+   "dur": 3.8,
+   "img": "sac-dinner.jpg",
+   "pos": "50% 40%",
+   "title": [
+    "The market",
+    "has changed."
+   ],
+   "sub": "The opportunity has not."
+  },
+  {
+   "type": "clip",
+   "dur": 3.4,
+   "clip": "v-evening-guests",
+   "kicker": "So let\u2019s talk about it",
+   "title": [
+    "Over dinner.",
+    "With operators."
+   ]
+  },
+  {
+   "type": "details",
+   "dur": 3.6,
+   "title": [
+    "Join us"
+   ]
+  },
+  {
+   "type": "cta",
+   "dur": 3.6
+  }
+ ]
+}

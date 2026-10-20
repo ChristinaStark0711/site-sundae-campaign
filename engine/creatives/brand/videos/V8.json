@@ -1,0 +1,89 @@
+{
+ "w": 1920,
+ "h": 1080,
+ "tag": "Sundae Membership",
+ "poster": 6.2,
+ "scenes": [
+  {
+   "type": "title",
+   "dur": 3.6,
+   "kicker": "Sundae Membership",
+   "title": [
+    "Sundae,",
+    "by the numbers"
+   ],
+   "accent": 1,
+   "center": true,
+   "bulbs": true
+  },
+  {
+   "type": "stats",
+   "dur": 6.2,
+   "kicker": "Marketing and marketplace",
+   "title": [
+    "A machine that finds sellers and buyers"
+   ],
+   "items": [
+    {
+     "value": "$100",
+     "num": 100,
+     "prefix": "$",
+     "suffix": "",
+     "label": "in marketing investment since 2018",
+     "unit": "million+"
+    },
+    {
+     "value": "20,000+",
+     "num": 20000,
+     "suffix": "+",
+     "label": "property investors on the marketplace"
+    }
+   ]
+  },
+  {
+   "type": "stats",
+   "dur": 6.2,
+   "kicker": "Results for sellers",
+   "title": [
+    "Competition that works"
+   ],
+   "items": [
+    {
+     "value": "22+",
+     "num": 22,
+     "suffix": "+",
+     "label": "offers when sellers list on the marketplace",
+     "pre": "An average of"
+    },
+    {
+     "value": "8,000+",
+     "num": 8000,
+     "suffix": "+",
+     "label": "sellers our team has helped get offers"
+    }
+   ]
+  },
+  {
+   "type": "title",
+   "dur": 4.4,
+   "kicker": "You bring the market",
+   "title": [
+    "Sundae brings marketing, technology,",
+    "automation, capital and buyer reach"
+   ],
+   "accent": 1
+  },
+  {
+   "type": "cta",
+   "title": [
+    "Stop building.",
+    "Start scaling."
+   ],
+   "accent": 1,
+   "sub": "Sundae Membership for experienced real estate operators",
+   "when": "Territories are limited",
+   "pill": "See if your market is open \u2192",
+   "dur": 5.0
+  }
+ ]
+}

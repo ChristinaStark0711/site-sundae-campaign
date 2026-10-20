@@ -1,0 +1,115 @@
+# Change requests: the box under every creative
+
+Anyone with the hub's link can type a change under an image, flyer, video or Reel and choose **Update this one**
+(the file is replaced) or **New variation** (a new version is added next to the original). This folder is the
+pipeline that does the work. Requests and their text are public: they are committed to this (public) repo and listed
+in the change log on the hub, and the box says so.
+
+## How a request flows
+1. **Site** (`src/components/ChangeBox.tsx` → `src/app/api/requests/route.ts`): refuses anything but a same-origin
+   JSON request for a known asset (`src/generated/asset-keys.json`, built before every build), 3–500 characters, no
+   credential-like text (keys and tokens of every common format), 6 per 10 minutes per IP address (best effort: the
+   count lives in one server instance's memory); then asks GitHub how many runs started today (the daily cap,
+   default 30) and whether this asset already has a change waiting or running; then starts the workflow with
+   `workflow_dispatch`. The workflow reads its inputs from GitHub's event file, never from step environment
+   variables, which GitHub would print in the public log.
+2. **Workflow** (`.github/workflows/creative-change.yml`, checks out the latest `main`; runs may overlap, because a
+   GitHub concurrency group would cancel a waiting run and lose its request):
+   - `intake.mjs` writes `.request/request.json` (credential-like text removed) and counts today's runs again;
+   - `process.mjs` asks Claude (Anthropic API, no tools) for a new version of the asset's single source file
+     (`engine/creatives/<scope>/<kind>/<ID>.html|json`) and puts every candidate through one gate:
+     - source checks (`lib.mjs checkSource`): only `/kit/` files; video spec strings may only use `<br> <b> <i> <em>
+       <strong> <span class> <sup> <sub> <small> <u>`;
+     - **the rendered-page audit** (`audit.mjs`, Chromium with JavaScript off): no script, form, frame, link or
+       media elements, no event handlers or `javascript:` URLs, no files outside the kit, no generated text
+       (`::before`/`::after`/`::marker` content, list markers, `attr()`/`counter()`), no at-rules in inline styles
+       (no `@media`, so print and screen are the same page), and only tags and attributes the original already uses;
+     - **fact checks on the rendered text** (entities decoded, Unicode-normalized, hidden text included): any new
+       number (in any script or spelled out; "thirty" and "30" are the same), price, date (also a bare month, a
+       spelled ordinal or "tomorrow"), time, weekday, phone, web address (also with a spaced, non-ASCII or spelled
+       "dot") or @handle, except the event record's own RSVP link, address and time; any new claim, offer or contact
+       prompt (cancelled, free, complimentary, gift bag, guaranteed, earnings, "call Josh", Instagram …), counted, so
+       a second profit claim is new and a disclaimer's own "earnings" never excuses one; letters from another
+       alphabet; and any event fact (date, time, venue, city)
+       that was visible before and isn't now (including the room, the street, the host and "an average of" wording
+       or a footnote asterisk); any newly added image that carries its own text (QR codes, screenshots, maps: marked
+       `"text": true` in `engine/kit/assets.json`), any photo or footage from another event, any part added to a
+       still's layout or new drawn SVG shape (reordering or removing parts is a design edit); a new name after "at", "on",
+       "inside", "with", "hosted by", "joined by", "special guest:", "keynote —" … or a second one joined by "and"
+       (unless every word is one Sundae's own plans, captions and creatives use as an ordinary word); legal
+       or "an average of" wording that was visible and no longer is (faded, moved off the canvas, covered, clipped),
+       even though it is still in the text, or that survives only inside a longer sentence; and any new hiding style
+       on a part (clip, mask, filter, a transform that shrinks, flips or turns it more than 20°, z-index, tiny or
+       transparent text, `pointer-events`, a filled `::before`/`::after` box), judged per element.
+       Any of these **holds the request as a proposal** (below), after it passes the brand lint;
+     - **wordmark checks** (stills): a Sundae wordmark or icon stretched out of its proportions, a wordmark straight
+       on a photo, or a red wordmark on anything but white, mist, pink, slate or gray (a white one on anything but
+       red, blue or ink) **fails** the request (BRAND-SPEC §4), as do retired files such as the cream wordmark;
+     - a preview render, the brand lint (red text, fonts, contrast; videos at their poster frame), and a
+       before/after review by Claude. If the review corrects the source, the correction goes through the whole gate
+       and a second review.
+   - `apply.mjs` puts the files in place on the latest `main`: an update is refused if the asset's source changed
+     while the request was worked on (for an approved proposal: since the proposal was made, so approving an old
+     proposal can never undo a newer change); a variation takes the next free id at that moment (05B taken → 05C);
+     every field of the log is scrubbed of credential-like text;
+   - the site is built to prove it still builds; `guard.mjs` refuses any changed path outside the asset's own files
+     (and any credential-like text); `push.sh` commits to `main`, re-applying on top of newer commits, and if anything
+     refuses it commits a "failed" log entry instead, so every request ends in the log. Vercel redeploys.
+3. Results: **Done** (published), **Waiting for approval** (held) or **Couldn't apply** (failed; nothing changed).
+
+## What waits for approval, and how to approve
+Held as a **proposal**: anything that changes what the asset says (facts, claims, contact details, names, legal
+wording) or hides part of it, and, if `CHANGE_UPDATES` is `approve`, every update and every new variation. Its source
+and preview are kept in the repo (`engine/held/<id>.html|json` and `engine/held/<id>.jpg`), which the site never
+serves: the hub's change log only says what *kind* of change waits (e.g. "adds a number, date, time or address"), never
+the new words, and it masks web and email addresses, phone numbers and @handles in the request text. So a held
+proposal can't put a fake phone number or a "cancelled" notice on the hub. The full list of what the gate found, most
+serious first, is in the request's log file (`src/content/requests/<id>.json`, `proposal.changes`).
+Held without a proposal: requests that need a photo, footage or AI imagery the kit doesn't have, unclear or unrelated
+requests, and requests over the daily cap. Earnings or income claims are never made.
+Model-written text (summaries, hold reasons, review notes, a variation's title) reaches the public log only if it adds
+nothing the original doesn't say; otherwise a fixed sentence is used ("Changed as asked.", "variation").
+
+To approve: open `engine/held/<id>.jpg` and `proposal.changes` in `src/content/requests/<id>.json` on GitHub and
+check them, then GitHub → this repo → **Actions** → **Creative change** → **Run workflow** → paste the request id from
+the change log into **approve** → **Run**. A proposal is applied exactly as previewed (no new AI call). If the
+approval fails for a temporary reason the proposal stays, so it can be approved again; if the asset changed after the
+proposal was made (an update or a variation), the proposal is dropped and the request can be sent again. A request
+held without a proposal runs again from the start with only the daily cap waived (fact changes are still held).
+Requests that need new photos or AI footage can't run automatically: ask in Claude, where AI generation is quoted
+first.
+
+## Switching it on (one time, by the account owner)
+1. **Anthropic API key** → GitHub: this repo → Settings → Secrets and variables → Actions → New repository secret
+   `ANTHROPIC_API_KEY`. Each request makes up to five model calls; the tokens used are logged in each request's log
+   entry and billed to that key's account at Anthropic's current rates.
+2. **Dispatch token** → a fine-grained GitHub personal access token for **only this repository** with
+   **Actions: Read and write** (it can start the workflow and read its runs; it cannot push code) → Vercel: the hub
+   project → Settings → Environment Variables → `GITHUB_DISPATCH_TOKEN` (Production) → redeploy. Treat it like an
+   owner credential: whoever holds it can also start an approval run, which publishes a held proposal.
+3. Optional: `VERCEL_DEPLOY_HOOK` secret (a Vercel deploy hook URL) if bot pushes ever stop triggering deploys;
+   repository variables `CHANGE_MODEL` (default `claude-opus-5-5`), `CHANGE_DAILY_CAP` (default 30; set the same
+   number as a Vercel env var `CHANGE_DAILY_CAP` so the site refuses early) and `CHANGE_UPDATES` (`auto` or `approve`;
+   `approve` holds updates and new variations alike).
+Never paste a key or token into a chat.
+
+## Limits and notes (honest)
+- **Updates publish without a person in the loop**, as asked: someone with the link can change a published asset's
+  design and wording. The checks above stop new facts, claims, contact details, scripts, outside files and
+  off-brand colors and fonts, but not every unwanted wording (a reworded headline is, by design, allowed). Every
+  change is in the public log and in git, and any version can be restored. Set `CHANGE_UPDATES=approve` to make
+  every update and new variation wait for approval instead.
+- The repo is public, so a held proposal (in `engine/held/`) can be seen on GitHub, just not on the hub.
+- Known gaps in the text checks: a person's name typed all in lowercase ("dinner with elon musk") isn't recognized as
+  a name, and a disclaimer contradicted by a separate new sentence (rather than reworded) isn't caught; the review by
+  Claude and the brand lint are the backstop there. The other way round, a Title Case phrase after a lead word whose
+  words Sundae's copy doesn't use ("An Evening / With A View") waits for approval although it is only wording, and a
+  stats scene shortened below its counter's 2 seconds shows (and is held for) a number mid-count.
+- Each request commits a log entry to `main`, which redeploys the site; the daily cap bounds that.
+- Two requests for the same asset sent within seconds of each other may both start; the second then ends as
+  "Couldn't apply" (the asset changed meanwhile) and can be sent again. Nothing is ever lost silently.
+- The repo is public, so Actions logs are public: the workflow never prints request text or model output, and the
+  run name shows only the asset key.
+- Videos and Reels take longer (a full re-render, about 15–20 minutes end to end).
+- Tests without an API key: `CHANGE_MOCK=<file.json>` makes `process.mjs` read the model's answers from a file
+  (`{"submit_change":[{…}],"submit_review":[{…}]}`); `PUSH_URL` points `push.sh` at a test remote.

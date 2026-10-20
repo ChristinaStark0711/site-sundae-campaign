@@ -1,0 +1,52 @@
+{
+ "w": 1080,
+ "h": 1920,
+ "tag": "Oct. 8 \u00b7 Manhattan Beach",
+ "poster": 6,
+ "scenes": [
+  {
+   "type": "title",
+   "dur": 2.8,
+   "kicker": "Oct. 8 \u00b7 Manhattan Beach",
+   "title": [
+    "Who this",
+    "dinner is for"
+   ],
+   "accent": 1,
+   "bulbs": true
+  },
+  {
+   "type": "list",
+   "dur": 6.4,
+   "img": "cy-evening-vertical.jpg",
+   "kicker": "Private Dinner & Dialogue",
+   "title": [
+    "You're in the",
+    "right place if\u2026"
+   ],
+   "items": [
+    [
+     "Wholesalers",
+     "closing deals every month"
+    ],
+    [
+     "Fix-and-flip operators",
+     ""
+    ],
+    [
+     "Acquisition-led investors",
+     "and team leads"
+    ],
+    [
+     "Ready to scale",
+     "in the next six to 12 months"
+    ]
+   ]
+  },
+  {
+   "type": "cta",
+   "dur": 4.0,
+   "sub": "Seats are limited \u2014 every request is reviewed"
+  }
+ ]
+}

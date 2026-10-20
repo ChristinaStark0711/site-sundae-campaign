@@ -1,0 +1,34 @@
+{
+ "w": 1080,
+ "h": 1920,
+ "tag": "Oct. 8 \u00b7 Manhattan Beach",
+ "poster": 2.5,
+ "scenes": [
+  {
+   "type": "date",
+   "dur": 4.2,
+   "img": "cy-night-peek.jpg",
+   "pos": "55% 50%",
+   "title": [
+    "A few seats",
+    "left."
+   ],
+   "accent": 1
+  },
+  {
+   "type": "clip",
+   "dur": 3.2,
+   "clip": "v-night-peek",
+   "frames": 76,
+   "kicker": "Table plan goes out soon",
+   "title": [
+    "Request",
+    "yours today."
+   ]
+  },
+  {
+   "type": "cta",
+   "dur": 4.2
+  }
+ ]
+}

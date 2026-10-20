@@ -1,0 +1,66 @@
+{
+ "w": 1920,
+ "h": 1080,
+ "tag": "Oct. 8 \u00b7 Manhattan Beach",
+ "poster": 3.5,
+ "scenes": [
+  {
+   "type": "josh",
+   "dur": 5.6,
+   "kicker": "Meet your host",
+   "facts": [
+    "Founding partner and SVP of sales, LendingHome",
+    "Co-founder and CFO, Purpose Built Investments \u2014 1,200+ transactions",
+    "Stanford \u2014 B.A. in economics, with honors"
+   ]
+  },
+  {
+   "type": "stats",
+   "dur": 5.6,
+   "kicker": "Josh Stech",
+   "title": [
+    "Built at the intersection of",
+    "real estate and technology"
+   ],
+   "items": [
+    {
+     "value": "1,200+",
+     "num": 1200,
+     "suffix": "+",
+     "label": "transactions executed as co-founder and CFO of Purpose Built Investments"
+    },
+    {
+     "value": "3",
+     "num": 3,
+     "label": "investment funds launched at PBI \u2014 buying, renovating and selling houses"
+    },
+    {
+     "value": "5",
+     "num": 5,
+     "label": "years as founding partner and SVP of sales at LendingHome"
+    }
+   ]
+  },
+  {
+   "type": "photo",
+   "dur": 4.6,
+   "img": "sac-dinner.jpg",
+   "pos": "50% 38%",
+   "kicker": "Sacramento \u00b7 September",
+   "title": [
+    "Now he's sitting down",
+    "with LA operators"
+   ],
+   "overlay": "left"
+  },
+  {
+   "type": "details",
+   "dur": 4.4,
+   "img": "cy-night-table.jpg"
+  },
+  {
+   "type": "cta",
+   "dur": 4.2
+  }
+ ]
+}

@@ -1,0 +1,73 @@
+{
+  "generated": "2026-10-01",
+  "notes": [
+    "All inputs are labeled assumptions from industry benchmark ranges, not Sundae data.",
+    "Attendance is capped at the venue layout: 60 seats for this dinner. Approvals can run higher, up to 60 divided by the show rate (about 86 in the base case), to allow for no-shows."
+  ],
+  "seat_cap": 60,
+  "scenarios": {
+    "conservative": {
+      "paid_budget": 3000,
+      "paid_cpl": 75,
+      "paid_applications": 40,
+      "organic_applications": 35,
+      "applications": 75,
+      "approved_seats": 41,
+      "attendees": 26,
+      "intro_calls": 6,
+      "members_signed_45d": 1,
+      "cost_per_attendee": 117,
+      "assumptions": {
+        "paid_budget": 3000,
+        "paid_cpl": 75,
+        "organic_apps": 35,
+        "approve": 0.55,
+        "show": 0.62,
+        "call_rate": 0.25,
+        "sign_rate": 0.15
+      }
+    },
+    "base": {
+      "paid_budget": 5000,
+      "paid_cpl": 60,
+      "paid_applications": 83,
+      "organic_applications": 45,
+      "applications": 128,
+      "approved_seats": 71,
+      "attendees": 49,
+      "intro_calls": 15,
+      "members_signed_45d": 2.7,
+      "cost_per_attendee": 101,
+      "assumptions": {
+        "paid_budget": 5000,
+        "paid_cpl": 60,
+        "organic_apps": 45,
+        "approve": 0.55,
+        "show": 0.7,
+        "call_rate": 0.3,
+        "sign_rate": 0.18
+      }
+    },
+    "aggressive": {
+      "paid_budget": 8000,
+      "paid_cpl": 50,
+      "paid_applications": 160,
+      "organic_applications": 60,
+      "applications": 220,
+      "approved_seats": 80,
+      "attendees": 60,
+      "intro_calls": 21,
+      "members_signed_45d": 4.2,
+      "cost_per_attendee": 133,
+      "assumptions": {
+        "paid_budget": 8000,
+        "paid_cpl": 50,
+        "organic_apps": 60,
+        "approve": 0.5,
+        "show": 0.75,
+        "call_rate": 0.35,
+        "sign_rate": 0.2
+      }
+    }
+  }
+}

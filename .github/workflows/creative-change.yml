@@ -1,0 +1,105 @@
+# Creative change: runs when someone types a change in the box under a creative on the hub (the site's /api/requests
+# starts this workflow with the asset and the request), or when the owner approves a held request (Actions >
+# Creative change > Run workflow > paste the request id from the site's change log into "approve").
+#
+# Secrets (repo Settings > Secrets and variables > Actions):
+#   ANTHROPIC_API_KEY   required: pays for the AI edit (up to five model calls per request; usage is logged per request)
+#   VERCEL_DEPLOY_HOOK  optional: a Vercel deploy hook URL, called after the push in case the push alone doesn't deploy
+# Variables (same page, Variables tab, all optional): CHANGE_MODEL (default claude-opus-5-5), CHANGE_DAILY_CAP
+# (default 30 a day), CHANGE_UPDATES ("auto", the default: updates publish straight away; "approve": updates and new
+# variations wait for the owner like fact changes do).
+#
+# Safety (details in engine/change/README.md): the AI never runs a tool or a command; it returns one new source file.
+# Deterministic checks then inspect the rendered page with JavaScript off, compare its text with the original's
+# (fact or claim changes are held for approval), lint the brand rules and render with the network blocked; guard.mjs
+# refuses any change outside the asset's own files. Request text and model output are never printed here (the repo
+# and its Actions logs are public).
+name: Creative change
+run-name: "Creative change: ${{ inputs.asset || format('approve {0}', inputs.approve) }}"
+
+on:
+  workflow_dispatch:
+    inputs:
+      approve:
+        description: "Owner approval: the request id from the site's change log (e.g. 20261019-213000-ab12). Leave the other two fields empty."
+        required: false
+      asset:
+        description: "Set by the site. Leave empty."
+        required: false
+      request:
+        description: "Set by the site. Leave empty."
+        required: false
+
+permissions:
+  contents: write
+  actions: read
+
+# No concurrency group: GitHub cancels a waiting run when a newer one joins its group, which would drop a request with
+# no log. Runs may overlap instead: apply.mjs refuses an update whose source moved meanwhile, a variation takes the next
+# free id at commit time, and push.sh re-applies on top of newer commits. The site also refuses a second request for an
+# asset that already has a run waiting or running.
+
+jobs:
+  change:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main # the latest main when this run starts, not the commit it was queued on
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Read the request
+        # the inputs are read from $GITHUB_EVENT_PATH, never passed as env: GitHub prints a step's env in its public log
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node engine/change/intake.mjs
+
+      - name: Install the render engine
+        if: hashFiles('.request/request.json') != ''
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg python3-pil > /dev/null
+          cd engine && npm ci --no-audit --no-fund && npx playwright install --with-deps chromium
+
+      - name: Make the change
+        if: hashFiles('.request/request.json') != ''
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CHANGE_MODEL: ${{ vars.CHANGE_MODEL }}
+          CHANGE_DAILY_CAP: ${{ vars.CHANGE_DAILY_CAP }}
+          CHANGE_UPDATES: ${{ vars.CHANGE_UPDATES }}
+        run: node engine/change/process.mjs
+
+      - name: Check the site still builds with the change
+        if: hashFiles('.request/out/result.json') != ''
+        run: |
+          if node -e "process.exit(require('./.request/out/result.json').status === 'done' ? 0 : 1)"; then
+            if ! { node engine/change/apply.mjs && node engine/change/guard.mjs; }; then
+              node engine/change/fail.mjs "The change couldn't be published safely, so nothing was changed. It can be sent again."
+            elif ! { npm ci --no-audit --no-fund && npm run build; }; then
+              node engine/change/fail.mjs "The site didn't build with this change, so it was not published. It can be sent again."
+            else
+              touch .request/out/checked # push.sh publishes a "done" change only with this mark
+            fi
+          fi
+
+      - name: Commit and push
+        if: always() && hashFiles('.request/request.json') != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          CHANGE_REQUIRE_CHECK: "1"
+        run: |
+          [ -f .request/out/result.json ] || node engine/change/fail.mjs
+          bash engine/change/push.sh
+
+      - name: Deploy hook (optional)
+        if: success() && hashFiles('.request/out/result.json') != ''
+        env:
+          HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
+        run: |
+          if [ -n "$HOOK" ]; then curl -fsS -X POST "$HOOK" > /dev/null && echo "deploy hook called"; else echo "no deploy hook set; the push deploys"; fi

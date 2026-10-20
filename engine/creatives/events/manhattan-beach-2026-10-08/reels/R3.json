@@ -1,0 +1,45 @@
+{
+ "w": 1080,
+ "h": 1920,
+ "tag": "Oct. 8 \u00b7 Manhattan Beach",
+ "poster": 2,
+ "scenes": [
+  {
+   "type": "photo",
+   "dur": 4.4,
+   "img": "sac-dinner.jpg",
+   "pos": "52% 40%",
+   "label": "Sacramento \u00b7 Echo & Rig",
+   "kicker": "Last month",
+   "title": [
+    "Today's Outlook",
+    "with Josh Stech"
+   ]
+  },
+  {
+   "type": "title",
+   "dur": 3.4,
+   "kicker": "Market trends \u00b7 where the industry is heading",
+   "title": [
+    "The conversation",
+    "continues\u2026"
+   ],
+   "bulbs": true
+  },
+  {
+   "type": "clip",
+   "dur": 3.6,
+   "clip": "v-twilight-guests",
+   "kicker": "Thursday, Oct. 8",
+   "title": [
+    "in",
+    "Manhattan Beach."
+   ],
+   "accent": 1
+  },
+  {
+   "type": "cta",
+   "dur": 3.8
+  }
+ ]
+}

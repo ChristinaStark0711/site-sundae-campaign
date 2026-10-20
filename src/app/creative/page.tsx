@@ -1,43 +1,69 @@
 import type { Metadata } from "next";
-import Gallery from "@/components/Gallery";
-import VideoCard from "@/components/VideoCard";
-import { FLYERS, IMAGES, REELS, VIDEOS } from "@/content/library";
+import Image from "next/image";
+import Link from "next/link";
+import Script from "next/script";
+import CreativeLibrary from "@/components/CreativeLibrary";
+import { Icon } from "@/components/Icon";
+import { getCaptions, getCities, getEvent, getEvents, getLibrary, getRequests, libraryCount } from "@/lib/content";
+import { apDate } from "@/lib/format";
 
 export const metadata: Metadata = { title: "Creative library" };
 
-const Section = ({ id, eyebrow, title, sub, children }: { id: string; eyebrow: string; title: string; sub: string; children: React.ReactNode }) => (
-  <section id={id} className="scroll-mt-28 border-t border-gray py-20 first:border-t-0">
-    <div className="mb-12 flex flex-wrap items-end justify-between gap-6">
-      <div><p className="eyebrow">{eyebrow}</p><h2 className="display h-bar mt-4 text-[2.25rem] md:text-[2.875rem]">{title}</h2></div>
-      <p className="max-w-md text-lg leading-relaxed">{sub}</p>
-    </div>
-    {children}
-  </section>
-);
+// Before the hub went events-based this page was the Manhattan Beach library, so old shared links such as
+// /creative#flyers land on the always-on section of the same name. A note at the foot of the screen (bottom right from
+// 768px, clear of the first card in each grid) then points to that section of the Manhattan Beach library. It opens
+// only when the page is opened at one of those sections (an old link), never from the page's own section buttons,
+// because the script below runs once, after the page loads; it closes with Hide or the first move to another section.
+// Its link is a plain <a> because the script adds the section to it.
+const OLD = "manhattan-beach-2026-10-08"; // as in next.config.ts
+const NOTE_JS = `(() => {
+  const k = location.hash.slice(1), n = document.getElementById("old-link-note");
+  if (!n || !["images", "flyers", "videos", "reels"].includes(k)) return;
+  n.querySelector("a").hash = k; n.hidden = false;
+  const hide = () => { n.hidden = true; };
+  n.querySelector("button").addEventListener("click", hide);
+  addEventListener("hashchange", hide, { once: true });
+})();`;
 
+// The always-on membership creative, with each event's library one click away at the top.
 export default function Creative() {
+  const events = getEvents().filter((e) => e.kind === "campaign");
+  const cities = getCities();
+  const old = getEvent(OLD);
   return (
     <main className="mx-auto max-w-7xl px-5 md:px-8">
-      <header className="py-16 md:py-24">
-        <p className="eyebrow">Creative library</p>
-        <h1 className="display h-bar h-bar-lg mt-5 max-w-4xl text-[clamp(2.375rem,4.6vw,4rem)]">Every asset, ready to post, print and run.</h1>
-        <p className="lede mt-7 max-w-3xl">Designed in Sundae&apos;s brand from real assets only — Sundae&apos;s photography and logo, the Sacramento dinner photo and Shade Hotel&apos;s own Courtyard photos. Motion <span className="nw">B-roll</span> is AI-animated from those Courtyard photos (Kling 3.0 via Higgsfield). Videos and Reels are silent by design — add trending audio in-app for organic posts and a licensed track for ads.</p>
-        <nav className="mt-10 flex flex-wrap gap-2.5" aria-label="Library sections">
-          {[["#images", `Images · ${IMAGES.filter((a) => !a.variantOf).length}`], ["#flyers", `Flyers · ${FLYERS.length}`], ["#videos", `Videos · ${VIDEOS.length}`], ["#reels", `Reels · ${REELS.length}`], ["/captions", "Captions · 16"]].map(([h, l]) => <a key={h} href={h} className="btn btn-outline btn-sm">{l}</a>)}
-        </nav>
-      </header>
-      <Section id="images" eyebrow="Social images" title="10 images" sub="Feed (4:5), square, LinkedIn (1.91:1) and Stories (9:16). Each lists where it runs and which caption it pairs with.">
-        <Gallery items={IMAGES} base="/media/images" />
-      </Section>
-      <Section id="flyers" eyebrow="Flyers" title="14 flyers" sub="Print-ready PDFs (letter, 5×7 invitation, 4×6 table tent) plus digital squares and Stories, including the “add a zero” and “last roll call” series. QR codes go to the RSVP page or the membership intro call.">
-        <Gallery items={FLYERS} base="/media/flyers" aspect="aspect-[4/5]" />
-      </Section>
-      <Section id="videos" eyebrow="Videos" title="8 feed videos" sub="1920×1080 and 1080×1080 for LinkedIn, Facebook, YouTube and email. H.264 MP4.">
-        <div className="grid gap-6 md:grid-cols-2" data-stagger>{VIDEOS.map((a) => <VideoCard key={a.file} a={a} base="/media/videos" />)}</div>
-      </Section>
-      <Section id="reels" eyebrow="Instagram Reels" title="8 Reels" sub="1080×1920 with captions kept inside the Reels safe zone (clear of the top bar, the right-side buttons and the bottom caption area).">
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" data-stagger>{REELS.map((a) => <VideoCard key={a.file} a={a} base="/media/reels" />)}</div>
-      </Section>
+      <CreativeLibrary scope="brand" lib={getLibrary("brand")} base="/media" requests={getRequests("brand")}
+        captions={{ href: "/captions", count: getCaptions("brand").length }}
+        header={<>
+          <p className="eyebrow">Creative library</p>
+          <h1 className="display h-bar h-bar-lg mt-5 max-w-4xl text-[clamp(2.375rem,4.6vw,4rem)]">Every asset, ready to post, print and run.</h1>
+          <p className="lede mt-7 max-w-3xl">Each event has its own library. Below them is the always-on Sundae Membership creative that runs between and across events. Everything is designed in Sundae&apos;s brand from real assets only.</p>
+          {events.length > 0 && (
+            <div className="mt-12">
+              <h2 className="section-title">Event libraries</h2>
+              <div className="mt-5 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+                {events.map((e) => { const c = cities[e.citySlug]; return (
+                  <Link key={e.slug} href={`/events/${e.slug}/creative`} className="card hover-lift group flex items-center gap-5 p-4 pr-6">
+                    <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-mist">{c && <Image src={c.file} alt="" fill sizes="80px" className="object-cover" style={{ objectPosition: c.focus ?? "50% 50%" }} />}</div>
+                    <div className="min-w-0 flex-1"><p className="text-lg font-bold leading-snug">{e.city} · {apDate(e.date)}</p><p className="mt-0.5 text-base">{libraryCount(getLibrary(e.slug))} assets · {getCaptions(e.slug).length} captions</p></div>
+                    <Icon name="arrow-right" className="text-blue" />
+                  </Link>
+                ); })}
+              </div>
+            </div>
+          )}
+          <h2 className="display h-bar mt-16 text-[2rem] md:text-[2.5rem]">Always-on: Sundae Membership</h2>
+        </>} />
+      {old && (
+        <aside id="old-link-note" hidden aria-label={`${old.city} library`} className="fixed inset-x-4 bottom-4 z-40 flex flex-wrap items-center gap-x-5 gap-y-3 rounded-[1.25rem] border border-gray bg-white p-4 text-base leading-snug shadow-[0_24px_48px_-24px_rgba(74,74,74,.5)] md:inset-x-auto md:bottom-6 md:right-8 md:w-max md:max-w-[calc(100vw-4rem)] md:px-5">
+          <p className="min-w-0 flex-1 basis-60 md:max-w-sm">This link used to open the {old.city} library, which has moved to the event&apos;s page.</p>
+          <div className="flex flex-wrap items-center gap-2.5">
+            <a href={`/events/${OLD}/creative`} className="btn btn-blue btn-sm">{old.city} library <Icon name="arrow-right" /></a>
+            <button type="button" className="link px-1.5">Hide</button>
+          </div>
+        </aside>
+      )}
+      <Script id="old-link-note-js">{NOTE_JS}</Script>
     </main>
   );
 }

@@ -1,0 +1,8 @@
+{
+  "_note": "What an event's copy says about its host, by host name (event.json \"host\"): their titles, career facts and social handles, from their own published bio (sundae.com, LinkedIn), never invented. When an event has another host than its template, new-event.mjs lists and check-event.mjs fails every one of the template host's entries still in the event's text (titles and facts in any case; see factTokens in ap.mjs). Add a host here before their event is used as a template.",
+  "Josh Stech": {
+    "titles": ["co-founder and CEO", "Sundae's CEO", "Sundae’s CEO", "co-founder and CFO", "founding partner", "senior vice president of sales", "SVP of sales"],
+    "facts": ["LendingHome", "Purpose Built Investments", "Purpose Built", "PBI", "1,200+", "1,200", "Stanford", "B.A. in economics"],
+    "handles": ["@JoshStech"]
+  }
+}

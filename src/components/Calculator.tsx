@@ -79,7 +79,8 @@ export default function Calculator() {
           ))}
         </div>
         <LineChart title="Cumulative members — your inputs" sub="Signed Sundae Members, by month" labels={MONTHS} series={[{ name: "Your scenario", color: SERIES.blue, values: r.rows.map((x) => +x.cum.toFixed(1)) }]} />
-        <div className="card scroll-x p-6 md:p-7">
+        {/* scrolls sideways on phones, so it is a named, focusable region the keyboard can scroll */}
+        <div className="card scroll-x p-6 md:p-7" tabIndex={0} role="region" aria-label="Month-by-month results for your inputs">
           <table className="dtable min-w-[640px]">
             <thead><tr>{["Month", "Leads", "Per day", "Calls held", "FDDs", "Signed", "Members", "Revenue (cumulative)"].map((h) => <th key={h} className="!text-right first:!text-left last:!pr-0">{h}</th>)}</tr></thead>
             <tbody>{r.rows.map((x) => (

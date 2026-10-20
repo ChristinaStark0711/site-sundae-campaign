@@ -1,0 +1,48 @@
+{
+ "w": 1920,
+ "h": 1080,
+ "tag": "Oct. 8 \u00b7 Manhattan Beach",
+ "poster": 3,
+ "scenes": [
+  {
+   "type": "photo",
+   "dur": 4.6,
+   "img": "sac-dinner.jpg",
+   "pos": "50% 38%",
+   "label": "Sacramento \u00b7 Echo & Rig",
+   "kicker": "Last month",
+   "title": [
+    "A great night with",
+    "Sacramento investors"
+   ],
+   "overlay": "left"
+  },
+  {
+   "type": "title",
+   "dur": 3.8,
+   "kicker": "Bringing it to LA",
+   "title": [
+    "Next stop:",
+    "Manhattan Beach"
+   ],
+   "accent": 1,
+   "bulbs": true
+  },
+  {
+   "type": "clip",
+   "dur": 4.6,
+   "clip": "h-twilight-guests",
+   "kicker": "Thursday, Oct. 8 \u00b7 7 p.m.",
+   "title": [
+    "The Courtyard",
+    "at Shade Hotel"
+   ],
+   "sub": "Join Josh Stech and fellow LA-area investors",
+   "overlay": "left"
+  },
+  {
+   "type": "cta",
+   "dur": 4.4
+  }
+ ]
+}

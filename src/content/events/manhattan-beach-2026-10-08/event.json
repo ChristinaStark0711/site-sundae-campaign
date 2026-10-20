@@ -1,0 +1,80 @@
+{
+  "slug": "manhattan-beach-2026-10-08",
+  "kind": "campaign",
+  "name": "Private Dinner & Dialogue",
+  "audience": "Los Angeles real estate operators",
+  "city": "Manhattan Beach",
+  "state": "CA",
+  "citySlug": "manhattan-beach-ca",
+  "date": "2026-10-08",
+  "time": "7 p.m.",
+  "venue": "Shade Hotel Manhattan Beach",
+  "space": "The Courtyard",
+  "address": "1221 N. Valley Drive, Manhattan Beach, CA 90266",
+  "host": "Josh Stech",
+  "hostTitle": "co-founder and CEO of Sundae",
+  "rsvp": "https://site-sundae-event.vercel.app",
+  "media": "/media",
+  "prepared": "2026-10-01",
+  "headline": "Fill the Courtyard.",
+  "summary": "Sundae's private dinner for Los Angeles real estate operators, hosted by Josh Stech in the Courtyard at Shade Hotel in Manhattan Beach. Dinner and drinks served; the goal is qualified operators in every seat and intro calls booked at the table.",
+  "strategy": "Fill the Courtyard with qualified operators: the marketplace list and Josh's personal invitations first, a $5,000 paid sprint for reach, a qualifying RSVP page and a show-rate system.",
+  "creativeNote": "Designed in Sundae's brand from real assets only: Sundae's photography and logo, the Sacramento dinner photo and Shade Hotel's own Courtyard photos. Motion B-roll is AI-animated from those Courtyard photos (Kling 3.0 via Higgsfield). Videos and Reels are silent by design: add trending audio in-app for organic posts and a licensed track for ads.",
+  "sources": "Facts sourced from Sundae's dinner flyer and RSVP form, sundae.com and mb.shadehotel.com.",
+  "moves": [
+    [
+      "Point every invitation at the new RSVP page",
+      "No sign-in wall, six qualifying questions, routed into GoHighLevel via SHAI."
+    ],
+    [
+      "Email and text the LA marketplace buyers (opted in)",
+      "Sundae's built-in advantage: active operators who already bid on Sundae deals."
+    ],
+    [
+      "Josh personally invites the 50 most active LA buyers",
+      "Founder-written DMs and texts turn into seats at a high rate."
+    ],
+    [
+      "Launch the $5,000 paid sprint Friday",
+      "Meta and Google ads, plus LinkedIn Conversation Ads from Josh; stop prospecting Wednesday at noon."
+    ],
+    [
+      "Confirm every guest by phone Tuesday and Wednesday",
+      "Free dinners lose 30% to 40% to no-shows; the SHAI voice agent and team close that gap."
+    ]
+  ],
+  "plans": [
+    {
+      "slug": "organic",
+      "file": "01-event-organic-plan.md",
+      "title": "Organic plan — fill the Courtyard",
+      "blurb": "Seat qualification bar, the six organic channels, the seven-day calendar, confirmations, run of show and follow-up."
+    },
+    {
+      "slug": "paid",
+      "file": "02-event-paid-plan.md",
+      "title": "Paid plan — six-day ad sprint",
+      "blurb": "$5,000 split across Meta, LinkedIn, Google and retargeting; audiences, creative rotation, pacing and cut rules."
+    },
+    {
+      "slug": "filming",
+      "file": "06-filming-gameplan.md",
+      "title": "Filming gameplan",
+      "blurb": "Crew, dual-lav audio, camera settings, positions, minute-by-minute capture, interviews, photos, releases and edit turnaround."
+    },
+    {
+      "slug": "action-plan",
+      "file": "07-action-plan.md",
+      "title": "What needs to be done",
+      "blurb": "Owners and deadlines from tonight through month 2 — and what Sundae must supply."
+    }
+  ],
+  "actuals": null,
+  "_allow": [
+    "Sacramento",
+    "Echo & Rig"
+  ],
+  "_places": [
+    "South Bay"
+  ]
+}

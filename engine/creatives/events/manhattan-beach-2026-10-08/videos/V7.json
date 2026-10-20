@@ -1,0 +1,26 @@
+{
+ "w": 1080,
+ "h": 1080,
+ "tag": "Oct. 8 \u00b7 Manhattan Beach",
+ "poster": 3,
+ "scenes": [
+  {
+   "type": "date",
+   "dur": 5.0,
+   "img": "cy-night-peek.jpg",
+   "title": [
+    "Seats are limited"
+   ],
+   "sub": "LA real estate operators \u00b7 Dinner and drinks served"
+  },
+  {
+   "type": "josh",
+   "dur": 4.2,
+   "kicker": "Hosted by"
+  },
+  {
+   "type": "cta",
+   "dur": 4.6
+  }
+ ]
+}
