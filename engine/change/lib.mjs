@@ -94,14 +94,10 @@ export function newClaims(oldText, newText) {
   const o = claimCounts(body(oldText)), n = claimCounts(body(newText));
   return [...n].filter(([w, k]) => k > (o.get(w) || 0)).map(([w]) => w);
 }
-// The event facts that must stay on the asset if they were on it: present in the original's visible text, gone from
-// the candidate's.
-// Event facts that must stay on the asset if they were on it: every mention kept (a replaced mention counts, not only a
-// fact that disappears entirely), compared on the text a viewer can see.
+// Event facts that must stay on the asset if they were on it, compared on the text a viewer can see: a fact that
+// disappears, or one mention of it replaced by something else, is held.
 export function missingFacts(event, oldVisible, newVisible) {
   const norm = (t) => clean(t).replace(/\s+/g, ' ').toLowerCase();
-  const flatV = (v) => (Array.isArray(v) ? v.flat().join(' ') : v);
-  const o = norm(flatV(oldVisible)), n = norm(flatV(newVisible));
   const keys = [];
   if (event) {
     const [, m, d] = (event.date || '').split('-').map(Number);
@@ -109,11 +105,20 @@ export function missingFacts(event, oldVisible, newVisible) {
     const venueCore = event.venue?.replace(new RegExp(`\\s+${event.city}$`, 'i'), ''); // "Shade Hotel Manhattan Beach" -> "Shade Hotel"
     keys.push(d ? `${MON[m - 1]} ${d}` : null, event.time, venueCore, event.venue?.split(' ')[0], event.space, event.city, event.address?.split(',')[0], event.host);
   }
-  const count = (t, k) => t.split(k).length - 1;
-  // a video's visible text comes per scene, one entry per sampled moment: a mention counts once per scene (its best
-  // moment), so changing a scene's timing or wording can't make a fact look dropped or doubled
-  const total = (v, k) => (Array.isArray(v) ? v.reduce((sum, sc) => sum + Math.max(0, ...sc.map((x) => count(norm(x), k))), 0) : count(v, k));
-  return [...new Set(keys.filter(Boolean).map(norm))].filter((k) => total(Array.isArray(newVisible) ? newVisible : n, k) < total(Array.isArray(oldVisible) ? oldVisible : o, k));
+  // a still is one scene with one moment; a video's visible text comes per scene, one entry per sampled moment, and a
+  // mention counts once per scene (its best moment), so a scene's timing can't make a fact look dropped or doubled
+  const scenes = (v) => (Array.isArray(v) ? v : [[v]]);
+  const os = scenes(oldVisible), ns = scenes(newVisible);
+  const count = (t, k) => norm(t).split(k).length - 1;
+  const mentions = (sc, k) => Math.max(0, ...sc.map((x) => count(x, k)));
+  const total = (ss, k) => ss.reduce((sum, sc) => sum + mentions(sc, k), 0);
+  const where = (ss, k) => ss.filter((sc) => mentions(sc, k) > 0).length;
+  // fewer mentions is a dropped (or replaced) fact unless it only collapsed a repeat: every scene that showed the fact
+  // still shows it, and no new words came in that could have replaced a mention ("The Rooftop Terrace" for one of two
+  // "The Courtyard"s). A kicker that now names the city, so the video drops its own repeat of the tag, is not a drop.
+  const words = (ss) => new Set(norm(ss.flat().join(' ')).match(/[\p{L}\p{N}]+/gu) || []);
+  const ow = words(os), added = [...words(ns)].some((w) => !ow.has(w));
+  return [...new Set(keys.filter(Boolean).map(norm))].filter((k) => { const o = total(os, k), n = total(ns, k); return n < o && (n === 0 || added || where(ns, k) < where(os, k)); });
 }
 
 // Wording that must survive any edit: legal and compliance sentences (franchise disclosures, "not an offer", earnings
@@ -234,7 +239,7 @@ function specStringProblems(v) {
     else if (!close && rest.trim() && !/^\s*class="[a-z0-9 _-]*"\s*\/?$/i.test(rest) && !/^\s*\/$/.test(rest)) out.push(`has attributes on <${tag}>`);
   }
   if (/<(?!\s*\/?\s*[a-zA-Z])/.test(v.replace(/&lt;/g, ''))) out.push('has a stray "<"');
-  if (/javascript:|data:|https?:\/\/|\/\//i.test(v)) out.push('contains a URL');
+  if (/javascript:|data:[a-z]+\/|data:[^\s]*base64|https?:\/\/|\/\//i.test(v)) out.push('contains a URL'); // "data: 20,000 deals" is wording
   return out;
 }
 
