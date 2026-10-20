@@ -6,7 +6,8 @@ import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { CREDENTIALS, OUT, REPO, readJSON } from './lib.mjs';
 
-const { paths, deleted } = readJSON(path.join(OUT, 'allowed.json'));
+const { paths, deleted, noop } = readJSON(path.join(OUT, 'allowed.json'));
+if (noop) { console.log('[guard] ok: nothing to apply'); process.exit(0); }
 const allowed = new Set(paths), mayDelete = new Set(deleted || []);
 const status = execFileSync('git', ['status', '--porcelain', '-uall', '-z'], { cwd: REPO }).toString().split('\0').filter(Boolean);
 const changed = status.map((l) => l.slice(3));
@@ -20,8 +21,10 @@ for (const p of changed) {
   if (size > limit) errors.push(`${p} is ${(size / 1e6).toFixed(1)} MB (limit ${(limit / 1e6).toFixed(1)} MB)`);
   if (/\.(json|html)$/.test(p)) {
     const t = fs.readFileSync(full, 'utf8');
-    if (/\.json$/.test(p) && new RegExp(CREDENTIALS.source).test(t)) errors.push(`${p} contains something that looks like a credential`);
-    if (/sk-ant-[A-Za-z0-9_-]{8,}|github_pat_[A-Za-z0-9_]{20,}|gh[pousr]_[A-Za-z0-9]{30,}|-----BEGIN [A-Z ]*PRIVATE KEY/.test(t)) errors.push(`${p} contains something that looks like a credential`);
+    // JSON: check the string values as written, not the escaped file text (an escape such as \u0001 must not glue onto a word)
+    const strings = (v) => (typeof v === 'string' ? [v] : Array.isArray(v) ? v.flatMap(strings) : v && typeof v === 'object' ? Object.values(v).flatMap(strings) : []);
+    if (/\.json$/.test(p)) { try { if (strings(JSON.parse(t)).some((x) => new RegExp(CREDENTIALS.source).test(x))) errors.push(`${p} contains something that looks like a credential`); } catch { /* reported below */ } }
+    else if (/sk-ant-[A-Za-z0-9_-]{8,}|github_pat_[A-Za-z0-9_]{20,}|gh[pousr]_[A-Za-z0-9]{30,}|-----BEGIN [A-Z ]*PRIVATE KEY/.test(t)) errors.push(`${p} contains something that looks like a credential`);
     if (/\.json$/.test(p)) { try { JSON.parse(t); } catch { errors.push(`${p} is not valid JSON`); } }
   }
 }

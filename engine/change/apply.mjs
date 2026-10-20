@@ -15,6 +15,14 @@ const r = readJSON(path.join(OUT, 'result.json'));
 const allowed = [], deleted = [];
 const id = r.request.id;
 const logPath = `src/content/requests/${id}.json`;
+// idempotent against main: a request already logged there (or an approval whose request is no longer held, e.g. the
+// same proposal approved twice) changes nothing
+const onMain = readJSON(path.join(REPO, logPath), null);
+if (onMain && (!r.request.approved || onMain.status !== 'held')) {
+  writeJSON(path.join(OUT, 'allowed.json'), { paths: [], deleted: [], noop: true });
+  log('nothing to apply: request', id, 'is already', onMain.status, 'on main');
+  process.exit(0);
+}
 const record = (extra = {}) => {
   const rec = { ...r.log, ...extra, text: redact(r.log.text) };
   writeJSON(path.join(REPO, logPath), Object.fromEntries(Object.entries(rec).filter(([, v]) => v !== undefined)));
@@ -23,17 +31,21 @@ const record = (extra = {}) => {
 const failNow = (reason) => { const { result, proposal, ...rest } = r.log; r.log = { ...rest, status: 'failed', reason }; r.status = 'failed'; };
 const A = resolveAsset(r.request.asset);
 const heldSrc = A && `engine/held/${id}.${A.ext}`, heldImg = `public/media/held/${id}.jpg`;
-const removeHeld = () => { for (const p of [heldSrc, heldImg]) if (p && fs.existsSync(path.join(REPO, p))) { fs.rmSync(path.join(REPO, p)); deleted.push(p); } };
+const heldDir = path.join(REPO, 'engine/held');
+const removeHeld = () => {
+  const ps = [heldImg, ...(fs.existsSync(heldDir) ? fs.readdirSync(heldDir).filter((f) => f.startsWith(`${id}.`)).map((f) => `engine/held/${f}`) : [])];
+  for (const p of ps) if (fs.existsSync(path.join(REPO, p))) { fs.rmSync(path.join(REPO, p)); deleted.push(p); }
+};
 
 if (r.status === 'done') {
   const { files, library } = r.apply;
+  if (!A) failNow('The asset is no longer in the library, so nothing was changed.');
   const libFile = path.join(REPO, library.path);
   const lib = readJSON(libFile);
   const list = lib[library.kind];
   const current = A && fs.existsSync(A.source) ? crypto.createHash('sha256').update(fs.readFileSync(A.source)).digest('hex') : null;
   let plan = null;
-  if (!A) failNow('The asset no longer exists, so nothing was changed.');
-  else if (r.request.mode === 'update' && current !== r.sourceHash) failNow(r.request.candidate ? 'The asset changed after this proposal was made, so applying it would undo the newer change. Nothing was changed; the request can be sent again.' : 'This asset changed while the request was being worked on, so nothing was changed. It can be sent again.');
+  if (!A) { /* failed above */ } else if (r.request.mode === 'update' && current !== r.sourceHash) failNow(r.request.candidate ? 'The asset changed after this proposal was made, so applying it would undo the newer change. Nothing was changed; the request can be sent again.' : 'This asset changed while the request was being worked on, so nothing was changed. It can be sent again.');
   else if (library.op === 'replace') {
     const i = list.findIndex((a) => a.id === library.entry.id);
     if (i < 0) failNow('The asset is gone from the library, so nothing was changed.');

@@ -14,17 +14,18 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { auditSource } from './audit.mjs';
-import { ENGINE, OUT, REPO, REQ, checkSource, kitAssets, kitClips, kitImageNotes, log, missingFacts, newClaims, newFacts, newSpecNumbers, nextVariantId, readJSON, redact, redactDeep, resolveAsset, slugify, writeJSON } from './lib.mjs';
+import { ENGINE, OUT, REPO, REQ, checkSource, kitAssets, kitClips, kitImageNotes, log, lostWording, missingFacts, newClaims, newFacts, newNames, newSpecNumbers, nextVariantId, readJSON, redact, redactDeep, resolveAsset, slugify, writeJSON } from './lib.mjs';
 
 const MODEL = process.env.CHANGE_MODEL || 'claude-opus-5-5';
 const DAILY_CAP = Number(process.env.CHANGE_DAILY_CAP || 30);
 const UPDATES = (process.env.CHANGE_UPDATES || 'auto').toLowerCase(); // "auto" (as asked for) or "approve"
 const MAX_CALLS = 5;
 const req = readJSON(path.join(REQ, 'request.json'));
+if (fs.existsSync(path.join(OUT, 'result.json'))) { log('already decided by intake'); process.exit(0); } // e.g. an approval closed by intake
 const A = resolveAsset(req.asset);
 const WORK = path.join(REQ, 'work');
 const CAND = path.join(ENGINE, '.cache/candidates', A.kind); // inside engine/ so the render server can serve it
-fs.rmSync(OUT, { recursive: true, force: true }); fs.mkdirSync(path.join(OUT, 'files'), { recursive: true });
+fs.mkdirSync(path.join(OUT, 'files'), { recursive: true });
 fs.mkdirSync(WORK, { recursive: true }); fs.mkdirSync(CAND, { recursive: true });
 const usage = { input_tokens: 0, output_tokens: 0, calls: 0 };
 const today = new Date().toISOString().slice(0, 10);
@@ -37,7 +38,7 @@ function finish(status, extra = {}) {
   const logRec = {
     id: req.id, at: req.at, asset: req.asset, assetTitle: A.entry.title, mode: req.mode, text: req.text, status,
     ...(extra.summary ? { summary: extra.summary } : {}), ...(extra.reason ? { reason: extra.reason } : {}),
-    ...(extra.result ? { result: extra.result } : {}), ...(extra.proposal ? { proposal: extra.proposal } : {}), ...(req.approved ? { approved: true } : {}),
+    ...(extra.result ? { result: extra.result } : {}), ...(extra.proposal ? { proposal: extra.proposal } : {}), ...(req.approved && status !== 'held' ? { approved: true } : {}),
     finishedAt: new Date().toISOString(), model: usage.calls ? MODEL : undefined, usage: usage.calls ? usage : undefined,
   };
   writeJSON(path.join(OUT, 'result.json'), { status, request: req, sourceHash, log: redactDeep(logRec), ...(extra.apply ? { apply: extra.apply } : {}), ...(extra.held ? { held: extra.held } : {}) });
@@ -48,7 +49,8 @@ const fail = (reason, summary) => finish('failed', { reason, summary });
 const hold = (reason, summary) => finish('held', { reason, summary });
 
 // --- daily cap: runs of this workflow started today, counted by GitHub (intake.mjs), so parallel runs can't all slip under it
-if (!req.approved && (req.runsToday ?? 0) > DAILY_CAP) hold(`Today's limit of ${DAILY_CAP} automatic changes is used up. The account owner can approve this request to run it now, or it can be sent again tomorrow.`);
+if (!req.approved && req.runsToday == null) hold('Today\'s limit of automatic changes couldn\'t be checked, so this request waits. The account owner can approve it to run it now, or it can be sent again later.');
+if (!req.approved && req.runsToday > DAILY_CAP) hold(`Today's limit of ${DAILY_CAP} automatic changes is used up. The account owner can approve this request to run it now, or it can be sent again tomorrow.`);
 
 // --- helpers
 const sh = (args, timeout) => execFileSync(process.execPath, args, { cwd: REPO, timeout, stdio: ['ignore', 'pipe', 'pipe'], maxBuffer: 64 << 20 }).toString();
@@ -146,23 +148,32 @@ async function gate(src) {
   const okTags = new Set([...BASE_TAGS, ...origAudit.tags]), okAttrs = new Set(origAudit.attrs);
   for (const t of au.tags) if (!okTags.has(t)) p.push(`adds a <${t}> element`);
   for (const a of au.attrs) if (!okAttrs.has(a) && !BASE_ATTRS.test(a)) p.push(`adds a "${a.split(':')[1]}" attribute on <${a.split(':')[0]}>`);
-  // images and drawn shapes the original didn't have: text inside them is invisible to the text checks
-  const clipDir = (u) => u.replace(/\/f_\d+\.jpg$/, '/');
-  const had = new Set(origAudit.images.map(clipDir)), media = [];
-  for (const u of new Set(au.images.map(clipDir))) {
-    if (had.has(u)) continue;
-    const note = kitImageNotes(u, A.scopeDir);
-    if (note) media.push(note);
-    const clip = /^\/cache\/clips\/([^/]+)\//.exec(u)?.[1];
-    const owner = clip && readJSON(path.join(ENGINE, 'kit/assets.json'), { clips: {} }).clips[clip]?.event;
-    if (owner && `events/${owner}` !== A.scopeDir) media.push(`adds the ${clip} footage from another event`);
+  // kit files the page really fetched that the original didn't: text inside an image is invisible to the text checks
+  const assets = readJSON(path.join(ENGINE, 'kit/assets.json'), { assets: {}, clips: {} });
+  const had = new Set(origAudit.fetched), media = [];
+  for (const f of au.fetched) {
+    if (had.has(f)) continue;
+    const asset = /^\/kit\/assets\/(.+)$/.exec(f)?.[1], clip = /^\/cache\/clips\/([^/]+)\//.exec(f)?.[1];
+    const meta = asset ? assets.assets[asset] : clip ? assets.clips[clip] : null;
+    if (meta?.use === 'retired') p.push(`uses ${asset}, a retired file`);
+    else if (asset) { const note = kitImageNotes(f, A.scopeDir); if (note) media.push(note); }
+    if (clip && meta?.event && `events/${meta.event}` !== A.scopeDir) media.push(`adds the ${clip} footage from another event`);
   }
-  if (au.paths.some((d) => !origAudit.paths.includes(d) && !KNOWN_PATHS.has(d))) media.push('adds a drawn shape');
-  return { problems: p.slice(0, 6), file, audit: au, media, facts: [...new Set([...newFacts(origAudit.text, au.text), ...(A.isVideo ? newSpecNumbers(original, src) : [])])], claims: newClaims(origAudit.text, au.text), missing: missingFacts(ev, origAudit.visible, au.visible) };
+  // structure: adding, removing or moving parts of the layout (or drawing new shapes) waits for approval; wording and
+  // styling don't change the skeleton
+  if (au.skeleton.join('\n') !== origAudit.skeleton.join('\n')) media.push('changes the layout itself (adds, removes or moves parts, or draws new shapes)');
+  const newRisky = au.risky.filter((r) => !origAudit.risky.includes(r));
+  if (newRisky.length) media.push(`changes how parts are shown (${newRisky.slice(0, 2).join('; ')})`);
+  if (origAudit.red && !au.red) p.push('leaves no Sundae red on the canvas');
+  const both = (x) => `${x.text}\n${x.reader}`;
+  return {
+    problems: p.slice(0, 6), file, audit: au, media,
+    facts: [...new Set([...newFacts(both(origAudit), both(au)), ...(A.isVideo ? newSpecNumbers(original, src) : [])])],
+    claims: newClaims(both(origAudit), both(au)),
+    missing: [...missingFacts(ev, origAudit.visible, au.visible), ...lostWording(origAudit.reader, au.reader).map((x) => `§${x}`), ...newNames(ev, origAudit.reader, au.reader).map((x) => `+${x}`)],
+  };
 }
-const describeFacts = (g) => [...g.facts.map((t) => `adds "${t}"`), ...g.claims.map((t) => `adds "${t}"`), ...g.missing.map((t) => `drops ${/^["a]/.test(t) ? t : `"${t}"`}`), ...g.media];
-// SVG paths already used anywhere in the creative (arrows and icons): a path outside this set could spell out words
-const KNOWN_PATHS = new Set([...(function* walk(d) { for (const e of fs.readdirSync(d, { withFileTypes: true })) { const p = path.join(d, e.name); if (e.isDirectory()) yield* walk(p); else if (e.name.endsWith('.html')) for (const m of fs.readFileSync(p, 'utf8').matchAll(/\sd="([^"]+)"/g)) yield m[1].replace(/\s+/g, ' ').trim(); } })(path.join(ENGINE, 'creatives')), ...[...fs.readFileSync(path.join(ENGINE, 'kit/engine.js'), 'utf8').matchAll(/\sd="([^"]+)"/g)].map((m) => m[1].replace(/\s+/g, ' ').trim())]);
+const describeFacts = (g) => [...g.facts.map((t) => `adds "${t}"`), ...g.claims.map((t) => `adds "${t}"`), ...g.missing.map((t) => (t.startsWith('§') ? t.slice(1) : t.startsWith('+') ? `names ${t.slice(1)}` : `drops "${t}"`)), ...g.media];
 // keep a proposal the owner can approve exactly as shown: its source and a preview image
 function holdProposal(g, reason, summary, variantTitle) {
   // only a publishable proposal reaches the owner: it must pass the brand lint first
@@ -200,7 +211,7 @@ try {
     }
     summary = r.summary; variantTitle = r.variant_title && redact(r.variant_title).replace(/\[removed\]/g, '').trim();
     const changes = describeFacts(g);
-    if (changes.length) holdProposal(g, `This would change what the asset says (${changes.slice(0, 4).join('; ')}). Facts, claims and contact details need the account owner's approval.`, summary, r.variant_title);
+    if (changes.length) holdProposal(g, `This needs the account owner's approval: it ${changes.slice(0, 4).join('; ')}.`, summary, r.variant_title);
     if (UPDATES === 'approve' && req.mode === 'update') holdProposal(g, 'Updates to a published asset wait for the account owner\'s approval.', summary, r.variant_title);
 
     // preview, lint, review; a corrected source is gated, linted and reviewed again
@@ -218,7 +229,7 @@ try {
       g = await gate(src);
       if (g.problems.length) fail(`The corrected edit couldn't be used: it ${g.problems[0]}. Nothing was changed.`, summary);
       const c2 = describeFacts(g);
-      if (c2.length) holdProposal(g, `This would change what the asset says (${c2.slice(0, 4).join('; ')}). Facts, claims and contact details need the account owner's approval.`, summary, variantTitle);
+      if (c2.length) holdProposal(g, `This needs the account owner's approval: it ${c2.slice(0, 4).join('; ')}.`, summary, variantTitle);
     }
   }
 
@@ -253,6 +264,6 @@ try {
 } catch (e) {
   console.error(String(e?.stack || e).split('\n').slice(0, 3).join('\n')); // no request text or model output in the public log
   // an approval that breaks for a temporary reason keeps its proposal, so the owner can simply approve it again
-  if (req.candidate) finish('held', { summary: req.summary, reason: 'The approval didn\'t go through because of a temporary error. Approve it again.', proposal: req.proposal });
+  if (req.approved) finish('held', { summary: req.summary, reason: 'The approval didn\'t go through because of a temporary error. Approve it again.', ...(req.proposal ? { proposal: req.proposal } : {}) });
   fail('Something went wrong while making this change, so nothing was changed. It can be sent again.');
 }

@@ -82,6 +82,8 @@ jobs:
               node engine/change/fail.mjs "The change couldn't be published safely, so nothing was changed. It can be sent again."
             elif ! { npm ci --no-audit --no-fund && npm run build; }; then
               node engine/change/fail.mjs "The site didn't build with this change, so it was not published. It can be sent again."
+            else
+              touch .request/out/checked # push.sh publishes a "done" change only with this mark
             fi
           fi
 
@@ -90,6 +92,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
+          CHANGE_REQUIRE_CHECK: "1"
         run: |
           [ -f .request/out/result.json ] || node engine/change/fail.mjs
           bash engine/change/push.sh

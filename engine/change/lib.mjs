@@ -54,40 +54,80 @@ const FACT_RE = new RegExp([
   '\\d[\\d,]*(?:\\.\\d+)?\\+?',
   '\\b(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\\b',
   '@[A-Za-z0-9_.]{2,}',
+  // spelled-out numbers, times and money (AP style spells out one through nine, so "nine seats" is a fact too)
+  '\\b(?:zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundreds?|thousands?|millions?|billions?|dozens?|half|first|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth|noon|midnight|o\'clock|dollars?|bucks|cents?|percent)\\b',
 ].join('|'), 'gi');
-export const factTokens = (text) => new Set((text.normalize('NFKC').match(FACT_RE) || []).map((t) => t.replace(/\s+/g, ' ').trim().toLowerCase()));
-// Words that make a claim, an offer or a contact the original did not make.
-const CLAIM_RE = /\b(?:cancel(?:l)?ed|cancel(?:l)?ation|postponed?|rescheduled?|relocated|moved to|sold out|free|gift ?cards?|giveaways?|prizes?|raffle|win|winners?|guarantee[ds]?|risk[- ]free|earn(?:ings)?|income|profits?|returns?|roi|passive|wealth|millionaire|refunds?|discounts?|promo(?: code)?|coupons?|deals? of|crypto|bitcoin|click|dm|whatsapp|telegram|venmo|cash ?app|zelle|paypal|text us|call us|email us|register at|sign up at|password|login)\b/gi;
-export const claimWords = (text) => new Set((text.normalize('NFKC').match(CLAIM_RE) || []).map((t) => t.toLowerCase().replace(/\s+/g, ' ')));
+// invisible characters (zero-width spaces, soft hyphens, joiners) are removed first, so they can't split a word
+export const clean = (t) => String(t).normalize('NFKC').replace(/[\p{Cf}\u00ad\u200b-\u200d\u2060\ufeff]/gu, '');
+export const factTokens = (text) => new Set((clean(text).match(FACT_RE) || []).map((t) => t.replace(/\s+/g, ' ').trim().toLowerCase()));
+// Phrases that make a claim, an offer or a contact the original did not make. Phrases, not bare words, so plain wording
+// ("feel free to apply", "win more deals") isn't caught; compared by stem, so "profits" is not new next to "profit".
+const CLAIM_RE = /\b(?:cancel+(?:ed|ation)|postpone[ds]?|reschedule[ds]?|relocated|moved to|sold out|(?:for|is|it's|entry is|admission is|100%) free|free (?:dinner|meal|tickets?|seats?|entry|admission|gifts?|money|cash|trial)|risk[- ]free|gift ?cards?|giveaways?|prizes?|raffles?|sweepstakes|chance to win|win (?:a|an|free|cash|\$)|winners?|guarantee[ds]?|guaranteed returns|earnings|income|passive income|profits?|returns? on|roi|wealth|millionaires?|get rich|refunds?|discounts?|promo(?: code)?|coupons?|deal of the|crypto|bitcoin|click (?:here|the link)|dm (?:me|us)|whatsapp|telegram|signal app|venmo|cash ?app|zelle|paypal|text (?:me|us)|call (?:me|us)|email (?:me|us)|register at|sign up at|password|log ?in)\b/gi;
+const stem = (w) => w.toLowerCase().replace(/\s+/g, ' ').replace(/(?:es|s|ed)$/, '');
+export const claimWords = (text) => new Set((clean(text).match(CLAIM_RE) || []).map(stem));
 const minus = (a, b) => [...a].filter((t) => !b.has(t));
 // What the candidate's rendered text adds compared with the original's.
 export const newFacts = (oldText, newText) => minus(factTokens(newText), factTokens(oldText));
 export const newClaims = (oldText, newText) => minus(claimWords(newText), claimWords(oldText));
 // The event facts that must stay on the asset if they were on it: present in the original's visible text, gone from
 // the candidate's.
+// Event facts that must stay on the asset if they were on it: every mention kept (a replaced mention counts, not only a
+// fact that disappears entirely), compared on the text a viewer can see.
 export function missingFacts(event, oldVisible, newVisible) {
-  const norm = (t) => t.normalize('NFKC').replace(/\s+/g, ' ').toLowerCase();
+  const norm = (t) => clean(t).replace(/\s+/g, ' ').toLowerCase();
   const o = norm(oldVisible), n = norm(newVisible);
   const keys = [];
   if (event) {
     const [, m, d] = (event.date || '').split('-').map(Number);
     const MON = ['Jan.', 'Feb.', 'March', 'April', 'May', 'June', 'July', 'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec.'];
     const venueCore = event.venue?.replace(new RegExp(`\\s+${event.city}$`, 'i'), ''); // "Shade Hotel Manhattan Beach" -> "Shade Hotel"
-    keys.push(d ? `${MON[m - 1]} ${d}` : null, event.time, event.venue, venueCore, event.venue?.split(' ')[0], event.space, event.city, event.address?.split(',')[0], event.host);
+    keys.push(d ? `${MON[m - 1]} ${d}` : null, event.time, venueCore, event.venue?.split(' ')[0], event.space, event.city, event.address?.split(',')[0], event.host);
   }
-  // offer metrics must read as averages (BRAND-SPEC rule 7): losing "average" or a footnote asterisk is a fact change
-  const count = (t, re) => (t.match(re) || []).length;
-  const lost = [];
-  if (count(n, /\baverages?\b/g) < count(o, /\baverages?\b/g)) lost.push('"an average of" wording');
-  if (count(n, /\*/g) < count(o, /\*/g)) lost.push('a footnote asterisk');
-  return [...new Set(keys.filter(Boolean).map(norm))].filter((k) => o.includes(k) && !n.includes(k)).concat(lost);
+  const count = (t, k) => t.split(k).length - 1;
+  return [...new Set(keys.filter(Boolean).map(norm))].filter((k) => count(n, k) < count(o, k));
 }
+
+// Wording that must survive any edit: legal and compliance sentences (franchise disclosures, "not an offer", earnings
+// disclaimers, footnotes) and the "average" qualifier on offer metrics (BRAND-SPEC rule 7). Compared on reader text.
+const LEGAL_RE = /\b(?:franchise|disclosure|FDD|not an offer|offer to sell|required by law|representations?|earnings|financial[- ]performance|disclaimer|terms|conditions|restrictions apply|licensed|license|equal housing|brokerage|DRE|NMLS|average)\b/i;
+const sentences = (t) => clean(t).split(/(?<=[.!?])\s+|\n+/).map((x) => x.replace(/\s+/g, ' ').trim()).filter((x) => x.length > 12);
+export function lostWording(oldReader, newReader) {
+  const n = clean(newReader).replace(/\s+/g, ' ').toLowerCase();
+  const lost = sentences(oldReader).filter((x) => LEGAL_RE.test(x) && !n.includes(x.toLowerCase()));
+  // a metric that read as an average (or carried a footnote asterisk) must still do so wherever it appears
+  const qualified = (t) => new Set([...clean(t).replace(/\s+/g, ' ').matchAll(/\baverage(?: of)?\s+([\d,.]+\+?)|([\d,.]+\+?)\s*\*/gi)].map((m) => m[1] || m[2]));
+  const nums = (t) => new Set(clean(t).match(/[\d,.]*\d\+?/g) || []);
+  const oq = qualified(oldReader), nq = qualified(newReader), nn = nums(newReader);
+  const unq = [...oq].filter((x) => nn.has(x) && !nq.has(x));
+  return [...lost.map((x) => `drops the wording "${x.length > 70 ? x.slice(0, 67) + '…' : x}"`), ...unq.map((x) => `shows ${x} without "an average of" or its footnote`)];
+}
+
+// A new place or person: a capitalized name after "at", "in", "with", "hosted by", "featuring", "venue" that neither
+// the original nor the event record has. The lead word counts lowercase anywhere, capitalized where a line or sentence
+// starts ("With Elon Musk"), and in capitals anywhere (innerText applies text-transform). A name that runs onto the next
+// line is checked line by line, so two known lines that merely changed places don't read as a new name.
+const NAME_LEADS = ['at', 'in', 'with', 'hosted by', 'featuring', 'venue:?', 'host:?', 'speaker:?', 'by'];
+const leads = (f) => NAME_LEADS.map(f).join('|');
+const NAME_RE = new RegExp(String.raw`(?:\b(?:${leads((w) => w)})|(?<=(?:^|[.!?:•·|—–])\s*)(?:${leads((w) => w[0].toUpperCase() + w.slice(1))})|\b(?:${leads((w) => w.toUpperCase())}))\s+((?:the\s+)?\p{Lu}[\p{L}\p{M}\d_'’&.-]*(?:\s+(?:of\s+|&\s+|the\s+)?\p{Lu}[\p{L}\p{M}\d_'’&.-]*)*)`, 'gmu');
+export function newNames(event, oldReader, newReader) {
+  const flat = (t) => t.replace(/\s+/g, ' ').trim();
+  const known = flat(clean([oldReader, event ? Object.values(event).filter((v) => typeof v === 'string').join(' ') : ''].join(' '))).toLowerCase();
+  const out = new Set();
+  for (const m of clean(newReader).matchAll(NAME_RE)) {
+    for (const piece of m[1].split(/\s*\n\s*/)) {
+      const name = flat(piece.replace(/^the\s+/i, '').replace(/[.'’&-]+$/, '')); // "Manhattan Beach." is Manhattan Beach
+      if (name.length > 2 && !known.includes(name.toLowerCase()) && !/^(?:Sundae|SHAI|Membership|Josh|Dinner|Dialogue|Private)$/i.test(name)) out.add(name);
+    }
+  }
+  return [...out];
+}
+
 // Numbers a video spec shows on screen (counters such as {"num": 20000}); layout numbers are left out. Compared as
 // facts directly, because a counter animates and its rendered text depends on the moment sampled.
-const LAYOUT_NUMS = new Set(['dur', 'accent', 'w', 'h', 'poster', 'frames', 'gx', 'gy', 'crf']);
+const SHOWN_NUMS = new Set(['num']); // every other number in a spec is layout (sizes, timings, positions, zoom)
 export function specNumbers(src) {
   const out = new Set();
-  const walk = (v, k) => { if (typeof v === 'number') { if (!LAYOUT_NUMS.has(k)) out.add(`${k} ${v}`); } else if (Array.isArray(v)) v.forEach((x) => walk(x, k)); else if (v && typeof v === 'object') for (const [kk, vv] of Object.entries(v)) walk(vv, kk); };
+  const walk = (v, k) => { if (typeof v === 'number') { if (SHOWN_NUMS.has(k)) out.add(`${k} ${v}`); } else if (Array.isArray(v)) v.forEach((x) => walk(x, k)); else if (v && typeof v === 'object') for (const [kk, vv] of Object.entries(v)) walk(vv, kk); };
   try { walk(JSON.parse(src), ''); } catch { /* checkSource reports invalid JSON */ }
   return out;
 }
@@ -95,7 +135,7 @@ export const newSpecNumbers = (oldSrc, newSrc) => minus(specNumbers(newSrc), spe
 
 // Credential-like strings never reach the public log. Keep in step with CREDENTIAL in src/app/api/requests/route.ts
 // (which refuses them up front) and with guard.mjs (which refuses to commit them).
-export const CREDENTIALS = /sk-ant-[A-Za-z0-9_-]{6,}|github_pat_[A-Za-z0-9_]{10,}|gh[pousr]_[A-Za-z0-9]{10,}|AKIA[0-9A-Z]{12,}|ASIA[0-9A-Z]{12,}|xox[abpr]-[A-Za-z0-9-]{10,}|AIza[0-9A-Za-z_-]{30,}|[sr]k_(?:live|test)_[0-9A-Za-z]{10,}|SK[0-9a-fA-F]{32}|-----BEGIN [A-Z ]*PRIVATE KEY-----[\s\S]*?(?:-----END [A-Z ]*PRIVATE KEY-----|$)|(?=[A-Za-z0-9/+=]*\d)(?=[A-Za-z0-9/+=]*[a-z])(?=[A-Za-z0-9/+=]*[A-Z])[A-Za-z0-9/+=]{32,}/g; // last: any long mixed-case token (base64-style secrets); lowercase hex hashes and hyphenated file names don't match
+export const CREDENTIALS = /sk-ant-[A-Za-z0-9_-]{6,}|github_pat_[A-Za-z0-9_]{10,}|gh[pousr]_[A-Za-z0-9]{10,}|AKIA[0-9A-Z]{12,}|ASIA[0-9A-Z]{12,}|xox[abpr]-[A-Za-z0-9-]{10,}|AIza[0-9A-Za-z_-]{30,}|[sr]k_(?:live|test)_[0-9A-Za-z]{10,}|SK[0-9a-fA-F]{32}|-----BEGIN [A-Z ]*PRIVATE KEY-----[\s\S]*?(?:-----END [A-Z ]*PRIVATE KEY-----|$)|(?<![\w/.#@-])(?=[A-Za-z0-9+=]*\d)(?=[A-Za-z0-9+=]*[a-z])(?=[A-Za-z0-9+=]*[A-Z])[A-Za-z0-9+=]{40,}/g; // last: any long mixed-case token (base64-style secrets); hashes, hashtags, file names and URL paths don't match
 export const redact = (t) => String(t).replace(CREDENTIALS, '[removed]');
 export const redactDeep = (v) => (typeof v === 'string' ? redact(v) : Array.isArray(v) ? v.map(redactDeep) : v && typeof v === 'object' ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, redactDeep(x)])) : v);
 

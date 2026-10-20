@@ -66,8 +66,9 @@
     },
     "sac-dinner.jpg": {
       "use": "photo",
-      "what": "Josh Stech presenting at the Sacramento investors dinner (Echo & Rig, September 2026), from Sundae's LinkedIn post; may be used anywhere as a photo of a past Sundae dinner, captioned as Sacramento",
-      "person": "Josh Stech"
+      "what": "Josh Stech presenting at the Sacramento investors dinner (Echo & Rig, September 2026), from Sundae's LinkedIn post; may be used anywhere as a photo of a past Sundae dinner, captioned as Sacramento. The slide behind Josh shows market figures, so new uses of it wait for approval in the change pipeline.",
+      "person": "Josh Stech",
+      "text": true
     },
     "josh-drphil.jpg": {
       "use": "person",

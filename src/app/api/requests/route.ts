@@ -16,7 +16,7 @@ const KEYS = new Set<string>(index.keys);
 const LIMIT = 6, WINDOW = 10 * 60 * 1000; // per IP: 6 requests every 10 minutes (best effort, per server instance)
 const hits = new Map<string, number[]>();
 // keep in step with CREDENTIALS in engine/change/lib.mjs (the workflow redacts with it and the guard refuses with it)
-const CREDENTIAL = /sk-ant-[A-Za-z0-9_-]{6,}|github_pat_[A-Za-z0-9_]{10,}|gh[pousr]_[A-Za-z0-9]{10,}|AKIA[0-9A-Z]{12,}|ASIA[0-9A-Z]{12,}|xox[abpr]-[A-Za-z0-9-]{10,}|AIza[0-9A-Za-z_-]{30,}|[sr]k_(?:live|test)_[0-9A-Za-z]{10,}|SK[0-9a-fA-F]{32}|-----BEGIN [A-Z ]*PRIVATE KEY|(?=[A-Za-z0-9/+=]*\d)(?=[A-Za-z0-9/+=]*[a-z])(?=[A-Za-z0-9/+=]*[A-Z])[A-Za-z0-9/+=]{32,}/;
+const CREDENTIAL = /sk-ant-[A-Za-z0-9_-]{6,}|github_pat_[A-Za-z0-9_]{10,}|gh[pousr]_[A-Za-z0-9]{10,}|AKIA[0-9A-Z]{12,}|ASIA[0-9A-Z]{12,}|xox[abpr]-[A-Za-z0-9-]{10,}|AIza[0-9A-Za-z_-]{30,}|[sr]k_(?:live|test)_[0-9A-Za-z]{10,}|SK[0-9a-fA-F]{32}|-----BEGIN [A-Z ]*PRIVATE KEY|(?<![\w/.#@-])(?=[A-Za-z0-9+=]*\d)(?=[A-Za-z0-9+=]*[a-z])(?=[A-Za-z0-9+=]*[A-Z])[A-Za-z0-9+=]{40,}/;
 
 const bad = (error: string, status = 400) => NextResponse.json({ error }, { status });
 const gh = (token: string, url: string, init?: RequestInit) => fetch(`https://api.github.com/repos/${REPO}${url}`, {
@@ -35,12 +35,13 @@ export async function POST(req: Request) {
   if (!body || typeof body !== "object" || Array.isArray(body)) return bad("Send the request as JSON.");
   const b = body as Record<string, unknown>;
   if (b.website) return NextResponse.json({ id: "ok" }); // honeypot: quietly drop bots
-  const asset = String(b.asset ?? ""), mode = String(b.mode ?? ""), text = String(b.text ?? "").replace(/\s+/g, " ").trim();
+  const asset = String(b.asset ?? ""), mode = String(b.mode ?? "");
+  const text = String(b.text ?? "").toWellFormed().replace(/[\u0000-\u001f\u007f]/g, " ").replace(/\s+/g, " ").trim(); // no control characters
   if (!KEYS.has(asset)) return bad("Unknown asset. Refresh the page and try again.");
   if (mode !== "update" && mode !== "variant") return bad("Choose Update or New variation.");
   if (text.length < 3) return bad("Describe the change in a few words.");
   if (text.length > 500) return bad("Keep the change under 500 characters.");
-  if (CREDENTIAL.test(text)) return bad("Remove the key or password from the request. Requests are shown publicly in the change log.");
+  if (CREDENTIAL.test(text)) return bad("Part of this looks like a key or token. Remove it and send again; requests are shown publicly in the change log.");
 
   const ip = (req.headers.get("x-forwarded-for") ?? "").split(",")[0].trim() || "unknown";
   const now = Date.now();
@@ -55,8 +56,9 @@ export async function POST(req: Request) {
   const runs = await gh(token, `/actions/workflows/${WORKFLOW}/runs?created=%3E%3D${day}&per_page=100`).then((r) => (r.ok ? r.json() : null)).catch(() => null);
   if (!runs) return bad("The build service didn't answer. Try again in a minute.", 502);
   if ((runs.total_count ?? 0) >= DAILY_CAP) return bad(`Today's limit of ${DAILY_CAP} changes is reached. Try again tomorrow.`, 429);
-  const busy = (runs.workflow_runs ?? []).some((w: { status: string; display_title: string }) => w.status !== "completed" && w.display_title === `Creative change: ${asset}`);
-  if (busy) return bad("A change to this asset is already being made. Try again once it shows up (about 10 minutes).", 409);
+  // busy: a run for this asset, or an owner's approval (its asset isn't in its name), is waiting or running
+  const busy = (runs.workflow_runs ?? []).some((w: { status: string; display_title: string }) => w.status !== "completed" && (w.display_title === `Creative change: ${asset}` || w.display_title.startsWith("Creative change: approve")));
+  if (busy) return bad("A change to this asset (or an approval) is already being made. Try again once it shows up (about 10 minutes).", 409);
 
   const id = new Date(now).toISOString().slice(0, 19).replace(/[-:]/g, "").replace("T", "-") + "-" + Math.random().toString(36).slice(2, 6).padEnd(4, "0");
   const r = await gh(token, `/actions/workflows/${WORKFLOW}/dispatches`, {
