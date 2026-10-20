@@ -64,18 +64,21 @@ const FACT_RE = new RegExp([
   '\\b(?:Jan|Feb|Aug|Sept?|Oct|Nov|Dec)\\.(?=\\s|$)|\\b(?:January|February|April|June|July|August|September|October|November|December)\\b',
   '\\b(?:tonight|tomorrow|yesterday|this (?:week|weekend)|next (?:week|month|year)|weekend)\\b',
   // spelled-out numbers, ordinals, times and money (AP style spells out one through nine, so "nine seats" is a fact too)
-  '\\b(?:zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundreds?|thousands?|millions?|billions?|dozens?|half|first|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth|eleventh|twelfth|thirteenth|fourteenth|fifteenth|sixteenth|seventeenth|eighteenth|nineteenth|twentieth|thirtieth|noon|midnight|o\'clock|dollars?|bucks|cents?|percent)\\b',
+  '\\b(?:zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundreds?|thousands?|millions?|billions?|dozens?|half|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth|eleventh|twelfth|thirteenth|fourteenth|fifteenth|sixteenth|seventeenth|eighteenth|nineteenth|twentieth|thirtieth|noon|midnight|o\'clock|dollars?|bucks|cents?|percent)\\b',
 ].join('|'), 'giu');
 // Roman numerals count only after a numbering word, and only in capitals ("No. XII"; "did" and "mix" are words)
 const ROMAN_RE = /(?:\bNo\.|#|\bVol\.|\bPart)\s*[IVXLCDM]+\b/g;
 // invisible characters (zero-width spaces, soft hyphens, joiners) are removed first, so they can't split a word
 export const clean = (t) => String(t).normalize('NFKC').replace(/[\p{Cf}\u00ad\u200b-\u200d\u2060\ufeff]/gu, '');
-export const factTokens = (text) => new Set([...(clean(text).match(FACT_RE) || []), ...(clean(text).match(ROMAN_RE) || [])].map((t) => t.replace(/\s+/g, ' ').trim().toLowerCase()));
+// "thirty" and "30" are the same fact, and so are "20,000+" and "20,000" ("more than 20,000")
+const WORD_NUM = Object.fromEntries(['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen', 'twenty'].map((w, i) => [w, String(i)]).concat(['thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'].map((w, i) => [w, String(30 + 10 * i)])));
+const factKey = (t) => { const k = t.replace(/\s+/g, ' ').trim().toLowerCase().replace(/(\d)\+$/, '$1'); return WORD_NUM[k] ?? k; };
+export const factTokens = (text) => new Set([...(clean(text).match(FACT_RE) || []), ...(clean(text).match(ROMAN_RE) || [])].map(factKey));
 // Phrases that make a claim, an offer or a contact the original did not make. "free" counts on its own except in
 // "feel free"; "earn" only next to money words ("built to earn homeowner trust" is not a claim). Compared by stem and
 // by count, so "profits" is not new next to "profit" but a second profit claim is; the original's own disclaimer
 // sentences are set aside first, so "No earnings representations" can't excuse a new earnings claim.
-const CLAIM_RE = /\b(?:cancel+(?:ed|ation)|postpone[ds]?|reschedule[ds]?|relocated|moved to|sold out|(?<!feel )free|complimentary|on (?:us|the house)|no (?:cost|charge|fee)s?|gift ?cards?|gift (?:bags?|baskets?)|swag|giveaways?|prizes?|raffles?|sweepstakes|chance to win|win (?:a|an|free|cash|\$)|winners?|bonus(?:es)?|cash back|guarantee[ds]?|guaranteed returns|earnings|earn(?:s|ed|ing)?\s+(?:\$|money|more|income|up to|\d)|make money|income|passive income|profits?|returns? on|roi|wealth|millionaires?|get rich|refunds?|discounts?|promo(?: code)?|coupons?|deal of the|crypto|bitcoin|click (?:here|the link)|dm (?:me|us)|whatsapp|telegram|signal app|venmo|cash ?app|zelle|paypal|instagram|linkedin|facebook|tiktok|twitter|youtube|text (?:me|us)|call (?:me|us)|email (?:me|us)|(?:message|contact) (?:me|us)|reach out|register at|sign up at|password|log ?in)\b/giu;
+const CLAIM_RE = /\b(?:cancel+(?:ed|ation)|postpone[ds]?|reschedule[ds]?|relocated|moved to|sold out|(?<!feel )free|complimentary|on (?:us|the house)|no (?:cost|charge|fee)s?|gift ?cards?|gift (?:bags?|baskets?)|swag|giveaways?|prizes?|raffles?|sweepstakes|chance to win|win (?:a|an|free|cash|\$)|winners?|bonus(?:es)?|cash back|guarantee[ds]?|guaranteed returns|earnings|earn(?:s|ed|ing)?\s+(?:\$|money|more|income|up to|\d)|make money|income|passive income|profits?|returns? on|roi|wealth|millionaires?|get rich|refunds?|discounts?|promo(?: code)?|coupons?|deal of the|crypto|bitcoin|dm (?:me|us)|whatsapp|telegram|signal app|venmo|cash ?app|zelle|paypal|instagram|linkedin|facebook|tiktok|twitter|youtube|text (?:me|us)|call (?:me|us)|email (?:me|us)|(?:message|contact) (?:me|us)|reach out|password|log ?in)\b/giu;
 // a contact prompt naming someone ("Call Josh", "DM Maria"): case-sensitive, so "call him" or "text your agent" isn't one
 const CONTACT_RE = /\b(?:[Cc]all|CALL|[Tt]ext|TEXT|DM|[Dd]m|[Mm]essage|MESSAGE|[Ee]mail|EMAIL|[Ww]hats[Aa]pp)[^\S\n]+\p{Lu}[\p{L}'’-]+/gu; // within one line
 const stem = (w) => w.toLowerCase().replace(/\s+/g, ' ').replace(/(\w{3,}?)(?:es|s|ed)$/, '$1'); // "refunds" -> "refund"; "on us" stays
@@ -97,7 +100,8 @@ export function newClaims(oldText, newText) {
 // fact that disappears entirely), compared on the text a viewer can see.
 export function missingFacts(event, oldVisible, newVisible) {
   const norm = (t) => clean(t).replace(/\s+/g, ' ').toLowerCase();
-  const o = norm(oldVisible), n = norm(newVisible);
+  const flatV = (v) => (Array.isArray(v) ? v.flat().join(' ') : v);
+  const o = norm(flatV(oldVisible)), n = norm(flatV(newVisible));
   const keys = [];
   if (event) {
     const [, m, d] = (event.date || '').split('-').map(Number);
@@ -106,7 +110,10 @@ export function missingFacts(event, oldVisible, newVisible) {
     keys.push(d ? `${MON[m - 1]} ${d}` : null, event.time, venueCore, event.venue?.split(' ')[0], event.space, event.city, event.address?.split(',')[0], event.host);
   }
   const count = (t, k) => t.split(k).length - 1;
-  return [...new Set(keys.filter(Boolean).map(norm))].filter((k) => count(n, k) < count(o, k));
+  // a video's visible text comes per scene, one entry per sampled moment: a mention counts once per scene (its best
+  // moment), so changing a scene's timing or wording can't make a fact look dropped or doubled
+  const total = (v, k) => (Array.isArray(v) ? v.reduce((sum, sc) => sum + Math.max(0, ...sc.map((x) => count(norm(x), k))), 0) : count(v, k));
+  return [...new Set(keys.filter(Boolean).map(norm))].filter((k) => total(Array.isArray(newVisible) ? newVisible : n, k) < total(Array.isArray(oldVisible) ? oldVisible : o, k));
 }
 
 // Wording that must survive any edit: legal and compliance sentences (franchise disclosures, "not an offer", earnings
@@ -136,21 +143,48 @@ export function lostWording(oldReader, newReader, oldVisible = '', newVisible = 
 // "joined by", "featuring", "special guest:", "keynote:" …) or after a colon, dash or separator dot when two capitalized
 // words follow ("Special guest: Elon Musk", "Keynote — Elon Musk"), that neither the original nor the event record has.
 // The lead word counts lowercase anywhere, capitalized where a line or sentence starts ("With Elon Musk"), and in
-// capitals anywhere (innerText applies text-transform). Names joined by "and", "&", "+" or a comma are each checked
+// capitals where the source is typed in capitals. Names joined by "and", "&", "+" or a comma are each checked
 // ("Josh Stech and Elon Musk"). A name that runs onto the next line is checked line by line, so two known lines that
 // merely changed places don't read as a new name. Known gap: a name typed all in lowercase ("dinner with elon musk").
 const NAME_LEADS = ['at', 'in', 'on', 'inside', 'near', 'atop', 'with', 'hosted by', 'joined by', 'presented by', 'sponsored by', 'moderated by', 'featuring', 'special guests?:?', 'guests?:?', 'keynote:?', 'venue:?', 'hosts?:?', 'speakers?:?', 'panel:?', 'by'];
+const PLACE_LEADS = /^(?:at|in|on|inside|near|atop|venue:?|@)$/i;
 const leads = (f) => NAME_LEADS.map(f).join('|');
-const NM = String.raw`(?:the\s+)?\p{Lu}[\p{L}\p{M}\d_'’&.-]*(?:\s+(?:of\s+|&\s+|the\s+)?\p{Lu}[\p{L}\p{M}\d_'’&.-]*)*`;
-const NAME_RE = new RegExp(String.raw`(?:(?:\b(?:${leads((w) => w)})|(?<=(?:^|[.!?:•·|—–])\s*)(?:${leads((w) => w[0].toUpperCase() + w.slice(1))})|\b(?:${leads((w) => w.toUpperCase())}))\s+|@\s+|(?<=[:—–·|]\s*)(?=\p{Lu}[\p{L}\p{M}'’.-]*\s+(?:of\s+|the\s+)?\p{Lu}))(${NM}(?:\s*(?:,|\band\b|\bAND\b|&|\+)\s*${NM})*)`, 'gmu');
-export function newNames(event, oldReader, newReader) {
+const W = String.raw`\p{Lu}[\p{L}\p{M}\d_'’&.-]*`;
+const NM = String.raw`(?:the[^\S\n]+)?${W}(?:[^\S\n]+(?:of[^\S\n]+|&[^\S\n]+|the[^\S\n]+)?${W})*`; // one line only
+const nameRe = (caps) => new RegExp(String.raw`(?:(\b(?:${leads((w) => w)})|(?<=(?:^|[.!?:•·|—–])\s*)(?:${leads((w) => w[0].toUpperCase() + w.slice(1))})${caps ? String.raw`|\b(?:${leads((w) => w.toUpperCase())})` : ''})[^\S\n]+|@[^\S\n]+|(?<=[:—–·|][^\S\n]*)(?=\p{Lu}[\p{L}\p{M}'’.-]*[^\S\n]+(?:of[^\S\n]+|the[^\S\n]+)?\p{Lu}))(${NM}(?:[^\S\n]*(?:,|\band\b|\bAND\b|&|\+)[^\S\n]*${NM})*)`, 'gmu');
+const NAME_RE = nameRe(false), NAME_RE_CAPS = nameRe(true);
+// Words Sundae's own copy uses as ordinary lowercase words (the plans, captions and creatives, never the request log,
+// which visitors write): a capitalized run made only of these ("In Good Company", "By Design", "With A View") is
+// wording, not a name. A place lead before "the" ("on the Rooftop", "at the Bar") still counts as a named place.
+let VOCAB = null;
+function vocab() {
+  if (VOCAB) return VOCAB;
+  const files = [];
+  const walk = (d, ok) => { if (!fs.existsSync(d)) return; for (const e of fs.readdirSync(d, { withFileTypes: true })) { const p = path.join(d, e.name); if (e.isDirectory()) { if (e.name !== 'requests') walk(p, ok); } else if (ok(e.name)) files.push(p); } };
+  walk(path.join(REPO, 'src/content'), (n) => /\.md$|^captions\.json$|^plans\.json$/.test(n));
+  walk(path.join(ENGINE, 'creatives'), (n) => /\.(?:html|json)$/.test(n));
+  VOCAB = new Set();
+  for (const f of files) for (const w of fs.readFileSync(f, 'utf8').replace(/<[^>]*>/g, ' ').match(/(?<![\p{L}])[a-z][a-z'’-]*/gu) || []) VOCAB.add(w.replace(/['’]s$/, ''));
+  for (const w of ['a', 'an', 'the', 'of', 'and', 'for', 'to', 'by', 'in', 'on', 'at', 'with', 'or']) VOCAB.add(w);
+  return VOCAB;
+}
+export function newNames(event, oldReader, newReader, newRaw = '') {
   const flat = (t) => t.replace(/\s+/g, ' ').trim();
   const known = flat(clean([oldReader, event ? Object.values(event).filter((v) => typeof v === 'string').join(' ') : ''].join(' '))).toLowerCase();
   const out = new Set();
-  for (const m of clean(newReader).matchAll(NAME_RE)) {
-    for (const piece of m[1].split(/\s*\n\s*|\s*(?:,|\band\b|\bAND\b|\+)\s*/)) {
-      const name = flat(piece.replace(/^the\s+/i, '').replace(/[.'’&-]+$/, '')); // "Manhattan Beach." is Manhattan Beach
-      if (name.length > 2 && !known.includes(name.toLowerCase()) && !/^(?:Sundae|SHAI|Membership|Josh|Dinner|Dialogue|Private)$/i.test(name)) out.add(name);
+  // capitalized lead words count in the text as shown; all-caps ones only where the source itself is typed in capitals
+  // (a kicker styled into capitals, "SEATS BY REQUEST ONLY", is not a name after "BY")
+  const runs = [...clean(newReader).matchAll(NAME_RE), ...clean(newRaw).matchAll(NAME_RE_CAPS)];
+  for (const m of runs) {
+    const place = m[1] && PLACE_LEADS.test(m[1].trim()) || /^@/.test(m[0]);
+    for (const piece of m[2].split(/\s*\n\s*|\s*(?:,|\band\b|\bAND\b|\+)\s*/)) {
+      const named = /^the\s/i.test(piece);
+      const name = flat(piece.replace(/^the\s+/i, '').replace(/[.'’&-]+$/, '').replace(/['’]s$/, '')); // "Manhattan Beach." / "Sundae’s"
+      if (name.length <= 2 || known.includes(name.toLowerCase()) || /^(?:Sundae|SHAI|Membership|Josh|Dinner|Dialogue|Private)$/i.test(name)) continue;
+      if (/^[A-Z&]{1,4}$/.test(name)) continue; // an acronym ("Q&A", "FAQ", "LA")
+      const ordinary = name.toLowerCase().split(/\s+/).every((w) => vocab().has(w.replace(/['’]s$/, '')));
+      if (ordinary && !(place && named)) continue;
+      out.add(name);
     }
   }
   return [...out];

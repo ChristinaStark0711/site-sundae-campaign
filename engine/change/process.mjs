@@ -176,18 +176,22 @@ async function gate(src) {
   }
   // structure: adding, removing or moving parts of the layout (or drawing new shapes) waits for approval; wording and
   // styling don't change the skeleton
-  if (au.skeleton.join('\n') !== origAudit.skeleton.join('\n')) media.push('changes the layout itself (adds, removes or moves parts, or draws new shapes)');
+  // structure: reordering or removing parts is a design edit (dropped facts and legal wording are caught above); adding
+  // a part, or drawing a new shape, waits for approval (an overlay or a drawn word can't then slip in)
+  const left = new Map(); for (const k of origAudit.skeleton) left.set(k, (left.get(k) || 0) + 1);
+  if (au.skeleton.some((k) => { const n = left.get(k) || 0; left.set(k, n - 1); return n <= 0; })) media.push('adds parts to the layout (new elements or drawn shapes)');
   const newRisky = au.risky.filter((r) => !origAudit.risky.includes(r));
   if (newRisky.length) media.push(`changes how parts are shown (${newRisky.slice(0, 2).join('; ')})`);
   if (origAudit.red && !au.red) p.push('leaves no Sundae red on the canvas');
   const had2 = new Set(markProblems(origAudit)); for (const m of markProblems(au)) if (!had2.has(m)) p.push(m);
   const both = (x) => `${x.text}\n${x.reader}`;
+  const record = ev ? [ev.rsvp, ev.address, ev.time, ev.phone, ev.venuePhone].filter((x) => typeof x === 'string').join('\n') : ''; // facts on the event's own record (its RSVP link, address, time) aren't new
   const scripts = newScripts(both(origAudit), both(au));
   return {
     problems: p.slice(0, 6), file, audit: au, media, scripts,
-    facts: [...new Set([...newFacts(both(origAudit), both(au)), ...(A.isVideo ? newSpecNumbers(original, src) : [])])],
+    facts: [...new Set([...newFacts(`${both(origAudit)}\n${record}`, both(au)), ...(A.isVideo ? newSpecNumbers(original, src) : [])])],
     claims: newClaims(both(origAudit), both(au)),
-    missing: [...missingFacts(ev, origAudit.visible, au.visible), ...lostWording(origAudit.reader, au.reader, origAudit.visible, au.visible).map((x) => `§${x}`), ...newNames(ev, `${origAudit.reader}\n${origAudit.readerRaw || ''}`, `${au.reader}\n${au.readerRaw || ''}`).map((x) => `+${x}`)],
+    missing: [...missingFacts(ev, origAudit.visibleScenes || origAudit.visible, au.visibleScenes || au.visible), ...lostWording(origAudit.reader, au.reader, origAudit.visible, au.visible).map((x) => `§${x}`), ...newNames(ev, `${origAudit.reader}\n${origAudit.readerRaw || ''}`, au.reader, au.readerRaw || '').map((x) => `+${x}`)],
   };
 }
 // Everything the gate found, most serious first (event facts and legal wording dropped, new names, claims, images and

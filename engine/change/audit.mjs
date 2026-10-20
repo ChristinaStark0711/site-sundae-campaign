@@ -131,6 +131,10 @@ function inspect({ rootSel, canvas }) {
       const val = cs.getPropertyValue(p);
       if (!val || ['none', 'normal', 'auto', 'visible', '0px', 'matrix(1, 0, 0, 1, 0, 0)'].includes(val)) continue;
       if (p === 'font-size' && parseFloat(val) >= 9) continue; // only tiny text is risky
+      if (p === 'transform') { // a small tilt, move or resize is design; shrinking, flipping or turning a part is not
+        const m = /^matrix\(([^)]+)\)$/.exec(val);
+        if (m) { const [a, b, c, d] = m[1].split(',').map(Number); const sx = Math.hypot(a, b), sy = Math.hypot(c, d), rot = Math.abs(Math.atan2(b, a) * 180 / Math.PI); if (sx >= 0.6 && sy >= 0.6 && sx <= 2.5 && sy <= 2.5 && rot <= 20 && a * d - b * c > 0) continue; }
+      }
       if (p === 'letter-spacing' && Math.abs(parseFloat(val)) < 20) continue;
       if (p === 'text-indent' && Math.abs(parseFloat(val)) < 200) continue;
       risky.add(`${key} ${p}: ${val.slice(0, 80)}`);
@@ -200,15 +204,20 @@ export async function auditSource(source) {
       // what a viewer sees: the union of every scene's settled moment (the same moments the preview shows)
       // and every text it shows, sampled at each scene's settled moment and its last frame (counters finish there)
       const seen = new Set(), texts = new Set([r.text]), readers = new Set([r.reader]), raws = new Set([r.readerRaw]), imgs = new Set(r.images), pths = new Set(r.paths); let t = 0;
+      const scenes = [];
       for (const s of spec.scenes) {
-        for (const at of [t + Math.min(s.dur - 0.2, 2.6), t + s.dur - 0.04]) {
+        const vis = [];
+        for (const at of [t + Math.min(s.dur - 0.2, 2.6), t + s.dur * 0.75, t + s.dur - 0.04]) {
           await page.evaluate((x) => window.seekTo(x), at);
           const x = await page.evaluate(inspect, { rootSel: '#stage', canvas });
+          vis.push(x.visible);
           seen.add(x.visible); texts.add(x.text); readers.add(x.reader); raws.add(x.readerRaw); x.images.forEach((i) => imgs.add(i)); x.paths.forEach((d) => pths.add(d));
         }
+        scenes.push(vis);
         t += s.dur;
       }
       r.visible = [...seen].join(' ');
+      r.visibleScenes = scenes; // per scene, the visible text at each sampled moment (missing facts count a scene once)
       r.text = [...texts].join('\n');
       r.reader = [...readers].join('\n');
       r.readerRaw = [...raws].join('\n');

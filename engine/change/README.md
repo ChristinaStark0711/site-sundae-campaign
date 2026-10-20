@@ -25,15 +25,22 @@ in the change log on the hub, and the box says so.
        (`::before`/`::after`/`::marker` content, list markers, `attr()`/`counter()`), no at-rules in inline styles
        (no `@media`, so print and screen are the same page), and only tags and attributes the original already uses;
      - **fact checks on the rendered text** (entities decoded, Unicode-normalized, hidden text included): any new
-       number, price, date, time, weekday, phone, web address or @handle; any new claim or contact word (cancelled,
-       free, gift card, guaranteed, earnings, returns, DM, WhatsApp …); and any event fact (date, time, venue, city)
+       number (in any script or spelled out; "thirty" and "30" are the same), price, date (also a bare month, a
+       spelled ordinal or "tomorrow"), time, weekday, phone, web address (also with a spaced, non-ASCII or spelled
+       "dot") or @handle, except the event record's own RSVP link, address and time; any new claim, offer or contact
+       prompt (cancelled, free, complimentary, gift bag, guaranteed, earnings, "call Josh", Instagram …), counted, so
+       a second profit claim is new and a disclaimer's own "earnings" never excuses one; letters from another
+       alphabet; and any event fact (date, time, venue, city)
        that was visible before and isn't now (including the room, the street, the host and "an average of" wording
        or a footnote asterisk); any newly added image that carries its own text (QR codes, screenshots, maps: marked
-       `"text": true` in `engine/kit/assets.json`), any photo or footage from another event, and any new drawn SVG
-       shape; a new name after "at", "with", "hosted by" … (also capitalized at a line start, or in capitals); legal
+       `"text": true` in `engine/kit/assets.json`), any photo or footage from another event, any part added to the
+       layout or new drawn SVG shape (reordering or removing parts is a design edit); a new name after "at", "on",
+       "inside", "with", "hosted by", "joined by", "special guest:", "keynote —" … or a second one joined by "and"
+       (unless every word is one Sundae's own plans, captions and creatives use as an ordinary word); legal
        or "an average of" wording that was visible and no longer is (faded, moved off the canvas, covered, clipped),
-       even though it is still in the text; and any new hiding style on a part (clip, mask, filter, transform,
-       z-index, tiny or transparent text, `pointer-events`, a filled `::before`/`::after` box), judged per element.
+       even though it is still in the text, or that survives only inside a longer sentence; and any new hiding style
+       on a part (clip, mask, filter, a transform that shrinks, flips or turns it more than 20°, z-index, tiny or
+       transparent text, `pointer-events`, a filled `::before`/`::after` box), judged per element.
        Any of these **holds the request as a proposal** (below), after it passes the brand lint;
      - **wordmark checks** (stills): a Sundae wordmark or icon stretched out of its proportions, a wordmark straight
        on a photo, or a red wordmark on anything but white, mist, pink, slate or gray (a white one on anything but
@@ -95,7 +102,9 @@ Never paste a key or token into a chat.
 - The repo is public, so a held proposal (in `engine/held/`) can be seen on GitHub, just not on the hub.
 - Known gaps in the text checks: a person's name typed all in lowercase ("dinner with elon musk") isn't recognized as
   a name, and a disclaimer contradicted by a separate new sentence (rather than reworded) isn't caught; the review by
-  Claude and the brand lint are the backstop there.
+  Claude and the brand lint are the backstop there. The other way round, a Title Case phrase after a lead word whose
+  words Sundae's copy doesn't use ("An Evening / With A View") waits for approval although it is only wording, and a
+  stats scene shortened below its counter's 2 seconds shows (and is held for) a number mid-count.
 - Each request commits a log entry to `main`, which redeploys the site; the daily cap bounds that.
 - Two requests for the same asset sent within seconds of each other may both start; the second then ends as
   "Couldn't apply" (the asset changed meanwhile) and can be sent again. Nothing is ever lost silently.
