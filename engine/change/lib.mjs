@@ -88,17 +88,23 @@ export function missingFacts(event, oldVisible, newVisible) {
 }
 
 // Wording that must survive any edit: legal and compliance sentences (franchise disclosures, "not an offer", earnings
-// disclaimers, footnotes) and the "average" qualifier on offer metrics (BRAND-SPEC rule 7). Compared on reader text.
+// disclaimers, footnotes) and the "average" qualifier on offer metrics (BRAND-SPEC rule 7). Compared on reader text,
+// and on visible text wherever the original showed it.
 const LEGAL_RE = /\b(?:franchise|disclosure|FDD|not an offer|offer to sell|required by law|representations?|earnings|financial[- ]performance|disclaimer|terms|conditions|restrictions apply|licensed|license|equal housing|brokerage|DRE|NMLS|average)\b/i;
 const sentences = (t) => clean(t).split(/(?<=[.!?])\s+|\n+/).map((x) => x.replace(/\s+/g, ' ').trim()).filter((x) => x.length > 12);
-export function lostWording(oldReader, newReader) {
+export function lostWording(oldReader, newReader, oldVisible = '', newVisible = '') {
   const n = clean(newReader).replace(/\s+/g, ' ').toLowerCase();
-  const lost = sentences(oldReader).filter((x) => LEGAL_RE.test(x) && !n.includes(x.toLowerCase()));
-  // a metric that read as an average (or carried a footnote asterisk) must still do so wherever it appears
+  // reader text (innerText) still holds text that is moved off the canvas, covered, faded out or clipped, so wording a
+  // viewer could see in the original must also stay visible (compared without spaces: inline markup splits text nodes)
+  const bare = (t) => clean(t).replace(/\s+/g, '').toLowerCase();
+  const ov = bare(oldVisible), nv = bare(newVisible);
+  const lost = sentences(oldReader).filter((x) => LEGAL_RE.test(x) && (!n.includes(x.toLowerCase()) || (ov.includes(bare(x)) && !nv.includes(bare(x)))));
+  // a metric that read as an average (or carried a footnote asterisk) must still do so wherever it appears, and where
+  // it is visible, visibly
   const qualified = (t) => new Set([...clean(t).replace(/\s+/g, ' ').matchAll(/\baverage(?: of)?\s+([\d,.]+\+?)|([\d,.]+\+?)\s*\*/gi)].map((m) => m[1] || m[2]));
   const nums = (t) => new Set(clean(t).match(/[\d,.]*\d\+?/g) || []);
-  const oq = qualified(oldReader), nq = qualified(newReader), nn = nums(newReader);
-  const unq = [...oq].filter((x) => nn.has(x) && !nq.has(x));
+  const unqualified = (o, c) => { const oq = qualified(o), cq = qualified(c), cn = nums(c); return [...oq].filter((x) => cn.has(x) && !cq.has(x)); };
+  const unq = [...new Set([...unqualified(oldReader, newReader), ...(oldVisible ? unqualified(oldVisible, newVisible) : [])])];
   return [...lost.map((x) => `drops the wording "${x.length > 70 ? x.slice(0, 67) + '…' : x}"`), ...unq.map((x) => `shows ${x} without "an average of" or its footnote`)];
 }
 

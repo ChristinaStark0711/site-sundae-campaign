@@ -170,7 +170,7 @@ async function gate(src) {
     problems: p.slice(0, 6), file, audit: au, media,
     facts: [...new Set([...newFacts(both(origAudit), both(au)), ...(A.isVideo ? newSpecNumbers(original, src) : [])])],
     claims: newClaims(both(origAudit), both(au)),
-    missing: [...missingFacts(ev, origAudit.visible, au.visible), ...lostWording(origAudit.reader, au.reader).map((x) => `§${x}`), ...newNames(ev, origAudit.reader, au.reader).map((x) => `+${x}`)],
+    missing: [...missingFacts(ev, origAudit.visible, au.visible), ...lostWording(origAudit.reader, au.reader, origAudit.visible, au.visible).map((x) => `§${x}`), ...newNames(ev, origAudit.reader, au.reader).map((x) => `+${x}`)],
   };
 }
 const describeFacts = (g) => [...g.facts.map((t) => `adds "${t}"`), ...g.claims.map((t) => `adds "${t}"`), ...g.missing.map((t) => (t.startsWith('§') ? t.slice(1) : t.startsWith('+') ? `names ${t.slice(1)}` : `drops "${t}"`)), ...g.media];
