@@ -20,7 +20,7 @@ export default function Events() {
         items={events.map((e) => ({ slug: e.slug, date: e.date, asUpcoming: <EventCard e={e} upcoming />, asPast: <EventCard e={e} upcoming={false} /> }))}
         empty={<p className="card-mist max-w-3xl p-6 text-lg leading-relaxed">No upcoming dinner is booked yet. When the next one is set, it appears here with its own page. See below for how to add it.</p>}
       />
-      <section className="mt-24" aria-label="Adding an event"><NewEventSteps /></section>
+      <section className="mt-24" aria-labelledby="add-event"><NewEventSteps /></section>
     </main>
   );
 }

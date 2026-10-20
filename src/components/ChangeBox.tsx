@@ -6,6 +6,8 @@ import { Icon } from "./Icon";
 // workflow in GitHub; the workflow edits this asset's source, re-renders it, checks it against the brand rules and
 // pushes, and the site redeploys with the new file (an update) or a new card beside this one (a variation).
 type Mode = "update" | "variant";
+// The form's name carries the asset's kind and id ("Meet your host, image 02"), since an image and a video can share a title
+const KIND: Record<string, string> = { images: "image", flyers: "flyer", videos: "video", reels: "Reel" };
 // "sent" keeps the mode the request went out with, so the confirmation stays right if the radio is changed afterwards
 type State = { kind: "idle" | "sending" } | { kind: "sent"; id: string; mode: Mode } | { kind: "error"; msg: string; offline?: boolean };
 
@@ -17,6 +19,7 @@ export default function ChangeBox({ asset, title, video = false }: { asset: stri
   const [st, setSt] = useState<State>({ kind: "idle" });
   const [copied, setCopied] = useState(false);
   const busy = st.kind === "sending";
+  const [kind, id] = asset.split("/").slice(-2);
 
   async function send(e: React.FormEvent) {
     e.preventDefault();
@@ -36,7 +39,7 @@ export default function ChangeBox({ asset, title, video = false }: { asset: stri
   };
 
   return (
-    <form onSubmit={send} className="border-t border-gray bg-mist px-6 pb-6 pt-5" aria-label={`Request a change to ${title}`}>
+    <form onSubmit={send} className="border-t border-gray bg-mist px-6 pb-6 pt-5" aria-label={`Request a change to ${title}, ${KIND[kind] ?? kind} ${id}`}>
       <label htmlFor={`${uid}-t`} className="text-base font-bold">Request a change</label>
       {/* three rows for videos: their longer example wraps to three lines in the narrow Reel cards (768-1279px) */}
       <textarea id={`${uid}-t`} value={text} onChange={(e) => setText(e.target.value)} rows={video ? 3 : 2} maxLength={500} required minLength={3}

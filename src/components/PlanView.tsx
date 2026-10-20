@@ -20,7 +20,8 @@ export default function PlanView({ groups, current, tag, title, blurb, html, nex
       </aside>
       <article className="min-w-0">
         <header className="border-b border-gray pb-10">
-          <span className="tag">{tag}</span>
+          {/* an event's tag ("City · Event name") can be wider than a 360px phone: it wraps (a rounded box) instead of widening the page */}
+          <span className="tag max-w-full whitespace-normal rounded-[1.25rem]">{tag}</span>
           <h1 className="display h-bar h-bar-lg mt-5 text-[clamp(2.25rem,4.2vw,3.5rem)]">{title}</h1>
           <p className="lede mt-5 max-w-3xl">{blurb}</p>
         </header>

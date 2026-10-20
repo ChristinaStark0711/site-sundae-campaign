@@ -68,7 +68,7 @@ export default function Projections() {
           {KS_PHONE.map((k) => <ScenarioCard key={k} k={k} sub={`${money(P.engine[k].assumptions.budget)} a month in ads`} rows={sumRows.map(([l, key, f]) => [l, f(P.engine[k].summary[key] as number)])} />)}
           <p className="text-base leading-relaxed">{REV_NOTE}</p>
         </div>
-        <div className="card scroll-x mt-6 hidden p-6 md:block md:p-7">
+        <div className="card scroll-x mt-6 hidden p-6 md:block md:p-7" tabIndex={0} role="region" aria-label="12-month summary by scenario">
           <table className="dtable min-w-[640px]">
             <thead><tr><th>12-month summary</th>{KS.map((k) => <th key={k} className="!text-right"><span className="inline-flex items-center gap-2"><Key k={k} />{SCENARIO[k].name}</span><span className="block font-normal">{money(P.engine[k].assumptions.budget)} a month</span></th>)}</tr></thead>
             <tbody>{sumRows.map(([l, key, f]) => <tr key={l}><td>{l}</td>{KS.map((k) => <td key={k} className={`text-right ${k === "base" ? "font-bold" : ""}`}>{f(P.engine[k].summary[key] as number)}</td>)}</tr>)}</tbody>

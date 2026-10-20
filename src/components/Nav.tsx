@@ -2,16 +2,27 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LINKS } from "@/content/library";
+import { isUpcoming } from "@/lib/format";
 import { Icon } from "./Icon";
 
 const items = [["/", "Overview"], ["/events", "Events"], ["/creative", "Creative"], ["/captions", "Captions"], ["/plans/membership-organic", "Plans"], ["/projections", "Projections"]];
 export type NavLink = { href: string; title: string };
+export type NavEvent = NavLink & { date: string; rsvp?: string };
 
-export default function Nav({ plans, events }: { plans: NavLink[]; events: NavLink[] }) {
+export default function Nav({ plans, events, builtAt }: { plans: NavLink[]; events: NavEvent[]; builtAt: number }) {
   const path = usePathname();
   const [open, setOpen] = useState(false);
+  // The RSVP button follows the events, so it never points at a past dinner's form by default: on an event's pages it is
+  // that event's RSVP page (none if it has none); elsewhere it is the next upcoming event's (none if no upcoming event has
+  // one). "Upcoming" is worked out in the browser, like the other date-aware labels (first paint: build date). The visible
+  // label stays short so the header fits from 768px; its name and tooltip say which event.
+  const [now, setNow] = useState(builtAt);
+  useEffect(() => setNow(Date.now()), []);
+  const here = events.find((e) => path === e.href || path.startsWith(`${e.href}/`));
+  const ev = here ?? events.filter((e) => e.rsvp && isUpcoming(e.date, now)).sort((a, b) => a.date.localeCompare(b.date))[0];
+  const rsvp = ev?.rsvp ? { href: ev.rsvp, name: `RSVP page for ${ev.title}` } : null;
   const isOn = (href: string) => (href === "/" ? path === "/" : path.startsWith(href.split("/").slice(0, 2).join("/")));
   return (
     <header className="sticky top-0 z-50 border-b border-gray bg-white/95 backdrop-blur-xl">
@@ -27,7 +38,7 @@ export default function Nav({ plans, events }: { plans: NavLink[]; events: NavLi
           ))}
         </div>
         <div className="hidden items-center gap-2.5 md:flex">
-          <a href={LINKS.event} target="_blank" rel="noopener" className="btn btn-outline btn-sm">Event page <Icon name="external" /></a>
+          {rsvp && <a href={rsvp.href} target="_blank" rel="noopener" aria-label={rsvp.name} title={rsvp.name} className="btn btn-outline btn-sm">RSVP page <Icon name="external" /></a>}
           <a href={LINKS.rebuild} target="_blank" rel="noopener" className="btn btn-blue btn-sm">Website rebuild <Icon name="external" /></a>
           <button className="btn btn-outline btn-sm xl:hidden" onClick={() => setOpen(!open)} aria-expanded={open} aria-controls="mnav">{open ? "Close" : "Menu"}</button>
         </div>
@@ -45,7 +56,7 @@ export default function Nav({ plans, events }: { plans: NavLink[]; events: NavLi
               <span className="eyebrow px-3 pb-1">Membership plans</span>
               {plans.map((p) => <Link key={p.href} href={p.href} onClick={() => setOpen(false)} className="rounded-xl px-3 py-2 text-base hover:bg-mist">{p.title}</Link>)}
             </div>
-            <div className="mt-4 flex flex-wrap gap-2.5 md:hidden"><a href={LINKS.event} className="btn btn-outline btn-sm">Event page <Icon name="external" /></a><a href={LINKS.rebuild} className="btn btn-blue btn-sm">Website rebuild <Icon name="external" /></a></div>
+            <div className="mt-4 flex flex-wrap gap-2.5 md:hidden">{rsvp && <a href={rsvp.href} aria-label={rsvp.name} title={rsvp.name} className="btn btn-outline btn-sm">RSVP page <Icon name="external" /></a>}<a href={LINKS.rebuild} className="btn btn-blue btn-sm">Website rebuild <Icon name="external" /></a></div>
           </div>
         </div>
       )}

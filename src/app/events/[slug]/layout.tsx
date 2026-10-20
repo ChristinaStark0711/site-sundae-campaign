@@ -17,7 +17,7 @@ export default async function EventLayout({ children, params }: { children: Reac
   const city = getCities()[e.citySlug];
   return (
     <>
-      <div className="border-b border-gray bg-mist">
+      <section aria-label={`${e.city} event`} className="border-b border-gray bg-mist">
         <div className="mx-auto max-w-7xl px-5 pb-5 pt-6 md:px-8">
           <Link href="/events" className="inline-flex items-center gap-1.5 text-base font-bold text-blue"><Icon name="arrow-left" />All events</Link>
           <div className="mt-4 flex flex-wrap items-center justify-between gap-x-8 gap-y-4">
@@ -31,7 +31,7 @@ export default async function EventLayout({ children, params }: { children: Reac
             {e.kind === "campaign" && <EventTabs slug={e.slug} firstPlan={e.plans[0]?.slug} />}
           </div>
         </div>
-      </div>
+      </section>
       {children}
     </>
   );

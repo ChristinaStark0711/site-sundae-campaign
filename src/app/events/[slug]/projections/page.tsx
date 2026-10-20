@@ -39,7 +39,7 @@ export default async function EventProjectionsPage({ params }: { params: Promise
             <div className="grid gap-4 md:hidden">
               {KS_PHONE.map((k) => <ScenarioCard key={k} k={k} rows={ROWS.map(([l, key, f]) => [l, f(pj.scenarios[k][key])])} />)}
             </div>
-            <div className="card scroll-x hidden p-6 md:block md:p-7">
+            <div className="card scroll-x hidden p-6 md:block md:p-7" tabIndex={0} role="region" aria-label="Three scenarios table">
               <table className="dtable min-w-[560px]">
                 <thead><tr><th />{KS.map((k) => <th key={k} className="!text-right"><span className="inline-flex items-center gap-2"><Key k={k} />{SCENARIO[k].name}</span></th>)}</tr></thead>
                 <tbody>{ROWS.map(([l, key, f]) => <tr key={l}><td>{l}</td>{KS.map((k) => <td key={k} className={`text-right ${k === "base" ? "font-bold" : ""}`}>{f(pj.scenarios[k][key])}</td>)}</tr>)}</tbody>

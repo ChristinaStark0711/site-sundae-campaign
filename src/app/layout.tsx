@@ -23,7 +23,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${merriweather.variable} ${lato.variable}`}>
       <body className="min-h-screen">
         <ScrollFx />
-        <Nav plans={getBrandPlans().map((p) => ({ href: `/plans/${p.slug}`, title: p.title }))} events={getEvents().map((e) => ({ href: `/events/${e.slug}`, title: `${e.city} · ${apDate(e.date)}` }))} />
+        <Nav plans={getBrandPlans().map((p) => ({ href: `/plans/${p.slug}`, title: p.title }))} builtAt={Date.now()}
+          events={getEvents().map((e) => ({ href: `/events/${e.slug}`, title: `${e.city} · ${apDate(e.date)}`, date: e.date, rsvp: e.rsvp }))} />
         {children}
         <footer className="mt-28 border-t border-gray bg-mist">
           <div className="mx-auto flex max-w-7xl flex-wrap items-start justify-between gap-x-10 gap-y-3 px-5 py-12 text-base leading-relaxed md:px-8">

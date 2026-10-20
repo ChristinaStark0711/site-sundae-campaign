@@ -147,7 +147,7 @@ export default function Overview() {
       </section>
 
       {/* ADDING AN EVENT */}
-      <section id="add" className="mx-auto max-w-7xl scroll-mt-28 px-5 md:px-8" aria-label="Adding an event"><NewEventSteps /></section>
+      <section id="add" className="mx-auto max-w-7xl scroll-mt-28 px-5 md:px-8" aria-labelledby="add-event"><NewEventSteps /></section>
     </main>
   );
 }

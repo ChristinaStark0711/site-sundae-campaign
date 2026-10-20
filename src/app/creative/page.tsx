@@ -1,22 +1,35 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import Script from "next/script";
 import CreativeLibrary from "@/components/CreativeLibrary";
 import { Icon } from "@/components/Icon";
-import { getCaptions, getCities, getEvents, getLibrary, getRequests, libraryCount } from "@/lib/content";
+import { getCaptions, getCities, getEvent, getEvents, getLibrary, getRequests, libraryCount } from "@/lib/content";
 import { apDate } from "@/lib/format";
 
 export const metadata: Metadata = { title: "Creative library" };
 
 // Before the hub went events-based this page was the Manhattan Beach library, so old shared links such as
-// /creative#flyers now land on the always-on set. While one of its sections is the URL's target, a note at the foot of
-// the screen points to the same section of each event's library (shown by the .lib-note rule in globals.css, no script).
-const KIND_NAMES = { images: "images", flyers: "flyers", videos: "videos", reels: "Reels" } as const;
+// /creative#flyers land on the always-on section of the same name. A note at the foot of the screen (bottom right from
+// 768px, clear of the first card in each grid) then points to that section of the Manhattan Beach library. It opens
+// only when the page is opened at one of those sections (an old link), never from the page's own section buttons,
+// because the script below runs once, after the page loads; it closes with Hide or the first move to another section.
+// Its link is a plain <a> because the script adds the section to it.
+const OLD = "manhattan-beach-2026-10-08"; // as in next.config.ts
+const NOTE_JS = `(() => {
+  const k = location.hash.slice(1), n = document.getElementById("old-link-note");
+  if (!n || !["images", "flyers", "videos", "reels"].includes(k)) return;
+  n.querySelector("a").hash = k; n.hidden = false;
+  const hide = () => { n.hidden = true; };
+  n.querySelector("button").addEventListener("click", hide);
+  addEventListener("hashchange", hide, { once: true });
+})();`;
 
 // The always-on membership creative, with each event's library one click away at the top.
 export default function Creative() {
   const events = getEvents().filter((e) => e.kind === "campaign");
   const cities = getCities();
+  const old = getEvent(OLD);
   return (
     <main className="mx-auto max-w-7xl px-5 md:px-8">
       <CreativeLibrary scope="brand" lib={getLibrary("brand")} base="/media" requests={getRequests("brand")}
@@ -41,16 +54,16 @@ export default function Creative() {
           )}
           <h2 className="display h-bar mt-16 text-[2rem] md:text-[2.5rem]">Always-on: Sundae Membership</h2>
         </>} />
-      {events.length > 0 && Object.entries(KIND_NAMES).map(([k, name]) => (
-        <aside key={k} data-for={k} aria-label={`Event ${name}`} className="lib-note fixed inset-x-4 bottom-4 z-40 flex-wrap items-center gap-x-5 gap-y-3 rounded-[1.25rem] border border-gray bg-white p-4 text-base leading-snug shadow-[0_24px_48px_-24px_rgba(74,74,74,.5)] md:inset-x-auto md:left-1/2 md:w-max md:max-w-[calc(100vw-4rem)] md:-translate-x-1/2 md:px-5">
-          <p className="min-w-0 flex-1 basis-60 md:max-w-sm">These are the always-on Sundae Membership {name}. Each event&apos;s {name} are in its own library.</p>
+      {old && (
+        <aside id="old-link-note" hidden aria-label={`${old.city} library`} className="fixed inset-x-4 bottom-4 z-40 flex flex-wrap items-center gap-x-5 gap-y-3 rounded-[1.25rem] border border-gray bg-white p-4 text-base leading-snug shadow-[0_24px_48px_-24px_rgba(74,74,74,.5)] md:inset-x-auto md:bottom-6 md:right-8 md:w-max md:max-w-[calc(100vw-4rem)] md:px-5">
+          <p className="min-w-0 flex-1 basis-60 md:max-w-sm">This link used to open the {old.city} library, which has moved to the event&apos;s page.</p>
           <div className="flex flex-wrap items-center gap-2.5">
-            {events.map((e) => <Link key={e.slug} href={`/events/${e.slug}/creative#${k}`} className="btn btn-blue btn-sm">{e.city} · {apDate(e.date, { year: false })} <Icon name="arrow-right" /></Link>)}
-            {/* a fragment that names no element: the section stops being the target, so the note hides and the page stays put */}
-            <a href="#note-hidden" className="link px-1.5">Hide</a>
+            <a href={`/events/${OLD}/creative`} className="btn btn-blue btn-sm">{old.city} library <Icon name="arrow-right" /></a>
+            <button type="button" className="link px-1.5">Hide</button>
           </div>
         </aside>
-      ))}
+      )}
+      <Script id="old-link-note-js">{NOTE_JS}</Script>
     </main>
   );
 }

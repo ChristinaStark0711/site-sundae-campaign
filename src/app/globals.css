@@ -140,11 +140,9 @@ html.lenis, html.lenis body { height: auto; }
 .prose-plan :where(pre code) { background: transparent; border: 0; padding: 0; font-weight: 400; font-size: 1rem; }
 .prose-plan :where(hr) { border-top-width: 1px; }
 
-/* /creative: the note for old shared links into a library section (src/app/creative/page.tsx), shown only while that
-   section is the URL's target. Unlayered, so it wins over the note's own Tailwind classes. */
-.lib-note { display: none; }
-body:has(#images:target) .lib-note[data-for="images"], body:has(#flyers:target) .lib-note[data-for="flyers"],
-body:has(#videos:target) .lib-note[data-for="videos"], body:has(#reels:target) .lib-note[data-for="reels"] { display: flex; }
+/* /creative: while the old-link note is open (src/app/creative/page.tsx), the footer gets room so the note never covers it */
+body:has(#old-link-note:not([hidden])) footer { padding-bottom: 10rem; }
+@media (min-width: 768px) { body:has(#old-link-note:not([hidden])) footer { padding-bottom: 6.5rem; } }
 
-a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus-visible { outline: 3px solid var(--color-blue); outline-offset: 3px; }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus-visible, .scroll-x:focus-visible { outline: 3px solid var(--color-blue); outline-offset: 3px; }
 @media (prefers-reduced-motion: reduce) { [data-reveal], [data-stagger] > * { opacity: 1 !important; transform: none !important; } }
