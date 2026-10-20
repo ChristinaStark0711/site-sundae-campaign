@@ -21,13 +21,14 @@ engine/
     engine.js  engine.css  gsap.min.js                the motion engine (scenes → one paused GSAP timeline)
     aiclips/*.mp4                                     the Kling B-roll clips (frames extracted on demand)
   tools/                             the event tools: new-event, check-event, render-event, event-model, city-photo
-                                     (usage at the top of each) and their shared helpers in ap.mjs
+                                     (usage at the top of each), their shared helpers in ap.mjs, and hosts.json
+                                     (each host's titles, bio facts and handles, which the tools look for)
   change/                            the change-request pipeline behind the box under each asset (change/README.md)
   held/                              proposals a change request is holding for the owner; created when one is held
   BRAND.md                           the brand rules condensed from BRAND-SPEC.md (the change pipeline's model reads it)
   serve.mjs   render.mjs   lint.mjs
   package.json  package-lock.json                     playwright 1.56.1 (Chromium 141, build 1194)
-  .cache/  out/  node_modules/                        git-ignored
+  .cache/  out/  node_modules/                        git-ignored (.cache/renders/: one record per render, below)
 ```
 
 Rendered files are published from `public/<media>/<kind>/`, where `<media>` is the `media` field of the event's
@@ -48,9 +49,11 @@ node engine/serve.mjs  [port]      # browse by hand: /creatives/…/01.html, /__
 ```
 
 `<source>` is resolved against the cwd, then against `engine/`, and must live inside `engine/`. `<out-dir>` is
-relative to the cwd: the event's `public/<media>/<kind>/` (see [Layout](#layout)). `--name` defaults to the source's
-own basename; pass the delivered file name (the `file` in the event's `library.json`, without its extension). For
-Manhattan Beach, whose media folder is `/media`:
+relative to the cwd: the event's `public/<media>/<kind>/` (see [Layout](#layout)) for a delivered render, and
+`engine/out/<slug>/` (git-ignored) for a `--preview`. Never preview into `public/`: everything there is published
+(the root `.gitignore` drops `*.preview.*` as a backstop). `--name` defaults to the source's own basename; pass the
+delivered file name (the `file` in the event's `library.json`, without its extension). For Manhattan Beach, whose
+media folder is `/media`:
 
 ```bash
 node engine/render.mjs engine/creatives/events/manhattan-beach-2026-10-08/images/01.html public/media/images --name 01-save-your-seat
@@ -76,6 +79,13 @@ node engine/tools/render-event.mjs <slug|brand> [--kinds images,flyers,videos,re
 any failure: missing asset reference, non-`/kit/` reference, `<script>`/external URL/inline handler in a source,
 page error, blocked request, timeout. Outputs are written only on success. It also exports
 `renderAsset({ source, outDir, name, preview, timeoutSec })`, which returns the same summary object.
+
+**Render records.** Every delivered render (not a preview) also writes one record per output to
+`engine/.cache/renders/`: the output's hash and the hash of every file the render read (the source, the kit
+files, fonts and engine the page requested, the clips behind its frames). `tools/check-event.mjs` fails an output
+whose record still matches it but whose sources changed since ("older than its sources": render it again), and an
+empty or invalid output. A file rendered in another checkout, or replaced since (a pull, the change pipeline), has
+no matching record; check-event counts those in a note instead of judging them.
 
 `lint.mjs` runs the studio's brand-lint checks (red text, non-brand font, contrast, palette, sizes, red present)
 on the asset page at its canvas size; videos and Reels are checked at their poster time, counting only what is
@@ -106,7 +116,9 @@ identical stills in testing too.
 
 ## Add or change an asset
 
-- **Change one:** edit its source, then render it with `--preview` and look. Then render it for real with
+- **Change one:** edit its source, then preview it and look
+  (`node engine/render.mjs <source> engine/out/<slug> --preview`, then open the `.preview.png`/`.preview.jpg`
+  there). Then render it for real with
   `node engine/tools/render-event.mjs <slug|brand> --kinds <kind> --ids <ID>`, which writes it to the event's own
   `public/<media>/<kind>/` under its delivered name and lints it. (By hand: `render.mjs` into that folder with
   `--name <delivered basename>`, then `lint.mjs`.)
@@ -140,6 +152,10 @@ optional top-level `event` object:
 | `venue` · `address` · `included` | details "Where", "Address", "Included" |
 | `venueShort` · `cityLine` | date card |
 | `hotel` + `city` | CTA place line (`Shade Hotel, Manhattan Beach`; `·` on Reels) |
+
+`venue`, `venueShort` and `hotel` name the venue without its city, because the city is shown next to them
+(`new-event.mjs` writes `"Peerless Hotel"` for a venue called "Peerless Hotel Fresno", so the end card does not read
+"Peerless Hotel Fresno, Fresno").
 | `name` | default eyebrow of `details` and `date` |
 | `nameLines` | default CTA title (defaults to `[name]` when only `name` is given) |
 | `hostLine` · `pill` | default CTA sub line and button |
@@ -156,7 +172,9 @@ optional top-level `event` object:
   becomes a blue date chip.
 - The `josh` scene is a host scene, not an event fact: its defaults are Josh Stech's title and bio, and it always
   shows his cutout (`josh-polo-cutout.png`), whatever the text says. For an event with a different host, replace the
-  scene (`check-event.mjs` fails while one is left) and set `hostLine` (`new-event.mjs --host` does).
+  scene (`check-event.mjs` fails while one is left) and set `hostLine` (`new-event.mjs --host` does). Josh's title
+  and bio also sit in plain scenes (V4's `stats` scene: "1,200+ … Purpose Built Investments") and in the stills
+  (images/02, flyers/03); `check-event.mjs` fails every one of them for another host (`tools/hosts.json`).
 
 ## CI
 

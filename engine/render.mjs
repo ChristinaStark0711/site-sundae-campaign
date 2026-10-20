@@ -26,7 +26,8 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
-import { start, ENGINE_DIR } from './serve.mjs';
+import { start, ENGINE_DIR, fileFor } from './serve.mjs';
+import { renderRecordFile, sha256 } from './tools/ap.mjs';
 
 export { ENGINE_DIR };
 export const KINDS = ['images', 'flyers', 'videos', 'reels'];
@@ -134,10 +135,10 @@ export const launch = () => chromium.launch({ executablePath: chromePath() });
 // `js: false` loads a page with JavaScript switched off (used by engine/change/audit.mjs to inspect a source safely).
 export async function openPage(browser, origin, { width, height, scale = 1, js = true }) {
   const context = await browser.newContext({ viewport: { width, height }, deviceScaleFactor: scale, javaScriptEnabled: js });
-  const issues = { blocked: [], http: [], failed: [], pageErrors: [] };
+  const issues = { blocked: [], http: [], failed: [], pageErrors: [], served: new Set() }; // served: local paths requested
   await context.route('**/*', route => {
     const u = route.request().url();
-    if (u.startsWith(origin + '/')) return route.continue();
+    if (u.startsWith(origin + '/')) { issues.served.add(u.slice(origin.length)); return route.continue(); }
     issues.blocked.push(u); return route.abort('blockedbyclient');
   });
   // WebSockets bypass context.route, so they are intercepted separately and closed
@@ -219,6 +220,26 @@ const ffmpeg = (args) => {
   catch (e) { fail(`ffmpeg failed: ${String(e.stderr || e.message).trim()}`); }
 };
 const show = p => { const r = path.relative(process.cwd(), p); return r && !r.startsWith('..') && !path.isAbsolute(r) ? r : p; };
+// One record per output in engine/.cache/renders/ ("Render records" in tools/ap.mjs): the output's hash and the hash of
+// every file the render read (the source; the kit files, fonts and engine the page requested; the clips behind the
+// frames it showed), so check-event can tell when an output is older than its sources. Never fails a render.
+function recordRender(outs, src, served) {
+  try {
+    const deps = new Set([src.abs]);
+    for (const u of served) {
+      const p = u.split('?')[0], clip = /^\/cache\/clips\/([^/]+)\//.exec(p);
+      if (p === '/__video') continue; // the spec, already in
+      const f = clip ? path.join(ENGINE_DIR, 'kit/aiclips', `${decodeURIComponent(clip[1])}.mp4`) : fileFor(p);
+      if (f && fs.existsSync(f) && fs.statSync(f).isFile()) deps.add(f);
+    }
+    const hashes = Object.fromEntries([...deps].sort().map(f => [path.relative(ENGINE_DIR, f), sha256(f)]));
+    for (const out of outs) {
+      const rf = renderRecordFile(ENGINE_DIR, out);
+      fs.mkdirSync(path.dirname(rf), { recursive: true });
+      fs.writeFileSync(rf, JSON.stringify({ output: out, outHash: sha256(out), source: src.rel, deps: hashes, at: new Date().toISOString() }, null, 1) + '\n');
+    }
+  } catch { /* the record only helps check-event */ }
+}
 
 // ------------------------------------------------------------------------------------------------ renderAsset
 export async function renderAsset({ source, outDir, name, preview = false, timeoutSec, log = (m) => process.stderr.write(`render: ${m}\n`) } = {}) {
@@ -248,12 +269,12 @@ export async function renderAsset({ source, outDir, name, preview = false, timeo
     stage = 'launching Chromium'; browser = await launch();
     summary.chromium = browser.version();
     const files = []; // [tmpPath, finalName]
-    const blocked = [];
+    const blocked = [], served = new Set();
     const run = async (opts, fn) => {
       const { context, page, issues } = await openPage(browser, srv.url, opts);
       let err;
       try { await fn(page); } catch (e) { err = e; } finally { await context.close().catch(() => {}); }
-      blocked.push(...issues.blocked);
+      blocked.push(...issues.blocked); issues.served.forEach(u => served.add(u));
       const p = problems(issues); // the root cause (404, blocked request, page error) beats a downstream symptom
       if (p.length && !timedOut) fail(`${src.rel}: ${p.join('; ')}${err ? ` (then: ${String(err.message).split('\n')[0]})` : ''}`);
       if (err) throw err;
@@ -318,7 +339,9 @@ export async function renderAsset({ source, outDir, name, preview = false, timeo
     }
     stage = 'writing outputs';
     fs.mkdirSync(outAbs, { recursive: true });
-    for (const [from, to] of files) { const dst = path.join(outAbs, to); fs.copyFileSync(from, dst); summary.outputs.push(show(dst)); }
+    const written = [];
+    for (const [from, to] of files) { const dst = path.join(outAbs, to); fs.copyFileSync(from, dst); written.push(dst); summary.outputs.push(show(dst)); }
+    if (!preview) recordRender(written, src, served);
     if (clips.length) summary.clips = clips.map(c => `${c.name}:${c.frames}${c.extracted ? ' (extracted)' : ''}`);
     summary.blockedRequests = [...new Set(blocked)];
     summary.seconds = +((Date.now() - t0) / 1000).toFixed(1);

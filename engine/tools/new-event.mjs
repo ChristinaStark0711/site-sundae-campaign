@@ -1,8 +1,10 @@
 // Scaffold a new event from an existing one (default: the Manhattan Beach dinner). Mechanical only: it copies the
 // template's catalogue, creative sources, captions and plans, swaps the facts it can, writes projections, and lists
-// every template fact it still finds (venue, room, street, ZIP, phone, city, audience area, host, dates, times, paid
-// budget, another event's kit files; see "Leftover facts" in ap.mjs). Nothing is rendered or published. The list is
-// what a text scan can find; it does not replace looking at every rendered asset.
+// every template fact it still finds (venue, room, street, ZIP, phone, city, audience area and other places, the host's
+// name, handle, title and bio when the host differs, dates, times, paid budget, hashtags, another event's kit files;
+// see "Leftover facts" in ap.mjs) and every date that does not fit this event (a wrong weekday, the template's event
+// day). Nothing is rendered or published. The list is what a text scan can find; it does not replace looking at every
+// rendered asset.
 //   node engine/tools/new-event.mjs --city "San Diego" --state CA --date 2026-11-12 --time "7 p.m." \
 //     --venue "Hotel Name" [--space "The Rooftop"] [--address "123 Main St., San Diego, CA 92101"] [--phone 619-555-0100] \
 //     [--host "Josh Stech"] [--host-title "co-founder and CEO of Sundae"] [--audience "San Diego real estate operators"] \
@@ -86,22 +88,22 @@ else ev._todo.push(`creative: waits for the venue. To publish without it, remove
 
 // Fact swaps, made in one pass (a swapped-in value is never swapped again), longest first.
 const Tp = dateParts(T.date), Np = dateParts(ev.date);
-const tVenueFull = `${T.space ? T.space + ' at ' : ''}${T.venue}`, nVenueFull = `${ev.space ? ev.space + ' at ' : ''}${ev.venue}`;
 // the venue without its city ("Shade Hotel", "Peerless Hotel"), as the copy names it next to the city or the room
 const tCore = venueCore(T.venue, T.city), nCore = venueCore(ev.venue, ev.city);
 const tLone = factTokens(T).find((t) => t.what === 'venue' && t.lone)?.str; // "Shade", as in "Shade Manhattan Beach"
 const atRoom = (space, core, the = true) => `${space ? `${the ? space : space.replace(/^The\s+/, '')} at ` : ''}${core}`;
+const tVenueFull = atRoom(T.space, T.venue); // "The Courtyard at Shade Hotel Manhattan Beach"
 const tA = addressParts(T.address), nA = addressParts(ev.address);
 const tPhones = [...new Set(eventMaterials(REPO, from, ['source']).flatMap((m) => phonesIn(m.text).map((p) => p.str)))];
 // Without a new venue or street, the template's are kept whole (never half-swapped into a made-up address, or next to
 // the new city): the report lists them.
 const keep = (...xs) => xs.filter(Boolean).map((x) => [x, x]);
 const tCityLine = tA.city && `${tA.city}, ${tA.st}${tA.zip ? ' ' + tA.zip : ''}`; // "Manhattan Beach, CA 90266"
+// each form of the template venue, alone and after its room ("The Courtyard at …", "the Courtyard at …"): the full name,
+// the name without the city ("Shade Hotel") and the short name with the city ("Shade Manhattan Beach")
+const venueForms = [[T.venue, ev.venue], ...(tCore !== T.venue ? [[tCore, nCore]] : []), ...(tLone ? [[`${tLone} ${T.city}`, ev.venue]] : [])];
 const venuePairs = venueKnown
-  ? [[tVenueFull, nVenueFull], [T.venue, ev.venue], ...(tCore !== T.venue ? [
-    [atRoom(T.space, tCore), atRoom(ev.space, nCore)], [atRoom(T.space, tCore, false), atRoom(ev.space, nCore, false)], [tCore, nCore], // "The Courtyard at Shade Hotel"
-    ...(tLone ? [[`${tLone} ${T.city}`, ev.venue]] : []), // "Shade Manhattan Beach"
-  ] : [])]
+  ? venueForms.flatMap(([t, n]) => [[atRoom(T.space, t), atRoom(ev.space, n)], [atRoom(T.space, t, false), atRoom(ev.space, n, false)], [t, n]])
   : keep(tVenueFull, T.venue, `${tCore} · ${T.city}`, `${tCore}, ${T.city}`, tLone && `${tLone} ${T.city}`);
 const pairs = [
   [apFull(T.date), apFull(ev.date)], [apDay(T.date), apDay(ev.date)], [`${Tp.weekday} · `, `${Np.weekday} · `],
@@ -194,7 +196,7 @@ if (!addTo) console.log(`  ${rel(dir)}/  (event.json, library.json, captions.jso
 console.log(`  engine/creatives/events/${slug}/  (${n} sources${creative ? '' : '; no creative yet: --no-creative'})`);
 console.log(`\nStill showing ${T.city} facts (${report.length} places). Rewrite or replace each${creative ? ', then look at every rendered asset' : ''}:`);
 for (const r of report) console.log('  ' + r);
-if (creative && ev.host !== T.host) console.log(`\nHost: ${ev.host} replaces ${T.host}. The CTA host line now reads "with ${ev.host}${ev.hostTitle ? `, ${ev.hostTitle}` : ''}"${ev.hostTitle ? '' : ' (no --host-title given)'}. Replace the host photos and every "josh" scene (it always shows ${T.host}'s cutout) in ${hostFiles.length ? hostFiles.join(', ') : 'no sources'}, and rewrite every line that names ${T.host}.`);
+if (ev.host !== T.host) console.log(`\nHost: ${ev.host} replaces ${T.host}.${creative ? ` The CTA host line now reads "with ${ev.host}${ev.hostTitle ? `, ${ev.hostTitle}` : ''}"${ev.hostTitle ? '' : ' (no --host-title given)'}.` : ''} ${T.host}'s name, handle, title and bio (${[T.hostTitle, ...ref.tokens.filter((t, i, a) => t.what === 'host bio' && !a.some((u, j) => j < i && u.what === 'host bio' && u.str.includes(t.str))).slice(0, 4).map((t) => t.str)].filter(Boolean).join(', ')} …), photos and "josh" scenes (a "josh" scene always shows ${T.host}'s cutout) are in ${hostFiles.length ? hostFiles.join(', ') : 'none of the copied files'}. Rewrite each with ${ev.host}'s own title and facts (from their published bio, never ${T.host}'s), replace the photos and scenes, and fix every pronoun that meant ${T.host} ("Join him").`);
 if (creative && (!ev.time || !ev.address)) console.log(`\nMissing ${[!ev.time && '--time', !ev.address && '--address'].filter(Boolean).join(' and ')}: video renders fail until the event block in each spec has them.`);
 if (creative && venueKnown && !ev.address) console.log(`No --address: the template's street, ZIP and phone stay in the sources (listed above) until rewritten.`);
 if (creative) console.log(`Confirm "${included}" (what's included) for this event; it is shown in the videos' details scene.`);
@@ -203,7 +205,7 @@ const cities = fs.existsSync(path.join(REPO, 'src/content/cities.json')) ? J(pat
 console.log('\nNext:');
 let i = 1;
 if (!cities[ev.citySlug]) console.log(`  ${i++}. City photo: node engine/tools/city-photo.mjs search "${ev.city}, ${ev.state}"\n     then node engine/tools/city-photo.mjs pick ${ev.citySlug} <openverseId> --name "${ev.city}" --state ${ev.state} --alt "<what it shows>" [--focus "50% 50%"]`);
-if (creative) console.log(`  ${i++}. Venue photos into engine/kit/assets/${slug}-<what>.jpg and the RSVP QR code into engine/kit/assets/${slug}-qr-rsvp.svg, each registered in engine/kit/assets.json`);
+if (creative) console.log(`  ${i++}. Venue photos into engine/kit/assets/${slug}-<what>.jpg and the RSVP QR code into engine/kit/assets/${slug}-qr-rsvp.svg, each registered in engine/kit/assets.json with "event": "${slug}" ("use":"venue" for photos; "use":"event" plus "text": true for the QR code, as for any map or screenshot)`);
 console.log(`  ${i++}. Rewrite everything listed above${addTo ? '' : ', the captions (remove each "_draft"), the plans (remove the TODO line) and the event.json TODO text'}; clear event.json "_todo" item by item`);
 if (creative) console.log(`  ${i++}. node engine/tools/render-event.mjs ${slug}`);
 console.log(`  ${i++}. node engine/tools/check-event.mjs ${slug}`);

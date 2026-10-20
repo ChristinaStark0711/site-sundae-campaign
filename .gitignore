@@ -5,3 +5,5 @@ next-env.d.ts
 *.tsbuildinfo
 .request/
 src/generated/
+# render.mjs --preview output (preview into engine/out/, which engine/.gitignore ignores; never into public/)
+*.preview.*

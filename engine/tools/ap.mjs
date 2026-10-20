@@ -121,7 +121,8 @@ export function venueCore(venue, city) {
 }
 // Who hosts and what their bio says (engine/tools/hosts.json): the template host's titles, career facts and handles.
 const HOSTS_FILE = fileURLToPath(new URL('./hosts.json', import.meta.url));
-const HOSTS = fs.existsSync(HOSTS_FILE) ? JSON.parse(fs.readFileSync(HOSTS_FILE, 'utf8')) : {};
+let HOSTS; // read on first use, so importing this file (render.mjs does) never reads it
+const hosts = () => (HOSTS ??= fs.existsSync(HOSTS_FILE) ? JSON.parse(fs.readFileSync(HOSTS_FILE, 'utf8')) : {});
 export const HOST_KINDS = new Set(['host', 'host title', 'host bio']);
 export const isHostItem = (s) => /\(host(?: title| bio)?(?: hashtag| handle)?\)$/.test(s); // a leftovers() item about the host
 // Another event's city, venue, room and street (not its lone short forms): new-event lists them and check-event warns.
@@ -152,7 +153,7 @@ export function factTokens(ev) {
   if (place && /^\p{Lu}/u.test(place)) { add(place, 'audience area'); if (place === 'Los Angeles') add('LA', 'audience area', { of: place }); }
   for (const p of Array.isArray(ev._places) ? ev._places : []) if (typeof p === 'string') add(p, 'area');
   if (ev.host) {
-    const h = { hostOf: ev.host }, bio = HOSTS[ev.host] || {};
+    const h = { hostOf: ev.host }, bio = hosts()[ev.host] || {};
     add(ev.host, 'host', h);
     const [first, ...rest] = ev.host.split(' ');
     if (rest.length) { add(rest.join(' '), 'host', h); if (first.length >= 3) add(first, 'host', h); }
@@ -277,7 +278,7 @@ export function dateProblems(text, ev, templateWeekdays = [], allow = []) {
     const day = DAYS[new Date(Date.UTC(d.y, d.m - 1, d.d)).getUTCDay()];
     if (wd && wd[1] !== day && !ok(shown)) out.set(shown, `${d.str}, ${d.y} is a ${day}`);
     if (d.key === ownKey && ownTime) {
-      const t = /^\s*(?:·|,|at|–|—|-|\|)\s*(\d{1,2}(?::\d{2})?\s?[ap]\.m\.|noon|midnight)/.exec(text.slice(d.end, d.end + 30));
+      const t = /^\s*(?:·|,\s*at|,|at|–|—|-|\|)?\s*(\d{1,2}(?::\d{2})?\s?[ap]\.m\.|noon|midnight)/.exec(text.slice(d.end, d.end + 30));
       if (t && timeKey(t[1]) !== ownTime && !ok(t[1])) out.set(`${shown} · ${t[1]}`, `this event starts at ${ev.time}`);
     }
   }
@@ -330,7 +331,8 @@ export function kitProblems(raw, ext, manifest, slug, own) {
 // an output whose record still matches it, but whose source or kit files changed since, is stale. An output with no
 // record (rendered in another checkout), or one replaced since (a pull, the change pipeline), cannot be judged here.
 export const sha256 = (p) => crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex');
-export const renderRecordFile = (engineDir, outFile) => path.join(engineDir, '.cache/renders', `${crypto.createHash('sha1').update(path.resolve(outFile)).digest('hex')}.json`);
+const realish = (p) => { try { return fs.realpathSync(p); } catch { return path.resolve(p); } };
+export const renderRecordFile = (engineDir, outFile) => path.join(engineDir, '.cache/renders', `${crypto.createHash('sha1').update(realish(outFile)).digest('hex')}.json`);
 export function renderState(engineDir, outFile) {
   let r;
   try { r = JSON.parse(fs.readFileSync(renderRecordFile(engineDir, outFile), 'utf8')); } catch { return { state: 'unknown' }; }

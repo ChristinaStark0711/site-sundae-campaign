@@ -13,8 +13,8 @@
 // itself; "kit:<file>" accepts one kit file (see "Leftover facts" in ap.mjs). Other events' city, venue, room and
 // street are warnings.
 // Rendered files must exist, be valid and, where this checkout rendered them (engine/.cache/renders/), be newer than
-// every change to their source and kit files. Files in the event's media folder that no catalogue entry names
-// (a --preview render, say) would be published: previews are errors, anything else a warning.
+// every change to their source and kit files. A file in the event's media folder that no catalogue entry names is a
+// warning (it would be published; a --preview render there is git-ignored but belongs in engine/out/).
 // An empty creative library is accepted (new-event.mjs --no-creative while the venue is not set).
 import fs from 'node:fs';
 import path from 'node:path';
@@ -107,12 +107,12 @@ if (ev.kind === 'campaign') {
     if (ext === 'json' && !JSON.parse(s).event && slug !== ENGINE_DEFAULT_EVENT) errs.push(`${k}/${a.id}: no "event" block, so the motion engine falls back to the Manhattan Beach defaults`);
   }
   if (!n) notes.push('the creative library is empty (fine while the venue is not set; add it with new-event.mjs --add-creative)');
-  if (unjudged) notes.push(`${unjudged} rendered file(s) were not rendered in this checkout (or were replaced since), so whether they match their current source was not checked; render-event.mjs records each render it makes`);
+  if (unjudged) notes.push(`${unjudged} rendered file(s) have no render record from this checkout (rendered elsewhere, or replaced since), so whether they still match their sources was not checked; re-render them here to check (render-event.mjs ${slug})`);
   // anything else in the event's own media folder is published too (Manhattan Beach shares /media with the brand set)
   if (ev.media?.startsWith('/media/events/')) for (const k of KINDS) {
     const d = path.join(REPO, 'public', ev.media, k);
     if (fs.existsSync(d)) for (const f of fs.readdirSync(d).filter((x) => !named.has(`${k}/${x}`)).sort()) {
-      if (/\.preview\./.test(f)) errs.push(`${ev.media}/${k}/${f}: a --preview render in the published media folder; delete it (preview into engine/out/ instead)`);
+      if (/\.preview\./.test(f)) warns.push(`${ev.media}/${k}/${f}: a --preview render in the media folder (git-ignored, so not published); delete it and preview into engine/out/ instead`);
       else warns.push(`${ev.media}/${k}/${f}: no catalogue entry names it, but it would be published; delete it unless it is wanted`);
     }
   }
