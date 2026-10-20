@@ -15,7 +15,7 @@
 //   reader      the text as a reader sees it (innerText: words split by inline markup are whole again)
 //   images      every image shown (<img> and CSS backgrounds); paths: every SVG path drawn (shapes can spell words)
 //   fetched     every kit file the page requested; skeleton: the layout's structure; risky: hiding/clipping styles;
-//   red         whether Sundae red is on the canvas
+//   red         whether Sundae red is on the canvas; marks: each wordmark/icon's stretch and what it sits on (stills)
 // Stills load with JavaScript switched off. Video specs load the motion engine (it needs JavaScript), but process.mjs
 // first checks every spec string against a strict markup allowlist (lib.mjs checkSource), so a spec cannot add script.
 import fs from 'node:fs';
@@ -119,25 +119,55 @@ function inspect({ rootSel, canvas }) {
     return `${el.localName}[${names.join(',')}]${geom ? '{' + geom.replace(/\s+/g, ' ') + '}' : ''}`;
   });
   // styles that hide, clip, mask, filter or transform parts: a new one could hide a fact the text check still "sees"
-  const RISKY = ['clip-path', 'mask-image', '-webkit-mask-image', 'filter', 'backdrop-filter', 'transform', 'mix-blend-mode', 'visibility', 'clip', 'z-index', 'text-indent', 'letter-spacing', 'font-size'];
+  // Keyed by the element (tag and class), so a style the original uses on one part doesn't excuse it on another.
+  // pointer-events: an element that ignores the pointer is invisible to the "drawn over" test in shown(); a pseudo-element
+  // with a fill can cover its own element's text (it hit-tests as that element)
+  const RISKY = ['clip-path', 'mask-image', '-webkit-mask-image', 'filter', 'backdrop-filter', 'transform', 'mix-blend-mode', 'visibility', 'clip', 'z-index', 'text-indent', 'letter-spacing', 'font-size', 'pointer-events'];
   const risky = new Set();
   if (rootSel === 'body') for (const el of els) { // stills only: the motion engine animates with transforms and opacity
-    const cs = getComputedStyle(el);
+    const cs = getComputedStyle(el), key = `${el.localName}.${(el.getAttribute('class') || '').trim().replace(/\s+/g, '.')}`;
     for (const p of RISKY) {
       const val = cs.getPropertyValue(p);
       if (!val || ['none', 'normal', 'auto', 'visible', '0px', 'matrix(1, 0, 0, 1, 0, 0)'].includes(val)) continue;
       if (p === 'font-size' && parseFloat(val) >= 9) continue; // only tiny text is risky
       if (p === 'letter-spacing' && Math.abs(parseFloat(val)) < 20) continue;
       if (p === 'text-indent' && Math.abs(parseFloat(val)) < 200) continue;
-      risky.add(`${p}: ${val.slice(0, 80)}`);
+      risky.add(`${key} ${p}: ${val.slice(0, 80)}`);
     }
-    if (+cs.opacity > 0 && +cs.opacity < 0.2 && el.textContent.trim()) risky.add(`opacity: ${cs.opacity} on text`);
+    if (+cs.opacity < 0.2 && el.textContent.trim()) risky.add(`${key} opacity: ${cs.opacity} on text`);
+    for (const pe of ['::before', '::after']) {
+      const ps = getComputedStyle(el, pe);
+      if (!ps.content || ['none', 'normal'].includes(ps.content)) continue;
+      const bg = ps.backgroundColor.match(/rgba?\(([^)]+)\)/)?.[1].split(/[ ,/]+/).filter(Boolean).map(Number);
+      if ((bg && (bg[3] ?? 1) > 0.3) || ps.backgroundImage !== 'none' || ps.boxShadow !== 'none') risky.add(`${key}${pe} filled box`);
+    }
   }
   // is Sundae red still on the canvas (wordmark, icon or a red fill)?
   const near = (c) => { const m = c && c.match(/rgba?\(([^)]+)\)/); if (!m) return false; const [r, g, b, a = 1] = m[1].split(/[ ,/]+/).filter(Boolean).map(Number); return a > 0.5 && Math.hypot(r - 219, g - 61, b - 85) < 30; };
   const red = els.some((el) => { const cs = getComputedStyle(el); return near(cs.backgroundColor) || near(cs.fill) || near(cs.borderLeftColor) || near(cs.borderTopColor) || (el.localName === 'img' && /wordmark-red|sundae-wordmark\.svg|sundae-icon/.test(el.getAttribute('src') || '')); });
+  // the Sundae wordmark and icon (stills; a video's are drawn by the motion engine): how far each is stretched from its
+  // own proportions, and what it sits on at its center and four inner corners (BRAND-SPEC §4: red on white, mist, pink,
+  // slate or gray; white on red, blue or ink; on a photo only inside a solid field)
+  const marks = [];
+  const behind = (mark, x, y) => {
+    for (const e of document.elementsFromPoint(x, y)) { // top to bottom (the mark's own fill first); transparent wrappers are looked through
+      const cs = getComputedStyle(e);
+      if (e !== mark && (e.localName === 'img' || e.localName === 'video' || cs.backgroundImage !== 'none')) return 'photo';
+      const m = cs.backgroundColor.match(/rgba?\(([^)]+)\)/); const c = m ? m[1].split(/[ ,/]+/).filter(Boolean).map(Number) : [0, 0, 0, 0];
+      if ((c[3] ?? 1) > 0.5) return `rgb(${c[0]}, ${c[1]}, ${c[2]})`;
+    }
+    return 'rgb(255, 255, 255)'; // the page's own white
+  };
+  if (rootSel === 'body') for (const el of els) {
+    if (el.localName !== 'img' || !/sundae-(?:wordmark|icon)/.test(el.getAttribute('src') || '')) continue;
+    const b = el.getBoundingClientRect();
+    if (!(b.width > 0 && b.height > 0)) continue;
+    const nat = el.naturalWidth && el.naturalHeight ? el.naturalWidth / el.naturalHeight : 0;
+    const pts = [[0.5, 0.5], [0.15, 0.2], [0.85, 0.2], [0.15, 0.8], [0.85, 0.8]].map(([fx, fy]) => [b.left + fx * b.width, b.top + fy * b.height]).filter(([x, y]) => x >= 0 && y >= 0 && x < canvas.w && y < canvas.h);
+    marks.push({ src: el.getAttribute('src').replace(/^.*\//, ''), stretch: nat ? Math.abs(b.width / b.height / nat - 1) : 0, on: [...new Set(pts.map(([x, y]) => behind(el, x, y)))] });
+  }
   const reader = (root.innerText || '').normalize('NFKC');
-  return { violations: out.violations, tags: [...out.tags].sort(), attrs: [...out.attrs].sort(), text: all.join(' '), visible: vis.join(' '), reader, images: [...images].sort(), paths: [...paths].sort(), skeleton, risky: [...risky].sort(), red };
+  return { violations: out.violations, tags: [...out.tags].sort(), attrs: [...out.attrs].sort(), text: all.join(' '), visible: vis.join(' '), reader, images: [...images].sort(), paths: [...paths].sort(), skeleton, risky: [...risky].sort(), red, marks };
 }
 
 export async function auditSource(source) {

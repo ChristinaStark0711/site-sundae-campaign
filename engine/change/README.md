@@ -30,7 +30,14 @@ in the change log on the hub, and the box says so.
        that was visible before and isn't now (including the room, the street, the host and "an average of" wording
        or a footnote asterisk); any newly added image that carries its own text (QR codes, screenshots, maps: marked
        `"text": true` in `engine/kit/assets.json`), any photo or footage from another event, and any new drawn SVG
-       shape. Any of these **holds the request as a proposal** (below), after it passes the brand lint;
+       shape; a new name after "at", "with", "hosted by" … (also capitalized at a line start, or in capitals); legal
+       or "an average of" wording that was visible and no longer is (faded, moved off the canvas, covered, clipped),
+       even though it is still in the text; and any new hiding style on a part (clip, mask, filter, transform,
+       z-index, tiny or transparent text, `pointer-events`, a filled `::before`/`::after` box), judged per element.
+       Any of these **holds the request as a proposal** (below), after it passes the brand lint;
+     - **wordmark checks** (stills): a Sundae wordmark or icon stretched out of its proportions, a wordmark straight
+       on a photo, or a red wordmark on anything but white, mist, pink, slate or gray (a white one on anything but
+       red, blue or ink) **fails** the request (BRAND-SPEC §4), as do retired files such as the cream wordmark;
      - a preview render, the brand lint (red text, fonts, contrast; videos at their poster frame), and a
        before/after review by Claude. If the review corrects the source, the correction goes through the whole gate
        and a second review.

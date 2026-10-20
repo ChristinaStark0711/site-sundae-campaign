@@ -135,6 +135,21 @@ const describe = () => [
 // --- the gate
 const BASE_TAGS = new Set(['html', 'head', 'meta', 'link', 'style', 'body', 'div', 'span', 'i', 'b', 'br', 'img', 'p', 'h1', 'h2', 'h3', 'strong', 'em', 'small', 'sup', 'sub', 'u', 'svg', 'path', 'circle', 'rect', 'line', 'polyline', 'polygon', 'g']);
 const BASE_ATTRS = /^(?:[a-z0-9]+:(?:class|style)|img:(?:src|alt)|svg:(?:viewbox|width|height|aria-hidden|xmlns|fill|stroke)|(?:path|circle|rect|line|polyline|polygon|g):(?:d|fill|stroke|stroke-width|stroke-linecap|stroke-linejoin|cx|cy|r|x|y|x1|x2|y1|y2|rx|ry|width|height|points|opacity|transform|fill-rule|clip-rule))$/;
+// BRAND-SPEC §4 for the wordmark on a still: never stretched, never straight on a photo, red on a light field (white,
+// mist, pink, slate, gray), white on a dark one (red, blue, ink). Judged against the original, so only a new problem counts.
+const lum = (rgb) => { const [r, g, b] = rgb.match(/\d+/g).slice(0, 3).map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
+const contrast = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((m, n) => n - m); return (x + 0.05) / (y + 0.05); };
+function markProblems(au) {
+  const out = [];
+  for (const m of au.marks || []) {
+    if (m.stretch > 0.04) out.push(`stretches the Sundae ${/icon/.test(m.src) ? 'icon' : 'wordmark'} out of its proportions`);
+    if (/icon/.test(m.src)) continue; // the icon is its own red tile
+    const red = /red|sundae-wordmark\.svg/.test(m.src), ink = red ? 'rgb(219, 61, 85)' : 'rgb(255, 255, 255)';
+    if (m.on.includes('photo')) out.push('puts the Sundae wordmark straight on a photo (it needs a solid field behind it)');
+    else if (m.on.some((c) => contrast(c, ink) < (red ? 2.5 : 3) || (red && lum(c) < lum(ink)))) out.push(`puts the ${red ? 'red' : 'white'} wordmark on a background it doesn't belong on`);
+  }
+  return out;
+}
 let origAudit;
 let candN = 0;
 async function gate(src) {
@@ -165,6 +180,7 @@ async function gate(src) {
   const newRisky = au.risky.filter((r) => !origAudit.risky.includes(r));
   if (newRisky.length) media.push(`changes how parts are shown (${newRisky.slice(0, 2).join('; ')})`);
   if (origAudit.red && !au.red) p.push('leaves no Sundae red on the canvas');
+  const had2 = new Set(markProblems(origAudit)); for (const m of markProblems(au)) if (!had2.has(m)) p.push(m);
   const both = (x) => `${x.text}\n${x.reader}`;
   return {
     problems: p.slice(0, 6), file, audit: au, media,
