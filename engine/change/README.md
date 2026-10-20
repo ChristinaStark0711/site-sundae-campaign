@@ -33,8 +33,8 @@ in the change log on the hub, and the box says so.
        alphabet; and any event fact (date, time, venue, city)
        that was visible before and isn't now (including the room, the street, the host and "an average of" wording
        or a footnote asterisk); any newly added image that carries its own text (QR codes, screenshots, maps: marked
-       `"text": true` in `engine/kit/assets.json`), any photo or footage from another event, any part added to the
-       layout or new drawn SVG shape (reordering or removing parts is a design edit); a new name after "at", "on",
+       `"text": true` in `engine/kit/assets.json`), any photo or footage from another event, any part added to a
+       still's layout or new drawn SVG shape (reordering or removing parts is a design edit); a new name after "at", "on",
        "inside", "with", "hosted by", "joined by", "special guest:", "keynote —" … or a second one joined by "and"
        (unless every word is one Sundae's own plans, captions and creatives use as an ordinary word); legal
        or "an average of" wording that was visible and no longer is (faded, moved off the canvas, covered, clipped),

@@ -176,10 +176,14 @@ async function gate(src) {
   }
   // structure: adding, removing or moving parts of the layout (or drawing new shapes) waits for approval; wording and
   // styling don't change the skeleton
-  // structure: reordering or removing parts is a design edit (dropped facts and legal wording are caught above); adding
-  // a part, or drawing a new shape, waits for approval (an overlay or a drawn word can't then slip in)
-  const left = new Map(); for (const k of origAudit.skeleton) left.set(k, (left.get(k) || 0) + 1);
-  if (au.skeleton.some((k) => { const n = left.get(k) || 0; left.set(k, n - 1); return n <= 0; })) media.push('adds parts to the layout (new elements or drawn shapes)');
+  // structure (stills): reordering or removing parts is a design edit (dropped facts and legal wording are caught
+  // above); adding a part, or drawing a new shape, waits for approval (an overlay or a drawn word can't then slip in).
+  // A video's parts are built by the motion engine from the spec's scene types (its strings are allowlisted markup),
+  // and the engine sizes its own shapes to the text, so its structure isn't compared.
+  if (!A.isVideo) {
+    const left = new Map(); for (const k of origAudit.skeleton) left.set(k, (left.get(k) || 0) + 1);
+    if (au.skeleton.some((k) => { const n = left.get(k) || 0; left.set(k, n - 1); return n <= 0; })) media.push('adds parts to the layout (new elements or drawn shapes)');
+  }
   const newRisky = au.risky.filter((r) => !origAudit.risky.includes(r));
   if (newRisky.length) media.push(`changes how parts are shown (${newRisky.slice(0, 2).join('; ')})`);
   if (origAudit.red && !au.red) p.push('leaves no Sundae red on the canvas');
