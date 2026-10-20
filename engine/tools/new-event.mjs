@@ -16,8 +16,8 @@ import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import {
-  AP_TIME, KINDS, SCAN, STATES, VENUE_TBD, addressParts, apDay, apFull, apShort, dateParts, eventMaterials, flags, kitProblems, kitUses,
-  leftovers, otherEventRef, ownFacts, parseBudget, parseSeatCap, parseTrio, phonesIn, refFacts, slugify, unknownFlags, validDate,
+  AP_TIME, KINDS, SCAN, STATES, VENUE_TBD, addressParts, apDay, apFull, apShort, dateParts, dateProblems, eventMaterials, factTokens, flags, isHostItem,
+  kitProblems, kitUses, leftovers, otherEventRef, ownFacts, parseBudget, parseSeatCap, parseTrio, phonesIn, refFacts, slugify, unknownFlags, validDate, venueCore,
 } from './ap.mjs';
 
 const ENGINE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -87,16 +87,26 @@ else ev._todo.push(`creative: waits for the venue. To publish without it, remove
 // Fact swaps, made in one pass (a swapped-in value is never swapped again), longest first.
 const Tp = dateParts(T.date), Np = dateParts(ev.date);
 const tVenueFull = `${T.space ? T.space + ' at ' : ''}${T.venue}`, nVenueFull = `${ev.space ? ev.space + ' at ' : ''}${ev.venue}`;
+// the venue without its city ("Shade Hotel", "Peerless Hotel"), as the copy names it next to the city or the room
+const tCore = venueCore(T.venue, T.city), nCore = venueCore(ev.venue, ev.city);
+const tLone = factTokens(T).find((t) => t.what === 'venue' && t.lone)?.str; // "Shade", as in "Shade Manhattan Beach"
+const atRoom = (space, core, the = true) => `${space ? `${the ? space : space.replace(/^The\s+/, '')} at ` : ''}${core}`;
 const tA = addressParts(T.address), nA = addressParts(ev.address);
 const tPhones = [...new Set(eventMaterials(REPO, from, ['source']).flatMap((m) => phonesIn(m.text).map((p) => p.str)))];
-// Without a new venue or street, the template's are kept whole (never half-swapped into a made-up address): the
-// report lists them.
+// Without a new venue or street, the template's are kept whole (never half-swapped into a made-up address, or next to
+// the new city): the report lists them.
 const keep = (...xs) => xs.filter(Boolean).map((x) => [x, x]);
 const tCityLine = tA.city && `${tA.city}, ${tA.st}${tA.zip ? ' ' + tA.zip : ''}`; // "Manhattan Beach, CA 90266"
+const venuePairs = venueKnown
+  ? [[tVenueFull, nVenueFull], [T.venue, ev.venue], ...(tCore !== T.venue ? [
+    [atRoom(T.space, tCore), atRoom(ev.space, nCore)], [atRoom(T.space, tCore, false), atRoom(ev.space, nCore, false)], [tCore, nCore], // "The Courtyard at Shade Hotel"
+    ...(tLone ? [[`${tLone} ${T.city}`, ev.venue]] : []), // "Shade Manhattan Beach"
+  ] : [])]
+  : keep(tVenueFull, T.venue, `${tCore} · ${T.city}`, `${tCore}, ${T.city}`, tLone && `${tLone} ${T.city}`);
 const pairs = [
   [apFull(T.date), apFull(ev.date)], [apDay(T.date), apDay(ev.date)], [`${Tp.weekday} · `, `${Np.weekday} · `],
   [apShort(T.date), apShort(ev.date)], [`${Tp.month}&nbsp;${Tp.d}`, `${Np.month}&nbsp;${Np.d}`],
-  ...(venueKnown ? [[tVenueFull, nVenueFull], [T.venue, ev.venue]] : keep(tVenueFull, T.venue)),
+  ...venuePairs,
   // the address and its short forms: "1221 N. Valley Drive · Manhattan Beach", "…<br>Manhattan Beach, CA 90266"
   ...(venueKnown && nA.street ? [[T.address, ev.address], [tA.street, nA.street], ...(nA.city ? [[tCityLine, `${nA.city}, ${nA.st}${nA.zip ? ' ' + nA.zip : ''}`]] : [])] : keep(T.address, tCityLine, tA.street && `${tA.street} · ${T.city}`)),
   ...(venueKnown && ev.phone && tPhones.length === 1 ? [[tPhones[0], ev.phone]] : []),
@@ -104,7 +114,8 @@ const pairs = [
   ...(T.time && ev.time ? [[T.time, ev.time]] : []),
 ].filter(([a, b]) => a && b);
 const map = new Map(pairs.reverse()); // the first pair for a key wins
-const swapRe = new RegExp([...map.keys()].sort((a, b) => b.length - a.length).map((s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|'), 'g');
+// a key that starts or ends with a digit matches only a whole number there ("Nov. 2" is not the start of "Nov. 25")
+const swapRe = new RegExp([...map.keys()].sort((a, b) => b.length - a.length).map((s) => `${/^\d/.test(s) ? '(?<!\\d)' : ''}${s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}${/\d$/.test(s) ? '(?!\\d)' : ''}`).join('|'), 'g');
 // a date card split across two elements: <div>Oct.</div><div>8</div>
 const splitDate = new RegExp(`(>\\s*)${Tp.month.replace('.', '\\.')}(\\s*</[a-z0-9]+>\\s*(?:<[a-z][^>]*>\\s*)+)${Tp.d}(?!\\d)`, 'g');
 const swap = (s) => (typeof s === 'string' ? s.replace(splitDate, `$1${Np.month}$2${Np.d}`).replace(swapRe, (m) => map.get(m)) : s);
@@ -123,9 +134,11 @@ if (creative) {
   // The motion engine's event block (engine/README.md, "event block"): every fact a scene shows must be given, or the
   // render fails rather than falling back to the template's facts. The CTA host line is set whenever the host is not
   // the template's (the engine's default line names Josh Stech).
+  // The venue rows sit next to the city (the CTA place line is hotel + city, the date card venueShort over cityLine),
+  // so they name the venue without its city, as the template's do ("The Courtyard at Shade Hotel", "Shade Hotel").
   const sameHost = ev.host === T.host;
   const eventBlock = {
-    weekday: Np.weekday, month: Np.month, day: String(Np.d), time: ev.time, venue: nVenueFull, venueShort: nVenueFull.replace(/ Hotel$/, ''), hotel: ev.venue,
+    weekday: Np.weekday, month: Np.month, day: String(Np.d), time: ev.time, venue: atRoom(ev.space, nCore), venueShort: atRoom(ev.space, nCore.replace(/ Hotel$/, '')), hotel: nCore,
     city: ev.city, cityLine: `${ev.city}, ${STATES[ev.state] || ev.state}`, address: ev.address?.replace(/,\s*[A-Z]{2}(?:\s+\d{5}(?:-\d{4})?)?$/, ''), included, name: ev.name,
   };
   for (const k of KINDS) for (const a of lib[k]) {
@@ -164,11 +177,14 @@ const manifest = J(path.join(ENGINE, 'kit/assets.json'));
 const report = [], hostFiles = [];
 for (const m of eventMaterials(REPO, slug, addTo ? ['library', 'source'] : undefined)) {
   const l = leftovers(m.text, ref, own, SCAN[m.kind]);
+  let host = l.some(isHostItem);
+  l.push(...dateProblems(m.text, ev, [Tp.weekday], own.allow));
   for (const o of others) l.push(...leftovers(m.text, o, own).map((x) => `${x.replace(/\)$/, '')} of ${o.slug}: keep only if true and deliberate)`));
   if (m.kind === 'source') {
     l.push(...kitProblems(m.raw, m.ext, manifest, slug, own));
-    if (kitUses(m.raw, m.ext).some((u) => manifest.assets[u.name]?.person && manifest.assets[u.name].person !== ev.host)) hostFiles.push(`${m.k}/${m.id}`);
+    host ||= kitUses(m.raw, m.ext).some((u) => { const e = manifest.assets[u.name]; return e?.person && e.person !== ev.host && e.use !== 'photo'; });
   }
+  if (host && ev.host !== T.host) hostFiles.push(m.kind === 'source' ? `${m.k}/${m.id}` : m.label.replace(`src/content/events/${slug}/`, ''));
   if (l.length) report.push(`${m.label}: ${l.join(', ')}`);
 }
 const n = Object.values(lib).reduce((s, a) => s + a.length, 0);

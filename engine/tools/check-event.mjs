@@ -1,19 +1,25 @@
 // Is an event ready to publish? Checks the record, the city photo, the plans, captions and projections, the catalogue
-// against the rendered files and the kit, and scans every text the event carries (event.json text and plan blurbs,
-// library.json, captions.json, plans/*.md and every creative source) for another event's facts. Exit 1 lists every
-// problem; warnings do not block.
+// against the rendered files and the kit, the event's own dates, and scans every text the event carries (event.json
+// text and plan blurbs, library.json, captions.json, plans/*.md and every creative source) for another event's facts.
+// Exit 1 lists every problem; warnings do not block.
 //   node engine/tools/check-event.mjs <slug>
-// Template facts are errors: the venue (and "Shade"-style short names), room, street, ZIP, phone, city, audience area
-// and host of the event in event.json "_from" (written by new-event.mjs; without one, every earlier campaign event),
-// plus the dates and times its materials show and its paid budget. A deliberate reference (a true mention of an
-// earlier dinner, a confirmed run-of-show time) goes in event.json "_allow", e.g. ["Sacramento · Echo & Rig",
-// "7:35 p.m."]: any match an "_allow" string contains is accepted. Other events' city, venue, room and street are
-// warnings.
+// Template facts are errors: the venue (and "Shade"-style short names), room, street, ZIP, phone, city, audience area,
+// the other places it names (event.json "_places") and, when the host differs, the host's name, handle, title and bio
+// (engine/tools/hosts.json), all of the event in event.json "_from" (written by new-event.mjs; without one, every
+// earlier campaign event), plus the dates and times its materials show and its paid budget, also inside hashtags and
+// handles ("#lainvestors", "@JoshStech"). A deliberate reference (a true mention of an earlier dinner, a confirmed
+// run-of-show time) goes in event.json "_allow", e.g. ["Sacramento · Echo & Rig", "7:35 p.m."]: any match an "_allow"
+// string contains is accepted, except another host's name and bio, which are accepted only inside the allowed phrase
+// itself; "kit:<file>" accepts one kit file (see "Leftover facts" in ap.mjs). Other events' city, venue, room and
+// street are warnings.
+// Rendered files must exist, be valid and, where this checkout rendered them (engine/.cache/renders/), be newer than
+// every change to their source and kit files. Files in the event's media folder that no catalogue entry names
+// (a --preview render, say) would be published: previews are errors, anything else a warning.
 // An empty creative library is accepted (new-event.mjs --no-creative while the venue is not set).
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { AP_TIME, KINDS, SCAN, STATES, VENUE_TBD, eventMaterials, kitProblems, leftovers, otherEventRef, ownFacts, refFacts, slugify, validDate } from './ap.mjs';
+import { AP_TIME, KINDS, SCAN, STATES, VENUE_TBD, allowProblems, badOutput, dateParts, dateProblems, eventMaterials, kitProblems, leftovers, otherEventRef, ownFacts, refFacts, renderState, slugify, validDate } from './ap.mjs';
 
 const ENGINE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const REPO = path.resolve(ENGINE, '..');
@@ -78,30 +84,53 @@ if (ev.kind === 'campaign') {
   const manifest = J(path.join(ENGINE, 'kit/assets.json'));
   const lib = J(path.join(dir, 'library.json'));
   const own = ownFacts(ev, pj?.scenarios?.base?.paid_budget);
-  let n = 0;
+  let n = 0, unjudged = 0;
+  const named = new Set(); // every rendered file the catalogue names, per kind
   for (const [k, items] of Object.entries(lib)) for (const a of items) {
     n++;
     if (!KINDS.includes(k)) { errs.push(`library.json: unknown kind "${k}"`); break; }
     const ext = k === 'videos' || k === 'reels' ? 'json' : 'html';
     const src = path.join(ENGINE, 'creatives/events', slug, k, `${a.id}.${ext}`);
+    for (const file of [a.file, a.pdf, a.poster].filter(Boolean)) named.add(`${k}/${file}`);
     if (!fs.existsSync(src)) { errs.push(`${k}/${a.id}: no source ${path.relative(REPO, src)}`); continue; }
     const s = fs.readFileSync(src, 'utf8');
-    for (const file of [a.file, a.pdf, a.poster].filter(Boolean)) if (!fs.existsSync(path.join(REPO, 'public', ev.media, k, file))) errs.push(`${k}/${a.id}: not rendered (${ev.media}/${k}/${file})`);
+    for (const file of [a.file, a.pdf, a.poster].filter(Boolean)) {
+      const out = path.join(REPO, 'public', ev.media, k, file), shown = `${ev.media}/${k}/${file}`;
+      if (!fs.existsSync(out)) { errs.push(`${k}/${a.id}: not rendered (${shown})`); continue; }
+      const bad = badOutput(out);
+      if (bad) { errs.push(`${k}/${a.id}: ${shown} ${bad}; render it again (render-event.mjs ${slug} --kinds ${k} --ids ${a.id})`); continue; }
+      const r = renderState(ENGINE, out);
+      if (r.state === 'stale') errs.push(`${k}/${a.id}: ${shown} is older than its sources (changed since it was rendered: ${r.changed.join(', ')}); render it again (render-event.mjs ${slug} --kinds ${k} --ids ${a.id})`);
+      else if (r.state === 'unknown') unjudged++;
+    }
     for (const p of kitProblems(s, ext, manifest, slug, own)) errs.push(`${k}/${a.id}: ${p}`);
     if (ext === 'json' && !JSON.parse(s).event && slug !== ENGINE_DEFAULT_EVENT) errs.push(`${k}/${a.id}: no "event" block, so the motion engine falls back to the Manhattan Beach defaults`);
   }
   if (!n) notes.push('the creative library is empty (fine while the venue is not set; add it with new-event.mjs --add-creative)');
+  if (unjudged) notes.push(`${unjudged} rendered file(s) were not rendered in this checkout (or were replaced since), so whether they match their current source was not checked; render-event.mjs records each render it makes`);
+  // anything else in the event's own media folder is published too (Manhattan Beach shares /media with the brand set)
+  if (ev.media?.startsWith('/media/events/')) for (const k of KINDS) {
+    const d = path.join(REPO, 'public', ev.media, k);
+    if (fs.existsSync(d)) for (const f of fs.readdirSync(d).filter((x) => !named.has(`${k}/${x}`)).sort()) {
+      if (/\.preview\./.test(f)) errs.push(`${ev.media}/${k}/${f}: a --preview render in the published media folder; delete it (preview into engine/out/ instead)`);
+      else warns.push(`${ev.media}/${k}/${f}: no catalogue entry names it, but it would be published; delete it unless it is wanted`);
+    }
+  }
 
   // another event's facts anywhere in this event's text
   const others = fs.readdirSync(EVENTS).filter((d) => d !== slug && fs.existsSync(path.join(EVENTS, d, 'event.json'))).map((d) => J(path.join(EVENTS, d, 'event.json')));
   const templates = ev._from ? others.filter((o) => o.slug === ev._from) : others.filter((o) => o.kind === 'campaign' && String(o.date) < String(ev.date));
   if (ev._from && !templates.length) errs.push(`event.json: "_from" names ${ev._from}, which does not exist`);
   const refs = templates.map((o) => refFacts(REPO, o.slug));
+  errs.push(...allowProblems(own.allow, refs, ev.host, manifest));
   const mats = eventMaterials(REPO, slug);
   for (const m of mats) for (const r of refs) {
     const l = leftovers(m.text, r, own, SCAN[m.kind]);
     if (l.length) errs.push(`${m.label}: ${l.join(', ')} from ${r.slug}`);
   }
+  // this event's own dates: real, on the right weekday, not the template's event day, the right start time
+  const tWeekdays = [...new Set(templates.filter((o) => validDate(o.date)).map((o) => dateParts(o.date).weekday))];
+  for (const m of mats) { const d = dateProblems(m.text, ev, tWeekdays, own.allow); if (d.length) errs.push(`${m.label}: ${d.join(', ')}`); }
   for (const o of others.filter((x) => !templates.includes(x))) {
     const r = otherEventRef(o), hits = new Set(), where = [];
     for (const m of mats) { const l = leftovers(m.text, r, own); if (l.length) { l.forEach((x) => hits.add(x)); where.push(m.label.replace(/^(src\/content|engine\/creatives)\/events\/[^/]+\//, '')); } }
