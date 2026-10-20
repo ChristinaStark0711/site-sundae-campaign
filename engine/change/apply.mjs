@@ -3,7 +3,8 @@
 //   done    copy the rendered files and the new source into place and update the library entry, after checking that
 //           the asset's source is still the one the change started from (else the request fails: send it again).
 //           A variation takes the next free id at this moment (05B taken meanwhile -> 05C, files renamed to match).
-//   held    keep the proposal (engine/held/<id>.<ext> and public/media/held/<id>.jpg) for the owner to approve.
+//   held    keep the proposal (engine/held/<id>.<ext> and its preview engine/held/<id>.jpg, never served by the site) for
+//           the owner to approve.
 //   failed  log only.
 // Always writes the request log (src/content/requests/<id>.json). Writes .request/out/allowed.json for guard.mjs.
 import fs from 'node:fs';
@@ -30,7 +31,7 @@ const record = (extra = {}) => {
 };
 const failNow = (reason) => { const { result, proposal, ...rest } = r.log; r.log = { ...rest, status: 'failed', reason }; r.status = 'failed'; };
 const A = resolveAsset(r.request.asset);
-const heldSrc = A && `engine/held/${id}.${A.ext}`, heldImg = `public/media/held/${id}.jpg`;
+const heldSrc = A && `engine/held/${id}.${A.ext}`, heldImg = `engine/held/${id}.jpg`;
 const heldDir = path.join(REPO, 'engine/held');
 const removeHeld = () => {
   const ps = [heldImg, ...(fs.existsSync(heldDir) ? fs.readdirSync(heldDir).filter((f) => f.startsWith(`${id}.`)).map((f) => `engine/held/${f}`) : [])];
@@ -45,7 +46,9 @@ if (r.status === 'done') {
   const list = lib[library.kind];
   const current = A && fs.existsSync(A.source) ? crypto.createHash('sha256').update(fs.readFileSync(A.source)).digest('hex') : null;
   let plan = null;
-  if (!A) { /* failed above */ } else if (r.request.mode === 'update' && current !== r.sourceHash) failNow(r.request.candidate ? 'The asset changed after this proposal was made, so applying it would undo the newer change. Nothing was changed; the request can be sent again.' : 'This asset changed while the request was being worked on, so nothing was changed. It can be sent again.');
+  // an update must sit on the source it was made from; so must an approved proposal of either kind (a variation made
+  // before the original was corrected would bring the old wording back next to it)
+  if (!A) { /* failed above */ } else if ((r.request.mode === 'update' || r.request.candidate) && current !== r.sourceHash) failNow(r.request.candidate ? 'The asset changed after this proposal was made, so applying it would undo the newer change. Nothing was changed; the request can be sent again.' : 'This asset changed while the request was being worked on, so nothing was changed. It can be sent again.');
   else if (library.op === 'replace') {
     const i = list.findIndex((a) => a.id === library.entry.id);
     if (i < 0) failNow('The asset is gone from the library, so nothing was changed.');

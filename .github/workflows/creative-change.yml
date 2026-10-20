@@ -6,8 +6,8 @@
 #   ANTHROPIC_API_KEY   required: pays for the AI edit (up to five model calls per request; usage is logged per request)
 #   VERCEL_DEPLOY_HOOK  optional: a Vercel deploy hook URL, called after the push in case the push alone doesn't deploy
 # Variables (same page, Variables tab, all optional): CHANGE_MODEL (default claude-opus-5-5), CHANGE_DAILY_CAP
-# (default 30 a day), CHANGE_UPDATES ("auto", the default: updates publish straight away; "approve": updates wait for
-# the owner like fact changes do).
+# (default 30 a day), CHANGE_UPDATES ("auto", the default: updates publish straight away; "approve": updates and new
+# variations wait for the owner like fact changes do).
 #
 # Safety (details in engine/change/README.md): the AI never runs a tool or a command; it returns one new source file.
 # Deterministic checks then inspect the rendered page with JavaScript off, compare its text with the original's

@@ -12,7 +12,8 @@
 //               plus a small fixed set)
 //   text        every text node in the document (hidden ones too), Unicode-normalized (NFKC): the fact check
 //   visible     the text a viewer can actually see (stills) or sees at any scene's settled moment (videos)
-//   reader      the text as a reader sees it (innerText: words split by inline markup are whole again)
+//   reader      the text as a reader sees it (innerText: words split by inline markup are whole again); readerRaw:
+//               the same with text-transform switched off
 //   images      every image shown (<img> and CSS backgrounds); paths: every SVG path drawn (shapes can spell words)
 //   fetched     every kit file the page requested; skeleton: the layout's structure; risky: hiding/clipping styles;
 //   red         whether Sundae red is on the canvas; marks: each wordmark/icon's stretch and what it sits on (stills)
@@ -167,7 +168,10 @@ function inspect({ rootSel, canvas }) {
     marks.push({ src: el.getAttribute('src').replace(/^.*\//, ''), stretch: nat ? Math.abs(b.width / b.height / nat - 1) : 0, on: [...new Set(pts.map(([x, y]) => behind(el, x, y)))] });
   }
   const reader = (root.innerText || '').normalize('NFKC');
-  return { violations: out.violations, tags: [...out.tags].sort(), attrs: [...out.attrs].sort(), text: all.join(' '), visible: vis.join(' '), reader, images: [...images].sort(), paths: [...paths].sort(), skeleton, risky: [...risky].sort(), red, marks };
+  // the same text with text-transform switched off: a name styled into lowercase still reads as a name here
+  const plainCase = document.createElement('style'); plainCase.textContent = '*{text-transform:none!important}'; document.head.appendChild(plainCase);
+  const readerRaw = (root.innerText || '').normalize('NFKC'); plainCase.remove();
+  return { violations: out.violations, tags: [...out.tags].sort(), attrs: [...out.attrs].sort(), text: all.join(' '), visible: vis.join(' '), reader, images: [...images].sort(), paths: [...paths].sort(), skeleton, risky: [...risky].sort(), red, marks, readerRaw };
 }
 
 export async function auditSource(source) {
@@ -195,18 +199,19 @@ export async function auditSource(source) {
       const r = await page.evaluate(inspect, { rootSel: '#stage', canvas });
       // what a viewer sees: the union of every scene's settled moment (the same moments the preview shows)
       // and every text it shows, sampled at each scene's settled moment and its last frame (counters finish there)
-      const seen = new Set(), texts = new Set([r.text]), readers = new Set([r.reader]), imgs = new Set(r.images), pths = new Set(r.paths); let t = 0;
+      const seen = new Set(), texts = new Set([r.text]), readers = new Set([r.reader]), raws = new Set([r.readerRaw]), imgs = new Set(r.images), pths = new Set(r.paths); let t = 0;
       for (const s of spec.scenes) {
         for (const at of [t + Math.min(s.dur - 0.2, 2.6), t + s.dur - 0.04]) {
           await page.evaluate((x) => window.seekTo(x), at);
           const x = await page.evaluate(inspect, { rootSel: '#stage', canvas });
-          seen.add(x.visible); texts.add(x.text); readers.add(x.reader); x.images.forEach((i) => imgs.add(i)); x.paths.forEach((d) => pths.add(d));
+          seen.add(x.visible); texts.add(x.text); readers.add(x.reader); raws.add(x.readerRaw); x.images.forEach((i) => imgs.add(i)); x.paths.forEach((d) => pths.add(d));
         }
         t += s.dur;
       }
       r.visible = [...seen].join(' ');
       r.text = [...texts].join(' ');
       r.reader = [...readers].join('\n');
+      r.readerRaw = [...raws].join('\n');
       r.images = [...imgs].sort(); r.paths = [...pths].sort();
       return done(r);
     } finally { await context.close().catch(() => {}); }

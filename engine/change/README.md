@@ -51,16 +51,24 @@ in the change log on the hub, and the box says so.
 3. Results: **Done** (published), **Waiting for approval** (held) or **Couldn't apply** (failed; nothing changed).
 
 ## What waits for approval, and how to approve
-Held as a **proposal** (its source is kept in `engine/held/` and its preview shows in the change log): anything that
-changes what the asset says (facts, claims, contact details), and, if `CHANGE_UPDATES` is `approve`, every update.
+Held as a **proposal**: anything that changes what the asset says (facts, claims, contact details, names, legal
+wording) or hides part of it, and, if `CHANGE_UPDATES` is `approve`, every update and every new variation. Its source
+and preview are kept in the repo (`engine/held/<id>.html|json` and `engine/held/<id>.jpg`), which the site never
+serves: the hub's change log only says what *kind* of change waits (e.g. "adds a number, date, time or address"), never
+the new words, and it masks web and email addresses, phone numbers and @handles in the request text. So a held
+proposal can't put a fake phone number or a "cancelled" notice on the hub. The full list of what the gate found, most
+serious first, is in the request's log file (`src/content/requests/<id>.json`, `proposal.changes`).
 Held without a proposal: requests that need a photo, footage or AI imagery the kit doesn't have, unclear or unrelated
 requests, and requests over the daily cap. Earnings or income claims are never made.
+Model-written text (summaries, hold reasons, review notes, a variation's title) reaches the public log only if it adds
+nothing the original doesn't say; otherwise a fixed sentence is used ("Changed as asked.", "variation").
 
-To approve: GitHub → this repo → **Actions** → **Creative change** → **Run workflow** → paste the request id from the
-change log into **approve** → **Run**. A proposal is applied exactly as previewed (no new AI call). If the approval
-fails for a temporary reason the proposal stays, so it can be approved again; if the asset changed after the proposal
-was made, the proposal is dropped and the request can be sent again. A request held without a proposal runs again
-from the start with only the daily cap waived (fact changes are still held).
+To approve: open `engine/held/<id>.jpg` and `proposal.changes` in `src/content/requests/<id>.json` on GitHub and
+check them, then GitHub → this repo → **Actions** → **Creative change** → **Run workflow** → paste the request id from
+the change log into **approve** → **Run**. A proposal is applied exactly as previewed (no new AI call). If the
+approval fails for a temporary reason the proposal stays, so it can be approved again; if the asset changed after the
+proposal was made (an update or a variation), the proposal is dropped and the request can be sent again. A request
+held without a proposal runs again from the start with only the daily cap waived (fact changes are still held).
 Requests that need new photos or AI footage can't run automatically: ask in Claude, where AI generation is quoted
 first.
 
@@ -74,7 +82,8 @@ first.
    owner credential: whoever holds it can also start an approval run, which publishes a held proposal.
 3. Optional: `VERCEL_DEPLOY_HOOK` secret (a Vercel deploy hook URL) if bot pushes ever stop triggering deploys;
    repository variables `CHANGE_MODEL` (default `claude-opus-5-5`), `CHANGE_DAILY_CAP` (default 30; set the same
-   number as a Vercel env var `CHANGE_DAILY_CAP` so the site refuses early) and `CHANGE_UPDATES` (`auto` or `approve`).
+   number as a Vercel env var `CHANGE_DAILY_CAP` so the site refuses early) and `CHANGE_UPDATES` (`auto` or `approve`;
+   `approve` holds updates and new variations alike).
 Never paste a key or token into a chat.
 
 ## Limits and notes (honest)
@@ -82,7 +91,11 @@ Never paste a key or token into a chat.
   design and wording. The checks above stop new facts, claims, contact details, scripts, outside files and
   off-brand colors and fonts, but not every unwanted wording (a reworded headline is, by design, allowed). Every
   change is in the public log and in git, and any version can be restored. Set `CHANGE_UPDATES=approve` to make
-  every update wait for approval instead.
+  every update and new variation wait for approval instead.
+- The repo is public, so a held proposal (in `engine/held/`) can be seen on GitHub, just not on the hub.
+- Known gaps in the text checks: a person's name typed all in lowercase ("dinner with elon musk") isn't recognized as
+  a name, and a disclaimer contradicted by a separate new sentence (rather than reworded) isn't caught; the review by
+  Claude and the brand lint are the backstop there.
 - Each request commits a log entry to `main`, which redeploys the site; the daily cap bounds that.
 - Two requests for the same asset sent within seconds of each other may both start; the second then ends as
   "Couldn't apply" (the asset changed meanwhile) and can be sent again. Nothing is ever lost silently.

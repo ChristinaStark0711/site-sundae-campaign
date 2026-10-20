@@ -14,7 +14,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { auditSource } from './audit.mjs';
-import { ENGINE, OUT, REPO, REQ, checkSource, kitAssets, kitClips, kitImageNotes, log, lostWording, missingFacts, newClaims, newFacts, newNames, newSpecNumbers, nextVariantId, readJSON, redact, redactDeep, resolveAsset, slugify, writeJSON } from './lib.mjs';
+import { ENGINE, OUT, REPO, REQ, checkSource, kitAssets, kitClips, kitImageNotes, log, lostWording, missingFacts, newClaims, newFacts, newNames, newScripts, newSpecNumbers, nextVariantId, readJSON, redact, redactDeep, resolveAsset, slugify, writeJSON } from './lib.mjs';
 
 const MODEL = process.env.CHANGE_MODEL || 'claude-opus-5-5';
 const DAILY_CAP = Number(process.env.CHANGE_DAILY_CAP || 30);
@@ -37,7 +37,7 @@ const sourceHash = req.baseHash || sha(original); // an approved proposal must s
 function finish(status, extra = {}) {
   const logRec = {
     id: req.id, at: req.at, asset: req.asset, assetTitle: A.entry.title, mode: req.mode, text: req.text, status,
-    ...(extra.summary ? { summary: extra.summary } : {}), ...(extra.reason ? { reason: extra.reason } : {}),
+    ...(extra.summary && status !== 'held' ? { summary: extra.summary } : {}), ...(extra.reason ? { reason: extra.reason } : {}),
     ...(extra.result ? { result: extra.result } : {}), ...(extra.proposal ? { proposal: extra.proposal } : {}), ...(req.approved && status !== 'held' ? { approved: true } : {}),
     finishedAt: new Date().toISOString(), model: usage.calls ? MODEL : undefined, usage: usage.calls ? usage : undefined,
   };
@@ -182,14 +182,43 @@ async function gate(src) {
   if (origAudit.red && !au.red) p.push('leaves no Sundae red on the canvas');
   const had2 = new Set(markProblems(origAudit)); for (const m of markProblems(au)) if (!had2.has(m)) p.push(m);
   const both = (x) => `${x.text}\n${x.reader}`;
+  const scripts = newScripts(both(origAudit), both(au));
+  if (scripts.length) media.push(`uses letters from another alphabet (${scripts.slice(0, 3).join(' ')}), which can make an address look like Sundae's`);
   return {
     problems: p.slice(0, 6), file, audit: au, media,
     facts: [...new Set([...newFacts(both(origAudit), both(au)), ...(A.isVideo ? newSpecNumbers(original, src) : [])])],
     claims: newClaims(both(origAudit), both(au)),
-    missing: [...missingFacts(ev, origAudit.visible, au.visible), ...lostWording(origAudit.reader, au.reader, origAudit.visible, au.visible).map((x) => `§${x}`), ...newNames(ev, origAudit.reader, au.reader).map((x) => `+${x}`)],
+    missing: [...missingFacts(ev, origAudit.visible, au.visible), ...lostWording(origAudit.reader, au.reader, origAudit.visible, au.visible).map((x) => `§${x}`), ...newNames(ev, `${origAudit.reader}\n${origAudit.readerRaw || ''}`, `${au.reader}\n${au.readerRaw || ''}`).map((x) => `+${x}`)],
   };
 }
-const describeFacts = (g) => [...g.facts.map((t) => `adds "${t}"`), ...g.claims.map((t) => `adds "${t}"`), ...g.missing.map((t) => (t.startsWith('§') ? t.slice(1) : t.startsWith('+') ? `names ${t.slice(1)}` : `drops "${t}"`)), ...g.media];
+// Everything the gate found, most serious first (event facts and legal wording dropped, new names, claims, images and
+// styles, then new numbers and addresses), in full: the owner approves against this list (proposal.changes).
+const describeFacts = (g) => [
+  ...g.missing.filter((t) => !t.startsWith('§') && !t.startsWith('+')).map((t) => `drops "${t}"`), ...g.missing.filter((t) => t.startsWith('§')).map((t) => t.slice(1)),
+  ...g.missing.filter((t) => t.startsWith('+')).map((t) => `names ${t.slice(1)}`), ...g.claims.map((t) => `adds "${t}"`), ...g.media, ...g.facts.map((t) => `adds "${t}"`)];
+// The public change log shows the kinds of change only, never the new words themselves: a held proposal must not put
+// a phone number, an address or a claim on the hub before the owner has looked at it.
+const heldReason = (g) => {
+  const kinds = [
+    g.missing.some((t) => !t.startsWith('§') && !t.startsWith('+')) && 'changes or drops an event fact',
+    g.missing.some((t) => t.startsWith('§')) && 'changes legal or "average" wording',
+    g.missing.some((t) => t.startsWith('+')) && 'adds a name',
+    g.claims.length && 'adds a claim, offer or contact prompt',
+    g.media.length && 'adds an image with its own text or changes how parts are shown',
+    g.facts.length && 'adds a number, date, time or address',
+  ].filter(Boolean);
+  return `This needs the account owner's approval: it ${kinds.join('; ')}.`;
+};
+// Model-written text (a summary, a hold reason, review notes, a variation title) reaches the public log only if it adds
+// nothing the original doesn't say: no new number, address, claim, name or alphabet, no markup.
+const publicText = (t, max = 200) => {
+  const x = String(t ?? '').replace(/<[^>]*>/g, ' ').replace(/[\u0000-\u001f\u007f]/g, ' ').replace(/\s+/g, ' ').trim();
+  if (!x || x.length > max) return null;
+  const o = `${origAudit.text}\n${origAudit.reader}`;
+  if (newFacts(o, x).length || newClaims(o, x).length || newNames(ev, origAudit.reader, x).length || newScripts(o, x).length || redact(x) !== x) return null;
+  return x;
+};
+const plainProblem = (p) => p.split(': ')[0]; // "has generated text div::before" without the text itself
 // keep a proposal the owner can approve exactly as shown: its source and a preview image
 function holdProposal(g, reason, summary, variantTitle) {
   // only a publishable proposal reaches the owner: it must pass the brand lint first
@@ -197,7 +226,8 @@ function holdProposal(g, reason, summary, variantTitle) {
   const prev = render(g.file, path.join(WORK, 'held'), 'held', true)[0];
   const jpg = path.join(OUT, 'files', 'held-preview.jpg'); toJpg(prev, jpg, 1200);
   const srcCopy = path.join(OUT, 'files', `held-source.${A.ext}`); fs.copyFileSync(g.file, srcCopy);
-  finish('held', { reason, summary, proposal: { preview: `/media/held/${req.id}.jpg`, changes: describeFacts(g), baseHash: sourceHash, ...(variantTitle ? { variantTitle: redact(variantTitle) } : {}) }, held: { source: path.relative(REPO, srcCopy), preview: path.relative(REPO, jpg) } });
+  // the preview is kept in engine/held/ (in the repo, never served by the site), for the owner to open before approving
+  finish('held', { reason, summary, proposal: { preview: `engine/held/${req.id}.jpg`, changes: describeFacts(g), baseHash: sourceHash, ...(variantTitle ? { variantTitle } : {}) }, held: { source: path.relative(REPO, srcCopy), preview: path.relative(REPO, jpg) } });
 }
 
 try {
@@ -209,26 +239,28 @@ try {
     src = fs.readFileSync(path.join(REPO, req.candidate), 'utf8');
     summary = req.summary; variantTitle = req.variantTitle;
     g = await gate(src);
-    if (g.problems.length) fail(`The approved proposal no longer passes the safety checks (it ${g.problems[0]}), so nothing was changed.`, summary);
+    if (g.problems.length) fail(`The approved proposal no longer passes the safety checks (it ${plainProblem(g.problems[0])}), so nothing was changed.`, summary);
     if (!lint(g.file).ok) fail('The approved proposal breaks a brand rule (text color, font or contrast), so it was not published.', summary);
   } else {
     const beforeImg = A.isVideo ? render(A.source, path.join(WORK, 'before'), 'before', true)[0] : path.join(A.mediaDir, A.entry.file);
     const before = imageBlock(beforeImg);
     let r = await callModel([{ type: 'text', text: 'BEFORE (as published):' }, before, { type: 'text', text: describe() }], EDIT_TOOL);
-    if (r.decision === 'hold') hold(r.reason || 'This change needs a person to look at it.', r.summary);
+    if (r.decision === 'hold') hold(publicText(r.reason) || 'This request needs a person to look at it.', r.summary);
     src = String(r.source || '');
     g = src ? await gate(src) : { problems: ['is empty'] };
     if (g.problems.length) { // one retry with the reasons
       r = await callModel([{ type: 'text', text: 'BEFORE (as published):' }, before, { type: 'text', text: describe() + `\n\nYOUR PREVIOUS ATTEMPT WAS REJECTED because it ${g.problems.join('; ')}. Return a corrected complete source that avoids this.` }], EDIT_TOOL);
-      if (r.decision === 'hold') hold(r.reason || 'This change needs a person to look at it.', r.summary);
+      if (r.decision === 'hold') hold(publicText(r.reason) || 'This request needs a person to look at it.', r.summary);
       src = String(r.source || '');
       g = src ? await gate(src) : { problems: ['is empty'] };
-      if (g.problems.length) fail(`The edit couldn't be made safely: the result ${g.problems[0]}. Nothing was changed.`, r.summary);
+      if (g.problems.length) fail(`The edit couldn't be made safely: the result ${plainProblem(g.problems[0])}. Nothing was changed.`);
     }
-    summary = r.summary; variantTitle = r.variant_title && redact(r.variant_title).replace(/\[removed\]/g, '').trim();
-    const changes = describeFacts(g);
-    if (changes.length) holdProposal(g, `This needs the account owner's approval: it ${changes.slice(0, 4).join('; ')}.`, summary, r.variant_title);
-    if (UPDATES === 'approve' && req.mode === 'update') holdProposal(g, 'Updates to a published asset wait for the account owner\'s approval.', summary, r.variant_title);
+    summary = publicText(r.summary) || 'Changed as asked.';
+    // a variation's title is public (gallery, file name, alt text): a few plain words that add nothing, or "variation"
+    const vt = req.mode === 'variant' ? publicText(r.variant_title, 40) : null;
+    variantTitle = vt && /^[\p{L}'’&-]+(?: [\p{L}'’&-]+){0,4}$/u.test(vt) ? vt : null;
+    if (describeFacts(g).length) holdProposal(g, heldReason(g), summary, variantTitle);
+    if (UPDATES === 'approve') holdProposal(g, `${req.mode === 'update' ? 'Updates to a published asset' : 'New variations'} wait for the account owner's approval.`, summary, variantTitle);
 
     // preview, lint, review; a corrected source is gated, linted and reviewed again
     for (let round = 1; ; round++) {
@@ -240,12 +272,11 @@ try {
       ], REVIEW_TOOL);
       if (rv.ok && lr.ok) break;
       if (rv.ok && !lr.ok) fail('The result broke a brand rule (text color, font or contrast), so it was not published. Try rewording the request.', summary);
-      if (round >= 2 || !rv.source) fail(`The change didn't come out right (${String(rv.issues).slice(0, 200)}). Nothing was changed; try rewording the request.`, summary);
+      if (round >= 2 || !rv.source) { const why = publicText(rv.issues); fail(`The change didn't come out right${why ? ` (${why})` : ''}. Nothing was changed; try rewording the request.`, summary); }
       src = String(rv.source);
       g = await gate(src);
-      if (g.problems.length) fail(`The corrected edit couldn't be used: it ${g.problems[0]}. Nothing was changed.`, summary);
-      const c2 = describeFacts(g);
-      if (c2.length) holdProposal(g, `This needs the account owner's approval: it ${c2.slice(0, 4).join('; ')}.`, summary, variantTitle);
+      if (g.problems.length) fail(`The corrected edit couldn't be used: it ${plainProblem(g.problems[0])}. Nothing was changed.`, summary);
+      if (describeFacts(g).length) holdProposal(g, heldReason(g), summary, variantTitle);
     }
   }
 
