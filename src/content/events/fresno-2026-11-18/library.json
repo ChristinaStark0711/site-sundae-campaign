@@ -18,6 +18,16 @@
       "variantOf": "01"
     },
     {
+      "id": "01C",
+      "title": "Save the date — Downtown skyline photo",
+      "file": "01c-downtown-skyline-photo.jpg",
+      "spec": "1080×1350 · 4:5",
+      "use": "Variation of 01 · Instagram and Facebook feed, Meta ads (Phase 1) and the pinned post",
+      "pair": "C01 · C02",
+      "variantOf": "01",
+      "updated": "2026-10-21"
+    },
+    {
       "id": "02",
       "title": "Meet your host",
       "file": "02-meet-your-host.jpg",

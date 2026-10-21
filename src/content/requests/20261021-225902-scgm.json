@@ -5,21 +5,11 @@
   "assetTitle": "Save the date",
   "mode": "variant",
   "text": "Change the photo to the downtown Fresno skyline and update the photo credit to match.",
-  "status": "held",
-  "reason": "This needs the account owner's approval: it adds a number, date, time or address.",
-  "proposal": {
-    "preview": "engine/held/20261021-225902-scgm.jpg",
-    "changes": [
-      "adds \"4.0\""
-    ],
-    "baseHash": "b1592e46b1867e9aa4d53e0c6a3e6051ffdda60bd2085facf157bf2583747040",
-    "variantTitle": "Downtown skyline photo"
+  "status": "done",
+  "result": {
+    "id": "01C",
+    "file": "01c-downtown-skyline-photo.jpg"
   },
-  "finishedAt": "2026-10-21T23:00:08.629Z",
-  "model": "claude-opus-5-5",
-  "usage": {
-    "input_tokens": 9559,
-    "output_tokens": 1168,
-    "calls": 1
-  }
+  "approved": true,
+  "finishedAt": "2026-10-21T23:04:12.836Z"
 }
