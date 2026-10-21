@@ -287,9 +287,16 @@ try {
         { type: 'text', text: 'BEFORE:' }, before, { type: 'text', text: 'AFTER (the edit, rendered):' }, imageBlock(after),
         { type: 'text', text: `${describe()}\n\nTHE EDIT (summary: ${summary}):\n${src}\n\nBRAND CHECK: ${lr.ok ? 'passed' : 'FAILED:\n' + lr.report}\n\nReview AFTER against the request and the rules. Look for overlapping, clipped, cramped or off-canvas text, broken layout, anything changed that was not asked for, and brand problems. If anything is wrong, return the corrected complete source.` },
       ], REVIEW_TOOL);
+      log(`review ${round}: ${rv.ok ? 'ok' : 'not ok'}${rv.issues ? ` (${String(rv.issues).replace(/\s+/g, ' ').slice(0, 400)})` : ''}`);
       if (rv.ok && lr.ok) break;
       if (rv.ok && !lr.ok) fail('The result broke a brand rule (text color, font or contrast), so it was not published. Try rewording the request.', summary);
-      if (round >= 2 || !rv.source) { const why = publicText(rv.issues); fail(`The change didn't come out right${why ? ` (${why})` : ''}. Nothing was changed; try rewording the request.`, summary); }
+      if (round >= 3 || !rv.source || usage.calls >= MAX_CALLS) {
+        // the review is still not satisfied: a result that passed every safety and brand check goes to the owner as a
+        // proposal with its preview (never published unreviewed), so a hard request never ends with nothing to look at
+        const why = publicText(rv.issues);
+        if (lr.ok) holdProposal(g, `The automatic review wasn't sure this came out right${why ? ` (${why})` : ''}. Look at the preview before approving.`, summary, variantTitle);
+        fail(`The change didn't come out right${why ? ` (${why})` : ''}. Nothing was changed; try rewording the request.`, summary);
+      }
       src = String(rv.source);
       g = await gate(src);
       if (g.problems.length) fail(`The corrected edit couldn't be used: it ${plainProblem(g.problems[0])}. Nothing was changed.`, summary);

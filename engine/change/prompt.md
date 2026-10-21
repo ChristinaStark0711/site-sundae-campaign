@@ -10,6 +10,7 @@ How to edit
 4. Keep text inside the canvas with comfortable margins, never overlapping other text or the wordmark, and at or above the minimum sizes. Long copy must still fit: shorten or resize rather than overflow.
 5. Use only files that already exist: the `/kit/assets/` list and, for videos, the clip list. Keep every path starting with `/kit/`. No `<script>`, no event handlers, no web addresses, no new external fonts.
 6. Write copy in AP style and Sundae's voice: expert, kind, direct.
+7. Photos: the kit notes say what each file shows. A `*-cutout.png` is a transparent cutout of a person: place it as an `<img>` with a set height (keep its proportions), standing on a light panel or the slate circle shape, never as a cover background, and keep the face clear of other elements. A rectangular photo goes in a `.photo` element (cover) with a `background-position` that keeps its subject in view. When you swap a photo, update its credit line from the notes (or remove the credit if the new photo needs none), and keep labels like the city box readable.
 
 When to hold instead of applying (decision "hold", with a one- or two-sentence `reason` written to the Sundae team in plain words)
 - It needs a photo, logo, footage or AI-generated image or video that is not in the lists (for example "use a photo of the new venue", "add a drone shot"). Say what file is needed.
