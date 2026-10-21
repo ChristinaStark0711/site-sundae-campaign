@@ -1,0 +1,17 @@
+{
+  "id": "20261021-225118-4jue",
+  "at": "2026-10-21T22:51:18.978Z",
+  "asset": "events/fresno-2026-11-18/images/01",
+  "assetTitle": "Save the date",
+  "mode": "variant",
+  "text": "change the photo to another popular Fresno landmark?",
+  "status": "held",
+  "reason": "This request needs a person to look at it.",
+  "finishedAt": "2026-10-21T22:52:20.983Z",
+  "model": "claude-opus-5-5",
+  "usage": {
+    "input_tokens": 8693,
+    "output_tokens": 525,
+    "calls": 1
+  }
+}
