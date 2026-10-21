@@ -1,0 +1,17 @@
+{
+  "id": "20261021-224515-cn0b",
+  "at": "2026-10-21T22:45:15.164Z",
+  "asset": "events/fresno-2026-11-18/images/01",
+  "assetTitle": "Save the date",
+  "mode": "update",
+  "text": "Make the headline a little bigger",
+  "status": "failed",
+  "reason": "Something went wrong while making this change, so nothing was changed. It can be sent again.",
+  "finishedAt": "2026-10-21T22:46:16.581Z",
+  "model": "claude-opus-5-5",
+  "usage": {
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "calls": 1
+  }
+}
