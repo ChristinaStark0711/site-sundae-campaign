@@ -6,7 +6,7 @@ import { PhaseLabel, ResultsNote } from "@/components/WhenAware";
 import EventFunnel from "@/components/EventFunnel";
 import { Icon } from "@/components/Icon";
 import { getCaptions, getCities, getEvent, getEventProjections, getLibrary, libraryCount, originals, type City, type EventRec } from "@/lib/content";
-import { apDate } from "@/lib/format";
+import { apDate, VENUE_TBA, whenLine } from "@/lib/format";
 import { ver } from "@/lib/ver";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return { title: e ? `${e.city} · ${e.name}` : "Event" };
 }
 
-const when = (e: EventRec) => `${apDate(e.date, { weekday: e.date.length > 7 })}${e.time ? `, ${e.time}` : ""}`;
+const when = (e: EventRec) => `${whenLine(e)}${e.venue === VENUE_TBA && !e.time ? " · Time to be announced" : ""}`;
 
 const CityPhoto = ({ city, className = "" }: { city: City; className?: string }) => (
   <figure className={className}>
@@ -28,7 +28,7 @@ const CityPhoto = ({ city, className = "" }: { city: City; className?: string })
 const Facts = ({ e }: { e: EventRec }) => {
   const rows: [string, React.ReactNode][] = [
     ["When", when(e)],
-    ["Where", <>{e.space ? `${e.space} at ` : ""}{e.venue}{e.address ? <><br />{e.address}</> : `, ${e.city}`}</>],
+    ["Where", e.venue === VENUE_TBA ? `${VENUE_TBA} · ${e.city}, ${e.state}` : <>{e.space ? `${e.space} at ` : ""}{e.venue}{e.address ? <><br />{e.address}</> : `, ${e.city}`}</>],
     ["Host", `${e.host}${e.hostTitle ? `, ${e.hostTitle}` : ""}`],
     ["Who it's for", e.audience],
   ];
@@ -181,7 +181,7 @@ export default async function EventOverview({ params }: { params: Promise<{ slug
       {e.moves && e.moves.length > 0 && (
         <section className="mx-auto max-w-7xl px-5 md:px-8" aria-labelledby="week">
           <div className="card-mist grid gap-10 p-8 md:grid-cols-[1fr_1.4fr] md:p-14">
-            <div><p className="eyebrow">The week before</p><h2 id="week" className="display h-bar mt-4 text-[2.25rem]">The {e.moves.length === 5 ? "five" : e.moves.length} moves that fill the room</h2>{e.plans.some((p) => p.slug === "action-plan") && <Link href={`${b}/plans/action-plan`} className="btn btn-blue mt-9">Full action plan <Icon name="arrow-right" /></Link>}</div>
+            <div><p className="eyebrow">{e.movesLabel ?? "The week before"}</p><h2 id="week" className="display h-bar mt-4 text-[2.25rem]">The {e.moves.length === 5 ? "five" : e.moves.length} moves that fill the room</h2>{e.plans.some((p) => p.slug === "action-plan") && <Link href={`${b}/plans/action-plan`} className="btn btn-blue mt-9">Full action plan <Icon name="arrow-right" /></Link>}</div>
             <ol className="grid gap-6" data-stagger>
               {e.moves.map(([t, d], i) => (
                 <li key={t} className="grid grid-cols-[2.75rem_1fr] gap-4"><span className="dot-num">{i + 1}</span><div><p className="text-lg font-bold leading-snug">{t}</p><p className="mt-1 text-lg leading-relaxed">{d}</p></div></li>

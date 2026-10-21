@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import EventTabs from "@/components/EventTabs";
 import { Icon } from "@/components/Icon";
 import { getCities, getEvent, getEvents } from "@/lib/content";
-import { apDate } from "@/lib/format";
+import { whenLine, whereLine } from "@/lib/format";
 
 export function generateStaticParams() { return getEvents().map((e) => ({ slug: e.slug })); }
 export const dynamicParams = false;
@@ -25,7 +25,7 @@ export default async function EventLayout({ children, params }: { children: Reac
               {city && <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl border border-gray bg-white"><Image src={city.file} alt="" fill sizes="56px" className="object-cover" style={{ objectPosition: city.focus ?? "50% 50%" }} /></div>}
               <div className="min-w-0">
                 <p className="text-lg font-bold leading-snug">{e.city}, {e.state} · {e.name}</p>
-                <p className="text-base leading-snug">{apDate(e.date, { weekday: e.date.length > 7 })}{e.time ? `, ${e.time}` : ""} · {e.space ? `${e.space} at ` : ""}{e.venue}</p>
+                <p className="text-base leading-snug">{whenLine(e)} · {whereLine(e)}</p>
               </div>
             </div>
             {e.kind === "campaign" && <EventTabs slug={e.slug} firstPlan={e.plans[0]?.slug} />}

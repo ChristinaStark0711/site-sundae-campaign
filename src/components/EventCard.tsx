@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Icon } from "./Icon";
 import { EventCardTitle } from "./EventsBoard";
 import { getCaptions, getCities, getEventProjections, getLibrary, libraryCount, type EventRec } from "@/lib/content";
-import { apDate } from "@/lib/format";
+import { apDate, whenLine, whereLine } from "@/lib/format";
 
 // One event on the Events page and the overview: the city photo (openly licensed, credited), the date, the venue and
 // what the event's page holds.
@@ -23,7 +23,7 @@ export default function EventCard({ e, upcoming }: { e: EventRec; upcoming: bool
         <div className="flex flex-1 flex-col p-7">
           <p className="eyebrow">{e.city}, {e.state}</p>
           <EventCardTitle className="section-title mt-2.5 text-[1.375rem]">{e.name}</EventCardTitle>
-          <p className="mt-2 text-lg leading-relaxed">{apDate(e.date, { weekday: e.date.length > 7 })}{e.time ? `, ${e.time}` : ""}<br />{e.space ? `${e.space} at ` : ""}{e.venue}</p>
+          <p className="mt-2 text-lg leading-relaxed">{whenLine(e)}<br />{whereLine(e)}</p>
           <p className="mt-3 flex-1 text-base leading-relaxed">
             {e.kind === "campaign" ? `${count} creative assets · organic and paid plans${pj ? ` · ${pj.scenarios.base.attendees} guests projected (base)` : ""}` : "On record only: before this hub, no library or plans."}
           </p>

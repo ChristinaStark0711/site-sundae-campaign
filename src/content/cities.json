@@ -36,5 +36,24 @@
       "provider": "wikimedia"
     },
     "openverseId": "e10a86a5-ceda-495f-8240-bf15a60f6071"
+  },
+  "fresno-ca": {
+    "name": "Fresno",
+    "state": "CA",
+    "file": "/media/cities/fresno-ca.jpg",
+    "width": 1600,
+    "height": 1066,
+    "alt": "The Old Fresno Water Tower against a clear blue sky",
+    "focus": "50% 40%",
+    "credit": {
+      "title": "Water tower",
+      "creator": "Mel B.",
+      "creatorUrl": "https://www.flickr.com/photos/93587218@N00",
+      "license": "CC BY 2.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+      "sourceUrl": "https://www.flickr.com/photos/93587218@N00/25843416",
+      "provider": "flickr"
+    },
+    "openverseId": "cf8f3ca3-c167-479c-926a-455cadddde73"
   }
 }

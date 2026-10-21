@@ -29,7 +29,7 @@ export type EventRec = {
   city: string; state: string; citySlug: string; date: string; time?: string;
   venue: string; space?: string; address?: string; host: string; hostTitle?: string; rsvp?: string; media: string;
   prepared?: string; headline?: string; summary: string; strategy?: string; creativeNote?: string; sources?: string;
-  moves?: [string, string][]; plans: PlanMeta[]; photo?: { file: string; alt: string; credit: string };
+  moves?: [string, string][]; movesLabel?: string; plans: PlanMeta[]; photo?: { file: string; alt: string; credit: string };
   _todo?: string[];
   actuals?: { attendees?: number; applications?: number; intro_calls?: number; members_signed?: number; ad_spend?: number; note?: string } | null;
 };

@@ -1,0 +1,82 @@
+{
+ "w": 1080,
+ "h": 1920,
+ "tag": "Nov. 18 · Fresno",
+ "poster": 4,
+ "event": {
+  "weekday": "Wednesday",
+  "month": "Nov.",
+  "day": "18",
+  "time": "Time to be announced",
+  "venue": "Venue to be announced",
+  "venueShort": "Venue to be announced",
+  "hotel": "Venue to be announced",
+  "city": "Fresno",
+  "cityLine": "Fresno, California",
+  "address": "To be announced",
+  "included": "Dinner and conversation",
+  "name": "Private Dinner & Dialogue",
+  "hostLine": "with Josh Stech, co-founder and CEO",
+  "pill": "Save the date"
+ },
+ "scenes": [
+  {
+   "type": "title",
+   "dur": 2.8,
+   "kicker": "Fresno real estate operators",
+   "title": [
+    "If you wholesale",
+    "or flip in Fresno…"
+   ],
+   "accent": 1
+  },
+  {
+   "type": "title",
+   "dur": 3.2,
+   "kicker": "Wednesday, Nov. 18 · Fresno",
+   "title": [
+    "Save the",
+    "date."
+   ],
+   "accent": 1
+  },
+  {
+   "type": "josh",
+   "dur": 3.4,
+   "kicker": "With"
+  },
+  {
+   "type": "details",
+   "dur": 4.2,
+   "img": "fresno-2026-11-18-water-tower.jpg",
+   "pos": "50% 30%",
+   "title": [
+    "The details"
+   ],
+   "rows": [
+    [
+     "When",
+     "Wednesday, Nov. 18, 2026"
+    ],
+    [
+     "Where",
+     "Fresno, California"
+    ],
+    [
+     "Time and venue",
+     "To be announced"
+    ],
+    [
+     "Host",
+     "Josh Stech, co-founder and CEO of Sundae"
+    ]
+   ]
+  },
+  {
+   "type": "cta",
+   "dur": 3.8,
+   "when": "Wednesday, Nov. 18<br>Fresno, California",
+   "foot": "Time and venue to be announced<br>Photos: Mel B. (CC BY 2.0)"
+  }
+ ]
+}

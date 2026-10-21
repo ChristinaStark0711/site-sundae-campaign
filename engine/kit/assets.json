@@ -129,6 +129,21 @@
     "sundae-wordmark-cream.svg": {
       "use": "retired",
       "what": "Cream wordmark: cream is not a brand color; do not use"
+    },
+    "fresno-2026-11-18-water-tower.jpg": {
+      "use": "event",
+      "event": "fresno-2026-11-18",
+      "what": "The Old Fresno Water Tower (city photo, not the venue): \"Water tower\" by Mel B., CC BY 2.0, from https://www.flickr.com/photos/93587218@N00/25843416; credit it wherever it shows"
+    },
+    "fresno-2026-11-18-water-tower-dusk.jpg": {
+      "use": "event",
+      "event": "fresno-2026-11-18",
+      "what": "The Old Fresno Water Tower at golden hour (city photo, not the venue): \"Water tower 2\" by Mel B., CC BY 2.0, from https://www.flickr.com/photos/93587218@N00/25843417; credit it wherever it shows"
+    },
+    "fresno-2026-11-18-skyline.jpg": {
+      "use": "event",
+      "event": "fresno-2026-11-18",
+      "what": "Downtown Fresno skyline, cropped to leave out a billboard and store signs (city photo, not the venue): \"Fresno California\" by DoulosBen, CC BY 4.0, from https://commons.wikimedia.org/w/index.php?curid=162545477; credit it wherever it shows"
     }
   },
   "clips": {

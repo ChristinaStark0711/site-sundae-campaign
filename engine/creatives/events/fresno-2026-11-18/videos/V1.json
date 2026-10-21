@@ -1,0 +1,112 @@
+{
+ "w": 1920,
+ "h": 1080,
+ "tag": "Nov. 18 · Fresno",
+ "poster": 10.4,
+ "event": {
+  "weekday": "Wednesday",
+  "month": "Nov.",
+  "day": "18",
+  "time": "Time to be announced",
+  "venue": "Venue to be announced",
+  "venueShort": "Venue to be announced",
+  "hotel": "Venue to be announced",
+  "city": "Fresno",
+  "cityLine": "Fresno, California",
+  "address": "To be announced",
+  "included": "Dinner and conversation",
+  "name": "Private Dinner & Dialogue",
+  "hostLine": "with Josh Stech, co-founder and CEO",
+  "pill": "Save the date"
+ },
+ "scenes": [
+  {
+   "type": "photo",
+   "dur": 4.2,
+   "img": "fresno-2026-11-18-water-tower.jpg",
+   "pos": "50% 30%",
+   "kicker": "Fresno · Wednesday, Nov. 18",
+   "title": [
+    "An evening for",
+    "Fresno's operators"
+   ]
+  },
+  {
+   "type": "title",
+   "dur": 4.2,
+   "kicker": "Sundae presents",
+   "title": [
+    "Private Dinner",
+    "& Dialogue"
+   ],
+   "accent": 1,
+   "sub": "Hosted by Sundae co-founder and CEO Josh Stech"
+  },
+  {
+   "type": "list",
+   "dur": 5.2,
+   "kicker": "On the table",
+   "title": [
+    "What we'll cover"
+   ],
+   "items": [
+    [
+     "Market trends",
+     "What the data says about acquisitions right now"
+    ],
+    [
+     "Where the industry is heading",
+     "Lead costs, conversion, dispositions, capital"
+    ],
+    [
+     "A stronger acquisition business",
+     "How to build one in a harder market"
+    ]
+   ],
+   "side": "fresno-2026-11-18-skyline.jpg",
+   "sidePos": "50% 40%"
+  },
+  {
+   "type": "josh",
+   "dur": 4.6,
+   "facts": [
+    "Founding partner and SVP of sales, LendingHome",
+    "Co-founder and CFO, Purpose Built Investments — 1,200+ transactions",
+    "Stanford — B.A. in economics, with honors"
+   ]
+  },
+  {
+   "type": "details",
+   "dur": 4.4,
+   "img": "fresno-2026-11-18-water-tower-dusk.jpg",
+   "pos": "50% 30%",
+   "title": [
+    "Save the date"
+   ],
+   "rows": [
+    [
+     "When",
+     "Wednesday, Nov. 18, 2026"
+    ],
+    [
+     "Where",
+     "Fresno, California"
+    ],
+    [
+     "Time and venue",
+     "To be announced"
+    ],
+    [
+     "Host",
+     "Josh Stech, co-founder and CEO of Sundae"
+    ]
+   ]
+  },
+  {
+   "type": "cta",
+   "dur": 4.6,
+   "when": "Wednesday, Nov. 18<br>Fresno, California",
+   "foot": "Time and venue to be announced<br>Photos: Mel B. (CC BY 2.0) and DoulosBen (CC BY 4.0)"
+  }
+ ]
+}

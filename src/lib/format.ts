@@ -36,3 +36,10 @@ export function daysUntil(iso: string, now: number) {
 }
 
 export const nbsp = (s: string) => s.replace(/ (\d)/g, " $1");
+
+// An event's date and place lines. While the venue is not set (new-event.mjs --no-creative writes "Venue to be
+// announced") and no start time is on record, the place line reads "Time and venue to be announced".
+type WhenWhere = { date: string; time?: string; venue: string; space?: string };
+export const VENUE_TBA = "Venue to be announced";
+export const whenLine = (e: WhenWhere) => `${apDate(e.date, { weekday: e.date.length > 7 })}${e.time ? `, ${e.time}` : ""}`;
+export const whereLine = (e: WhenWhere) => (e.venue === VENUE_TBA ? (e.time ? VENUE_TBA : "Time and venue to be announced") : `${e.space ? `${e.space} at ` : ""}${e.venue}`);

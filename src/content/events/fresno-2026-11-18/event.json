@@ -1,0 +1,86 @@
+{
+  "slug": "fresno-2026-11-18",
+  "kind": "campaign",
+  "name": "Private Dinner & Dialogue",
+  "audience": "Fresno-area real estate operators",
+  "city": "Fresno",
+  "state": "CA",
+  "citySlug": "fresno-ca",
+  "date": "2026-11-18",
+  "venue": "Venue to be announced",
+  "host": "Josh Stech",
+  "hostTitle": "co-founder and CEO of Sundae",
+  "media": "/media/events/fresno-2026-11-18",
+  "prepared": "2026-10-21",
+  "headline": "Save the date in Fresno.",
+  "summary": "Sundae's private dinner for Fresno-area real estate operators, hosted by Josh Stech on Wednesday, Nov. 18, 2026. Time and venue are to be announced, so everything here is a save the date for now: it names the city and the date, never a time, a venue or a seat claim.",
+  "strategy": "Two phases. Save the date now: Josh's announcement, the marketplace list, personal notes to the 50 most active Central Valley buyers and a small lead-form ad budget that builds the interest list. Then, once the time, venue and RSVP link are confirmed, a two-week invitation sprint with the qualifying RSVP and a show-rate system.",
+  "creativeNote": "Designed in Sundae's brand from real photos only: Josh Stech's photos from sundae.com, the Sacramento dinner photo (captioned as Sacramento) and openly licensed photos of Fresno itself (the Old Fresno Water Tower and the downtown skyline, credited on every asset; they show the city, not the venue). No AI footage. QR codes go to the Sundae Membership intro call until an RSVP link exists. Videos and Reels are silent by design: add trending audio in-app for organic posts and a licensed track for ads.",
+  "sources": "The date, city, host and audience are from the agency (Oct. 20-21, 2026). Josh's bio and the dinner series' talking points are from sundae.com and Sundae's Manhattan Beach dinner materials. Budgets and projections are the Manhattan Beach base case, labeled assumptions. City photos: Mel B. (CC BY 2.0) and DoulosBen (CC BY 4.0).",
+  "moves": [
+    [
+      "Confirm the venue, start time and RSVP link",
+      "The three facts that unlock invitations; target Wednesday, Oct. 28, for the venue and time and Friday, Oct. 30, for the link."
+    ],
+    [
+      "Josh announces Fresno on LinkedIn on Thursday, Oct. 22",
+      "Save the date with Image 01; Josh replies to every comment and DM."
+    ],
+    [
+      "Email and text the Central Valley marketplace buyers (opted in)",
+      "Active operators who already bid on Sundae deals: the save the date now, the invitation once the link is live."
+    ],
+    [
+      "Josh personally invites the 50 most active Central Valley buyers",
+      "Founder-written notes now; the invitation with the link follows."
+    ],
+    [
+      "Run a small lead-form ad budget, then the seat sprint",
+      "$750 builds the interest list from Monday, Oct. 26; the rest runs Monday, Nov. 2, to Friday, Nov. 13 (base-case budget, an assumption)."
+    ]
+  ],
+  "movesLabel": "Before the dinner",
+  "plans": [
+    {
+      "slug": "organic",
+      "file": "01-event-organic-plan.md",
+      "title": "Organic plan — save the date, then fill the room",
+      "blurb": "The two phases, the seat qualification bar, the six organic channels, the four-week calendar, confirmations and follow-up."
+    },
+    {
+      "slug": "paid",
+      "file": "02-event-paid-plan.md",
+      "title": "Paid plan — save the date, then a two-week seat sprint",
+      "blurb": "$5,000 base (an assumption): $750 of lead-form ads now, then Meta, LinkedIn, Google and retargeting once the RSVP link is live; audiences, pacing and cut rules."
+    },
+    {
+      "slug": "filming",
+      "file": "06-filming-gameplan.md",
+      "title": "Filming gameplan",
+      "blurb": "Crew, dual-lav audio, camera settings, interviews, photos, releases and edit turnaround; positions to finish at the venue walk-through."
+    },
+    {
+      "slug": "action-plan",
+      "file": "07-action-plan.md",
+      "title": "What needs to be done",
+      "blurb": "The three facts that unlock invitations, owners and dates through December, and what Sundae must supply."
+    }
+  ],
+  "actuals": null,
+  "_from": "manhattan-beach-2026-10-08",
+  "_todo": [],
+  "_places": [
+    "Central Valley",
+    "Clovis",
+    "Madera"
+  ],
+  "_allow": [
+    "Sacramento and Manhattan Beach",
+    "the Manhattan Beach",
+    "The Manhattan Beach",
+    "Manhattan Beach dinner materials",
+    "Manhattan Beach base",
+    "Manhattan Beach model",
+    "from Manhattan Beach"
+  ]
+}

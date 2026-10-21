@@ -1,0 +1,97 @@
+{
+ "w": 1920,
+ "h": 1080,
+ "tag": "Nov. 18 · Fresno",
+ "poster": 8,
+ "event": {
+  "weekday": "Wednesday",
+  "month": "Nov.",
+  "day": "18",
+  "time": "Time to be announced",
+  "venue": "Venue to be announced",
+  "venueShort": "Venue to be announced",
+  "hotel": "Venue to be announced",
+  "city": "Fresno",
+  "cityLine": "Fresno, California",
+  "address": "To be announced",
+  "included": "Dinner and conversation",
+  "name": "Private Dinner & Dialogue",
+  "hostLine": "with Josh Stech, co-founder and CEO",
+  "pill": "Save the date"
+ },
+ "scenes": [
+  {
+   "type": "title",
+   "dur": 3.4,
+   "kicker": "For Fresno real estate operators",
+   "title": [
+    "Finding deals",
+    "is harder."
+   ],
+   "center": true
+  },
+  {
+   "type": "title",
+   "dur": 3.2,
+   "title": [
+    "Margins are",
+    "tighter."
+   ],
+   "accent": 1,
+   "center": true,
+   "gx": 0.1
+  },
+  {
+   "type": "photo",
+   "img": "sac-dinner.jpg",
+   "pos": "50% 38%",
+   "label": "Sacramento · September 2026",
+   "dur": 4.8,
+   "title": [
+    "The market has changed.",
+    "The opportunity has not."
+   ]
+  },
+  {
+   "type": "list",
+   "dur": 5.0,
+   "kicker": "Let’s talk about it",
+   "title": [
+    "Over dinner, with Josh Stech"
+   ],
+   "items": [
+    [
+     "Market trends",
+     ""
+    ],
+    [
+     "Where the industry is heading",
+     ""
+    ],
+    [
+     "Building a stronger acquisition business",
+     ""
+    ]
+   ],
+   "side": "fresno-2026-11-18-skyline.jpg",
+   "sidePos": "50% 40%"
+  },
+  {
+   "type": "photo",
+   "dur": 4.2,
+   "img": "fresno-2026-11-18-water-tower-dusk.jpg",
+   "pos": "50% 30%",
+   "kicker": "Wednesday, Nov. 18",
+   "title": [
+    "Coming to",
+    "Fresno."
+   ]
+  },
+  {
+   "type": "cta",
+   "dur": 4.6,
+   "when": "Wednesday, Nov. 18<br>Fresno, California",
+   "foot": "Time and venue to be announced<br>Photos: Sundae; Mel B. (CC BY 2.0); DoulosBen (CC BY 4.0)"
+  }
+ ]
+}

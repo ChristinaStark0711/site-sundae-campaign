@@ -1,0 +1,69 @@
+{
+ "w": 1080,
+ "h": 1920,
+ "tag": "Nov. 18 · Fresno",
+ "poster": 6,
+ "event": {
+  "weekday": "Wednesday",
+  "month": "Nov.",
+  "day": "18",
+  "time": "Time to be announced",
+  "venue": "Venue to be announced",
+  "venueShort": "Venue to be announced",
+  "hotel": "Venue to be announced",
+  "city": "Fresno",
+  "cityLine": "Fresno, California",
+  "address": "To be announced",
+  "included": "Dinner and conversation",
+  "name": "Private Dinner & Dialogue",
+  "hostLine": "with Josh Stech, co-founder and CEO",
+  "pill": "Save the date"
+ },
+ "scenes": [
+  {
+   "type": "title",
+   "dur": 2.8,
+   "kicker": "Nov. 18 · Fresno",
+   "title": [
+    "Who this",
+    "dinner is for"
+   ],
+   "accent": 1
+  },
+  {
+   "type": "list",
+   "dur": 6.4,
+   "img": "fresno-2026-11-18-skyline.jpg",
+   "pos": "50% 40%",
+   "kicker": "Private Dinner & Dialogue",
+   "title": [
+    "You're in the",
+    "right place if…"
+   ],
+   "items": [
+    [
+     "Wholesalers",
+     "closing deals every month"
+    ],
+    [
+     "Fix-and-flip operators",
+     ""
+    ],
+    [
+     "Acquisition-led investors",
+     "and team leads"
+    ],
+    [
+     "Ready to scale",
+     "in the next six to 12 months"
+    ]
+   ]
+  },
+  {
+   "type": "cta",
+   "dur": 4.0,
+   "when": "Wednesday, Nov. 18<br>Fresno, California",
+   "foot": "Time and venue to be announced<br>Photo: DoulosBen (CC BY 4.0)"
+  }
+ ]
+}
