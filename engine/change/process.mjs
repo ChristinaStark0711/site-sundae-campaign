@@ -81,15 +81,22 @@ async function callModel(content, tool) {
   const key = process.env.ANTHROPIC_API_KEY;
   if (!key) throw new Error('ANTHROPIC_API_KEY is not set');
   const system = fs.readFileSync(path.join(ENGINE, 'change/prompt.md'), 'utf8') + '\n\n' + fs.readFileSync(path.join(ENGINE, 'BRAND.md'), 'utf8');
-  const body = { model: MODEL, max_tokens: 20000, system, tools: [tool], tool_choice: { type: 'tool', name: tool.name }, messages: [{ role: 'user', content }] };
-  for (let attempt = 1; ; attempt++) {
+  // Current models reject a forced tool_choice ("tool"/"any"), so the tool is offered with "auto" and the prompt asks
+  // for it; if the model answers in text instead, it is asked once more (the turn is appended, never edited).
+  const ask = `Answer only by calling the ${tool.name} tool, exactly once.`;
+  const body = { model: MODEL, max_tokens: 20000, system, tools: [tool], tool_choice: { type: 'auto', disable_parallel_tool_use: true }, messages: [{ role: 'user', content: [...content, { type: 'text', text: ask }] }] };
+  for (let attempt = 1, nudged = false; ; attempt++) {
     const r = await fetch('https://api.anthropic.com/v1/messages', { method: 'POST', headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' }, body: JSON.stringify(body) });
     if (r.ok) {
       const j = await r.json();
       usage.input_tokens += j.usage?.input_tokens || 0; usage.output_tokens += j.usage?.output_tokens || 0;
       const t = (j.content || []).find((c) => c.type === 'tool_use');
-      if (!t) throw new Error('the model returned no tool call' + (j.stop_reason ? ` (stop: ${j.stop_reason})` : ''));
-      return t.input;
+      if (t) return t.input;
+      if (nudged || j.stop_reason !== 'end_turn' || usage.calls >= MAX_CALLS) throw new Error('the model returned no tool call' + (j.stop_reason ? ` (stop: ${j.stop_reason})` : ''));
+      nudged = true; usage.calls++;
+      body.messages.push({ role: 'assistant', content: j.content }, { role: 'user', content: [{ type: 'text', text: ask }] });
+      attempt = 0;
+      continue;
     }
     const msg = (await r.text()).slice(0, 300);
     if (attempt >= 4 || ![429, 500, 502, 503, 529].includes(r.status)) throw new Error(`Anthropic API ${r.status}: ${msg}`);
