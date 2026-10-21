@@ -39,7 +39,14 @@ export const nbsp = (s: string) => s.replace(/ (\d)/g, " $1");
 
 // An event's date and place lines. While the venue is not set (new-event.mjs --no-creative writes "Venue to be
 // announced") and no start time is on record, the place line reads "Time and venue to be announced".
-type WhenWhere = { date: string; time?: string; venue: string; space?: string };
+// An optional end time shows as an AP range ("6-8:30 p.m."), and a venue note replaces "Venue to be announced" when the
+// venue is shared another way (e.g. "Location sent to registered guests").
+type WhenWhere = { date: string; time?: string; timeEnd?: string; venue: string; venueNote?: string; space?: string };
 export const VENUE_TBA = "Venue to be announced";
-export const whenLine = (e: WhenWhere) => `${apDate(e.date, { weekday: e.date.length > 7 })}${e.time ? `, ${e.time}` : ""}`;
-export const whereLine = (e: WhenWhere) => (e.venue === VENUE_TBA ? (e.time ? VENUE_TBA : "Time and venue to be announced") : `${e.space ? `${e.space} at ` : ""}${e.venue}`);
+const timeRange = (a: string, b?: string) => {
+  if (!b) return a;
+  const sa = a.match(/ ([ap]\.m\.)$/)?.[1], sb = b.match(/ ([ap]\.m\.)$/)?.[1];
+  return `${sa && sa === sb ? a.slice(0, -sa.length - 1) : a}-${b}`;
+};
+export const whenLine = (e: WhenWhere) => `${apDate(e.date, { weekday: e.date.length > 7 })}${e.time ? `, ${timeRange(e.time, e.timeEnd)}` : ""}`;
+export const whereLine = (e: WhenWhere) => (e.venue === VENUE_TBA ? (e.venueNote ?? (e.time ? VENUE_TBA : "Time and venue to be announced")) : `${e.space ? `${e.space} at ` : ""}${e.venue}`);

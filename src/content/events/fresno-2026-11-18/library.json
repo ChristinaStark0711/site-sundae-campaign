@@ -2,34 +2,43 @@
   "images": [
     {
       "id": "01",
-      "title": "Save the date",
+      "title": "Save your spot",
       "file": "01-save-the-date.jpg",
       "spec": "1080×1350 · 4:5",
-      "use": "Instagram and Facebook feed, Meta ads (Phase 1) and the pinned post",
+      "use": "Instagram and Facebook feed, Meta ads and the pinned post",
       "pair": "C01 · C02"
     },
     {
       "id": "01B",
-      "title": "Save the date — water tower at golden hour",
+      "title": "Save your spot — water tower at golden hour",
       "file": "01b-save-the-date-golden-hour.jpg",
       "spec": "1080×1350 · 4:5",
-      "use": "Variation of 01 · Instagram and Facebook feed, Meta ads (Phase 1)",
+      "use": "Variation of 01 · Instagram and Facebook feed, Meta ads",
       "pair": "C01 · C02",
       "variantOf": "01"
     },
     {
       "id": "01C",
-      "title": "Save the date — Downtown skyline photo",
+      "title": "Save your spot — downtown skyline",
       "file": "01c-downtown-skyline-photo.jpg",
       "spec": "1080×1350 · 4:5",
-      "use": "Variation of 01 · Instagram and Facebook feed, Meta ads (Phase 1) and the pinned post",
+      "use": "Variation of 01 · Instagram and Facebook feed, Meta ads",
       "pair": "C01 · C02",
       "variantOf": "01",
       "updated": "2026-10-21"
     },
     {
+      "id": "01D",
+      "title": "Save your spot — with Josh Stech",
+      "file": "01d-save-your-spot-josh.jpg",
+      "spec": "1080×1350 · 4:5",
+      "use": "Variation of 01 · Instagram and Facebook feed, Meta ads",
+      "variantOf": "01",
+      "pair": "C01 · C02"
+    },
+    {
       "id": "02",
-      "title": "Meet your host",
+      "title": "Meet the speaker",
       "file": "02-meet-your-host.jpg",
       "spec": "1080×1350 · 4:5",
       "use": "Instagram, Facebook and LinkedIn feed; Meta ads",
@@ -37,26 +46,26 @@
     },
     {
       "id": "03",
-      "title": "What we'll cover",
+      "title": "What Josh will cover",
       "file": "03-what-well-cover.jpg",
       "spec": "1080×1350 · 4:5",
-      "use": "Josh's LinkedIn (Thursday, Nov. 5) and an Instagram carousel",
+      "use": "Josh’s LinkedIn and an Instagram carousel",
       "pair": "C07"
     },
     {
       "id": "04",
-      "title": "The market has changed",
+      "title": "Real estate is changing",
       "file": "04-the-market-has-changed.jpg",
       "spec": "1080×1350 · 4:5",
-      "use": "Josh's LinkedIn (Tuesday, Nov. 10) and Meta ads",
+      "use": "Josh’s LinkedIn and Meta ads",
       "pair": "C08"
     },
     {
       "id": "05",
-      "title": "Who it's for",
+      "title": "Who should come",
       "file": "05-who-its-for.jpg",
       "spec": "1080×1350 · 4:5",
-      "use": "Josh's LinkedIn (Thursday, Oct. 29), Instagram and Facebook feed",
+      "use": "Instagram, Facebook and LinkedIn feed",
       "pair": "C06"
     },
     {
@@ -64,24 +73,24 @@
       "title": "LinkedIn banner",
       "file": "06-linkedin-banner.jpg",
       "spec": "1200×627 · 1.91:1",
-      "use": "LinkedIn Lead Gen ad (Phase 1), LinkedIn Event cover once the time is set, email header"
+      "use": "LinkedIn post and ad image, email header"
     },
     {
       "id": "07",
-      "title": "Story — Save the date",
+      "title": "Story — You’re invited",
       "file": "07-story-save-the-date.jpg",
       "spec": "1080×1920 · 9:16",
-      "use": "Instagram and Facebook Stories; add a link sticker to the intro call"
+      "use": "Instagram and Facebook Stories; add the registration link sticker"
     }
   ],
   "flyers": [
     {
       "id": "01",
-      "title": "Save-the-date invitation",
+      "title": "Invitation",
       "file": "01-save-the-date-invitation.jpg",
       "pdf": "01-save-the-date-invitation.pdf",
       "spec": "8.5×11 in · print and PDF",
-      "use": "Email attachment, partner groups and handouts (QR code to the Membership intro call)"
+      "use": "Email attachment, partner groups and handouts (QR code to the registration page)"
     },
     {
       "id": "02",
@@ -89,7 +98,7 @@
       "file": "02-speaker-feature.jpg",
       "pdf": "02-speaker-feature.pdf",
       "spec": "8.5×11 in",
-      "use": "LinkedIn document post and partner groups (QR code to the Membership intro call)"
+      "use": "LinkedIn document post and partner groups (QR code to the registration page)"
     },
     {
       "id": "03",
@@ -97,24 +106,25 @@
       "file": "03-square-digital-flyer.jpg",
       "pdf": "03-square-digital-flyer.pdf",
       "spec": "1080×1080",
-      "use": "SMS and MMS, WhatsApp and partner group posts (QR code to the Membership intro call)"
+      "use": "SMS and MMS, WhatsApp, Deal Champs and partner group posts (QR code to the registration page)",
+      "pair": "C10"
     }
   ],
   "videos": [
     {
       "id": "V1",
-      "title": "Save-the-date trailer",
+      "title": "Event trailer",
       "file": "video-01-save-the-date.mp4",
       "poster": "video-01-save-the-date-poster.jpg",
       "spec": "1920×1080",
-      "dur": "27s",
+      "dur": "28s",
       "aspect": "16:9",
       "use": "LinkedIn, YouTube, Facebook feed and email",
       "pair": "C09"
     },
     {
       "id": "V2",
-      "title": "Meet your host",
+      "title": "Meet the speaker",
       "file": "video-02-meet-your-host.mp4",
       "poster": "video-02-meet-your-host-poster.jpg",
       "spec": "1920×1080",
@@ -124,31 +134,31 @@
     },
     {
       "id": "V3",
-      "title": "The market has changed",
+      "title": "Real estate is changing",
       "file": "video-03-the-market-has-changed.mp4",
       "poster": "video-03-the-market-has-changed-poster.jpg",
       "spec": "1920×1080",
-      "dur": "25s",
+      "dur": "26s",
       "aspect": "16:9",
-      "use": "Josh's LinkedIn (Tuesday, Oct. 27) and Meta prospecting",
+      "use": "Josh’s LinkedIn and Meta prospecting",
       "pair": "C03"
     }
   ],
   "reels": [
     {
       "id": "R1",
-      "title": "Save the date",
+      "title": "AI is changing real estate",
       "file": "reel-01-save-the-date.mp4",
       "poster": "reel-01-save-the-date-poster.jpg",
       "spec": "1080×1920",
-      "dur": "17s",
+      "dur": "18s",
       "aspect": "9:16",
-      "use": "Instagram and Facebook Reels, Shorts, TikTok and Meta ads (Phase 1)",
+      "use": "Instagram and Facebook Reels, Shorts, TikTok and Meta ads",
       "pair": "C02"
     },
     {
       "id": "R2",
-      "title": "Who it's for",
+      "title": "Who should come",
       "file": "reel-02-who-its-for.mp4",
       "poster": "reel-02-who-its-for-poster.jpg",
       "spec": "1080×1920",
@@ -159,13 +169,13 @@
     },
     {
       "id": "R3",
-      "title": "Harder market?",
+      "title": "A harder market",
       "file": "reel-03-harder-market.mp4",
       "poster": "reel-03-harder-market-poster.jpg",
       "spec": "1080×1920",
       "dur": "17s",
       "aspect": "9:16",
-      "use": "Meta prospecting ad (Phase 1)",
+      "use": "Meta prospecting ad",
       "pair": "C05"
     }
   ]

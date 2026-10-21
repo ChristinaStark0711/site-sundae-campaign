@@ -1,8 +1,8 @@
 {
   "slug": "fresno-2026-11-18",
   "kind": "campaign",
-  "name": "Private Dinner & Dialogue",
-  "audience": "Fresno-area real estate operators",
+  "name": "Sundae <> Deal Champs Meetup",
+  "audience": "Fresno-area real estate investors",
   "city": "Fresno",
   "state": "CA",
   "citySlug": "fresno-ca",
@@ -12,58 +12,58 @@
   "hostTitle": "co-founder and CEO of Sundae",
   "media": "/media/events/fresno-2026-11-18",
   "prepared": "2026-10-21",
-  "headline": "Save the date in Fresno.",
-  "summary": "Sundae's private dinner for Fresno-area real estate operators, hosted by Josh Stech on Wednesday, Nov. 18, 2026. Time and venue are to be announced, so everything here is a save the date for now: it names the city and the date, never a time, a venue or a seat claim.",
-  "strategy": "Two phases. Save the date now: Josh's announcement, the marketplace list, personal notes to the 50 most active Central Valley buyers and a small lead-form ad budget that builds the interest list. Then, once the time, venue and RSVP link are confirmed, a two-week invitation sprint with the qualifying RSVP and a show-rate system.",
-  "creativeNote": "Designed in Sundae's brand from real photos only: Josh Stech's photos from sundae.com, the Sacramento dinner photo (captioned as Sacramento) and openly licensed photos of Fresno itself (the Old Fresno Water Tower and the downtown skyline, credited on every asset; they show the city, not the venue). No AI footage. QR codes go to the Sundae Membership intro call until an RSVP link exists. Videos and Reels are silent by design: add trending audio in-app for organic posts and a licensed track for ads.",
-  "sources": "The date, city, host and audience are from the agency (Oct. 20-21, 2026). Josh's bio and the dinner series' talking points are from sundae.com and Sundae's Manhattan Beach dinner materials. Budgets and projections are the Manhattan Beach base case, labeled assumptions. City photos: Mel B. (CC BY 2.0) and DoulosBen (CC BY 4.0).",
+  "headline": "AI, Real Estate & What's Next.",
+  "summary": "Sundae and Stratton Brown of Deal Champs bring local real estate investors together in Fresno for an evening of networking and an open conversation with Sundae co-founder and CEO Josh Stech: how AI is changing real estate, where seller opportunities are emerging, and what successful operators do differently to acquire inventory and close deals. It is Deal Champs' final meetup in Fresno. Guests register on Sundae's page and receive the exact location.",
+  "strategy": "Drive registrations to Sundae's page (meet.sundae.com/fresno-nov-2026): Deal Champs' own community first, then Josh's personal invitations, the marketplace list, partner groups and a small paid push, with reminders and confirmations so registrants show up.",
+  "creativeNote": "Designed in Sundae's brand from real photos only: Josh Stech's photos from sundae.com, the Sacramento dinner photo (captioned as Sacramento) and openly licensed photos of Fresno itself (the Old Fresno Water Tower and the downtown skyline, credited on every asset; they show the city, not the venue). Copy follows Sundae's event page. QR codes go to the registration page. No AI footage. Videos and Reels are silent by design: add trending audio in-app for organic posts and a licensed track for ads.",
+  "sources": "Event facts from Sundae's registration page, meet.sundae.com/fresno-nov-2026 (read Oct. 21, 2026): name, date, 6-8:30 p.m. PT, Deal Champs and Stratton Brown, the three topics and Josh's bio. The exact location is shared only with registered guests. Budgets and projections are the Manhattan Beach base case, labeled assumptions. City photos: Mel B. (CC BY 2.0) and DoulosBen (CC BY 4.0).",
   "moves": [
     [
-      "Confirm the venue, start time and RSVP link",
-      "The three facts that unlock invitations; target Wednesday, Oct. 28, for the venue and time and Friday, Oct. 30, for the link."
+      "Ask Deal Champs to share the registration page",
+      "Stratton Brown's community is the core audience for their final Fresno meetup."
     ],
     [
-      "Josh announces Fresno on LinkedIn on Thursday, Oct. 22",
-      "Save the date with Image 01; Josh replies to every comment and DM."
+      "Josh announces Fresno on LinkedIn",
+      "Image 01 and the registration link; Josh replies to every comment and DM."
     ],
     [
       "Email and text the Central Valley marketplace buyers (opted in)",
-      "Active operators who already bid on Sundae deals: the save the date now, the invitation once the link is live."
+      "Active investors who already bid on Sundae deals, with the registration link."
     ],
     [
       "Josh personally invites the 50 most active Central Valley buyers",
-      "Founder-written notes now; the invitation with the link follows."
+      "Founder-written notes with the link turn into registrations at a high rate."
     ],
     [
-      "Run a small lead-form ad budget, then the seat sprint",
-      "$750 builds the interest list from Monday, Oct. 26; the rest runs Monday, Nov. 2, to Friday, Nov. 13 (base-case budget, an assumption)."
+      "Remind every registrant before Nov. 18",
+      "Reminders the week of and the day of, so registrations turn into attendance."
     ]
   ],
-  "movesLabel": "Before the dinner",
+  "movesLabel": "Before the meetup",
   "plans": [
     {
       "slug": "organic",
       "file": "01-event-organic-plan.md",
-      "title": "Organic plan — save the date, then fill the room",
-      "blurb": "The two phases, the seat qualification bar, the six organic channels, the four-week calendar, confirmations and follow-up."
+      "title": "Organic plan — fill the room in Fresno",
+      "blurb": "Channels ranked by expected registrations (Deal Champs first), the four-week calendar, reminders and follow-up."
     },
     {
       "slug": "paid",
       "file": "02-event-paid-plan.md",
-      "title": "Paid plan — save the date, then a two-week seat sprint",
-      "blurb": "$5,000 base (an assumption): $750 of lead-form ads now, then Meta, LinkedIn, Google and retargeting once the RSVP link is live; audiences, pacing and cut rules."
+      "title": "Paid plan — registration sprint",
+      "blurb": "$5,000 base (an assumption) across Meta, LinkedIn, Google and retargeting, all to the registration page; audiences, pacing and cut rules."
     },
     {
       "slug": "filming",
       "file": "06-filming-gameplan.md",
       "title": "Filming gameplan",
-      "blurb": "Crew, dual-lav audio, camera settings, interviews, photos, releases and edit turnaround; positions to finish at the venue walk-through."
+      "blurb": "Crew, dual-lav audio, camera settings, interviews, photos, releases and edit turnaround for 6-8:30 p.m.; positions to finish once the venue is known."
     },
     {
       "slug": "action-plan",
       "file": "07-action-plan.md",
       "title": "What needs to be done",
-      "blurb": "The three facts that unlock invitations, owners and dates through December, and what Sundae must supply."
+      "blurb": "Owners and dates from now to Nov. 18 and after, and what Sundae and Deal Champs supply."
     }
   ],
   "actuals": null,
@@ -75,12 +75,17 @@
     "Madera"
   ],
   "_allow": [
-    "Sacramento and Manhattan Beach",
-    "the Manhattan Beach",
-    "The Manhattan Beach",
-    "Manhattan Beach dinner materials",
+    "8:30 p.m.",
     "Manhattan Beach base",
+    "Manhattan Beach dinner materials",
     "Manhattan Beach model",
-    "from Manhattan Beach"
-  ]
+    "Sacramento and Manhattan Beach",
+    "The Manhattan Beach",
+    "from Manhattan Beach",
+    "the Manhattan Beach"
+  ],
+  "time": "6 p.m.",
+  "timeEnd": "8:30 p.m.",
+  "venueNote": "Location sent to registered guests",
+  "rsvp": "https://meet.sundae.com/fresno-nov-2026"
 }

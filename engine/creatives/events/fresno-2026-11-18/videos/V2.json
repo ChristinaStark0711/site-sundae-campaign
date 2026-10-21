@@ -7,27 +7,31 @@
   "weekday": "Wednesday",
   "month": "Nov.",
   "day": "18",
-  "time": "Time to be announced",
-  "venue": "Venue to be announced",
-  "venueShort": "Venue to be announced",
-  "hotel": "Venue to be announced",
+  "time": "6-8:30 p.m.",
+  "venue": "Location sent when you register",
+  "venueShort": "Location sent when you register",
+  "hotel": "Location sent when you register",
   "city": "Fresno",
   "cityLine": "Fresno, California",
-  "address": "To be announced",
-  "included": "Dinner and conversation",
-  "name": "Private Dinner & Dialogue",
+  "address": "Location sent when you register",
+  "included": "Networking and an open conversation",
+  "name": "Sundae &lt;&gt; Deal Champs Meetup",
+  "nameLines": [
+   "AI, Real Estate",
+   "&amp; What’s Next"
+  ],
   "hostLine": "with Josh Stech, co-founder and CEO",
-  "pill": "Save the date"
+  "pill": "Save your spot"
  },
  "scenes": [
   {
    "type": "josh",
    "dur": 5.6,
-   "kicker": "Meet your host",
+   "kicker": "Meet the speaker",
    "facts": [
-    "Founding partner and SVP of sales, LendingHome",
-    "Co-founder and CFO, Purpose Built Investments — 1,200+ transactions",
-    "Stanford — B.A. in economics, with honors"
+    "Founding partner, LendingHome",
+    "Co-founded Purpose Built Investments, launching three funds",
+    "Angel investor in 107 companies"
    ]
   },
   {
@@ -35,25 +39,23 @@
    "dur": 5.6,
    "kicker": "Josh Stech",
    "title": [
-    "Built at the intersection of",
-    "real estate and technology"
+    "A career at the intersection of",
+    "technology and residential real estate"
    ],
    "items": [
     {
-     "value": "1,200+",
-     "num": 1200,
-     "suffix": "+",
-     "label": "transactions executed as co-founder and CFO of Purpose Built Investments"
+     "value": "107",
+     "num": 107,
+     "label": "companies backed as an angel investor"
     },
     {
      "value": "3",
      "num": 3,
-     "label": "investment funds launched at PBI — buying, renovating and selling houses"
+     "label": "funds launched as co-founder of Purpose Built Investments"
     },
     {
-     "value": "5",
-     "num": 5,
-     "label": "years as founding partner and SVP of sales at LendingHome"
+     "value": "Stanford",
+     "label": "B.A. in economics, with honors"
     }
    ]
   },
@@ -63,41 +65,44 @@
    "pos": "50% 38%",
    "label": "Sacramento · September 2026",
    "dur": 4.6,
-   "kicker": "Sundae’s dinner series",
+   "kicker": "Sundae’s event series",
    "title": [
-    "Next, Josh sits down",
-    "with Fresno operators"
+    "Next, Josh is",
+    "in Fresno"
    ]
   },
   {
    "type": "details",
-   "dur": 4.4,
+   "dur": 4.6,
    "img": "fresno-2026-11-18-water-tower.jpg",
    "pos": "50% 30%",
+   "title": [
+    "Save your spot"
+   ],
    "rows": [
     [
      "When",
-     "Wednesday, Nov. 18, 2026"
+     "Wednesday, Nov. 18, 2026 · 6-8:30 p.m. PT"
     ],
     [
      "Where",
-     "Fresno, California"
+     "Fresno, California · Location sent when you register"
     ],
     [
-     "Time and venue",
-     "To be announced"
+     "With",
+     "Josh Stech, co-founder and CEO of Sundae, and Stratton Brown of Deal Champs"
     ],
     [
-     "Host",
-     "Josh Stech, co-founder and CEO of Sundae"
+     "Register",
+     "meet.sundae.com/fresno-nov-2026"
     ]
    ]
   },
   {
    "type": "cta",
    "dur": 4.6,
-   "when": "Wednesday, Nov. 18<br>Fresno, California",
-   "foot": "Time and venue to be announced<br>Photos: Sundae; Mel B. (CC BY 2.0)"
+   "when": "Wednesday, Nov. 18 · 6-8:30 p.m.<br>Fresno, California",
+   "foot": "Register at meet.sundae.com/fresno-nov-2026<br>Photos: Sundae; Mel B. (CC BY 2.0)"
   }
  ]
 }

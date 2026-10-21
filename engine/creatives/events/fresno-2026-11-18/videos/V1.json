@@ -7,17 +7,21 @@
   "weekday": "Wednesday",
   "month": "Nov.",
   "day": "18",
-  "time": "Time to be announced",
-  "venue": "Venue to be announced",
-  "venueShort": "Venue to be announced",
-  "hotel": "Venue to be announced",
+  "time": "6-8:30 p.m.",
+  "venue": "Location sent when you register",
+  "venueShort": "Location sent when you register",
+  "hotel": "Location sent when you register",
   "city": "Fresno",
   "cityLine": "Fresno, California",
-  "address": "To be announced",
-  "included": "Dinner and conversation",
-  "name": "Private Dinner & Dialogue",
+  "address": "Location sent when you register",
+  "included": "Networking and an open conversation",
+  "name": "Sundae &lt;&gt; Deal Champs Meetup",
+  "nameLines": [
+   "AI, Real Estate",
+   "&amp; What’s Next"
+  ],
   "hostLine": "with Josh Stech, co-founder and CEO",
-  "pill": "Save the date"
+  "pill": "Save your spot"
  },
  "scenes": [
   {
@@ -27,40 +31,40 @@
    "pos": "50% 30%",
    "kicker": "Fresno · Wednesday, Nov. 18",
    "title": [
-    "An evening for",
-    "Fresno's operators"
+    "Real estate",
+    "is changing."
    ]
   },
   {
    "type": "title",
-   "dur": 4.2,
-   "kicker": "Sundae presents",
+   "dur": 4.4,
+   "kicker": "Sundae &lt;&gt; Deal Champs Meetup",
    "title": [
-    "Private Dinner",
-    "& Dialogue"
+    "AI, Real Estate",
+    "&amp; What’s Next"
    ],
    "accent": 1,
-   "sub": "Hosted by Sundae co-founder and CEO Josh Stech"
+   "sub": "With Sundae co-founder and CEO Josh Stech and Stratton Brown of Deal Champs"
   },
   {
    "type": "list",
-   "dur": 5.2,
-   "kicker": "On the table",
+   "dur": 5.4,
+   "kicker": "Josh will dig into",
    "title": [
-    "What we'll cover"
+    "The conversation"
    ],
    "items": [
     [
-     "Market trends",
-     "What the data says about acquisitions right now"
+     "How AI is changing real estate",
+     "And what it means for investors"
     ],
     [
-     "Where the industry is heading",
-     "Lead costs, conversion, dispositions, capital"
+     "Where seller opportunities are emerging",
+     "In today’s market"
     ],
     [
-     "A stronger acquisition business",
-     "How to build one in a harder market"
+     "What successful operators do differently",
+     "To acquire inventory and close deals"
     ]
    ],
    "side": "fresno-2026-11-18-skyline.jpg",
@@ -69,44 +73,45 @@
   {
    "type": "josh",
    "dur": 4.6,
+   "kicker": "The speaker",
    "facts": [
-    "Founding partner and SVP of sales, LendingHome",
-    "Co-founder and CFO, Purpose Built Investments — 1,200+ transactions",
-    "Stanford — B.A. in economics, with honors"
+    "Founding partner, LendingHome",
+    "Co-founded Purpose Built Investments, launching three funds",
+    "Angel investor in 107 companies"
    ]
   },
   {
    "type": "details",
-   "dur": 4.4,
+   "dur": 4.6,
    "img": "fresno-2026-11-18-water-tower-dusk.jpg",
    "pos": "50% 30%",
    "title": [
-    "Save the date"
+    "Save your spot"
    ],
    "rows": [
     [
      "When",
-     "Wednesday, Nov. 18, 2026"
+     "Wednesday, Nov. 18, 2026 · 6-8:30 p.m. PT"
     ],
     [
      "Where",
-     "Fresno, California"
+     "Fresno, California · Location sent when you register"
     ],
     [
-     "Time and venue",
-     "To be announced"
+     "With",
+     "Josh Stech, co-founder and CEO of Sundae, and Stratton Brown of Deal Champs"
     ],
     [
-     "Host",
-     "Josh Stech, co-founder and CEO of Sundae"
+     "Register",
+     "meet.sundae.com/fresno-nov-2026"
     ]
    ]
   },
   {
    "type": "cta",
    "dur": 4.6,
-   "when": "Wednesday, Nov. 18<br>Fresno, California",
-   "foot": "Time and venue to be announced<br>Photos: Mel B. (CC BY 2.0) and DoulosBen (CC BY 4.0)"
+   "when": "Wednesday, Nov. 18 · 6-8:30 p.m.<br>Fresno, California",
+   "foot": "Register at meet.sundae.com/fresno-nov-2026<br>Photos: Mel B. (CC BY 2.0) and DoulosBen (CC BY 4.0)"
   }
  ]
 }

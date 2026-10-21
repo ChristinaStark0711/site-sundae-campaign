@@ -7,35 +7,39 @@
   "weekday": "Wednesday",
   "month": "Nov.",
   "day": "18",
-  "time": "Time to be announced",
-  "venue": "Venue to be announced",
-  "venueShort": "Venue to be announced",
-  "hotel": "Venue to be announced",
+  "time": "6-8:30 p.m.",
+  "venue": "Location sent when you register",
+  "venueShort": "Location sent when you register",
+  "hotel": "Location sent when you register",
   "city": "Fresno",
   "cityLine": "Fresno, California",
-  "address": "To be announced",
-  "included": "Dinner and conversation",
-  "name": "Private Dinner & Dialogue",
+  "address": "Location sent when you register",
+  "included": "Networking and an open conversation",
+  "name": "Sundae &lt;&gt; Deal Champs Meetup",
+  "nameLines": [
+   "AI, Real Estate",
+   "&amp; What’s Next"
+  ],
   "hostLine": "with Josh Stech, co-founder and CEO",
-  "pill": "Save the date"
+  "pill": "Save your spot"
  },
  "scenes": [
   {
    "type": "title",
    "dur": 3.4,
-   "kicker": "For Fresno real estate operators",
+   "kicker": "For Fresno real estate investors",
    "title": [
-    "Finding deals",
-    "is harder."
+    "Real estate",
+    "is changing."
    ],
    "center": true
   },
   {
    "type": "title",
-   "dur": 3.2,
+   "dur": 3.4,
    "title": [
-    "Margins are",
-    "tighter."
+    "AI is opening up",
+    "new possibilities."
    ],
    "accent": 1,
    "center": true,
@@ -48,28 +52,28 @@
    "label": "Sacramento · September 2026",
    "dur": 4.8,
    "title": [
-    "The market has changed.",
-    "The opportunity has not."
+    "How investors find,",
+    "evaluate and close deals"
    ]
   },
   {
    "type": "list",
-   "dur": 5.0,
+   "dur": 5.2,
    "kicker": "Let’s talk about it",
    "title": [
-    "Over dinner, with Josh Stech"
+    "With Josh Stech in Fresno"
    ],
    "items": [
     [
-     "Market trends",
+     "How AI is changing real estate",
      ""
     ],
     [
-     "Where the industry is heading",
+     "Where seller opportunities are emerging",
      ""
     ],
     [
-     "Building a stronger acquisition business",
+     "What successful operators do differently",
      ""
     ]
    ],
@@ -81,7 +85,7 @@
    "dur": 4.2,
    "img": "fresno-2026-11-18-water-tower-dusk.jpg",
    "pos": "50% 30%",
-   "kicker": "Wednesday, Nov. 18",
+   "kicker": "Wednesday, Nov. 18 · 6-8:30 p.m.",
    "title": [
     "Coming to",
     "Fresno."
@@ -90,8 +94,8 @@
   {
    "type": "cta",
    "dur": 4.6,
-   "when": "Wednesday, Nov. 18<br>Fresno, California",
-   "foot": "Time and venue to be announced<br>Photos: Sundae; Mel B. (CC BY 2.0); DoulosBen (CC BY 4.0)"
+   "when": "Wednesday, Nov. 18 · 6-8:30 p.m.<br>Fresno, California",
+   "foot": "Register at meet.sundae.com/fresno-nov-2026<br>Photos: Sundae; Mel B. (CC BY 2.0); DoulosBen (CC BY 4.0)"
   }
  ]
 }

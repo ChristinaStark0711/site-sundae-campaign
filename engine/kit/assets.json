@@ -144,6 +144,12 @@
       "use": "event",
       "event": "fresno-2026-11-18",
       "what": "Downtown Fresno skyline, cropped to leave out a billboard and store signs (city photo, not the venue): \"Fresno California\" by DoulosBen, CC BY 4.0, from https://commons.wikimedia.org/w/index.php?curid=162545477; credit it wherever it shows"
+    },
+    "fresno-2026-11-18-qr-rsvp.svg": {
+      "use": "event",
+      "event": "fresno-2026-11-18",
+      "what": "QR code to https://meet.sundae.com/fresno-nov-2026 (the Fresno registration page, Sundae's own HubSpot page)",
+      "text": true
     }
   },
   "clips": {

@@ -28,7 +28,7 @@ const CityPhoto = ({ city, className = "" }: { city: City; className?: string })
 const Facts = ({ e }: { e: EventRec }) => {
   const rows: [string, React.ReactNode][] = [
     ["When", when(e)],
-    ["Where", e.venue === VENUE_TBA ? `${VENUE_TBA} · ${e.city}, ${e.state}` : <>{e.space ? `${e.space} at ` : ""}{e.venue}{e.address ? <><br />{e.address}</> : `, ${e.city}`}</>],
+    ["Where", e.venue === VENUE_TBA ? `${e.venueNote ?? VENUE_TBA} · ${e.city}, ${e.state}` : <>{e.space ? `${e.space} at ` : ""}{e.venue}{e.address ? <><br />{e.address}</> : `, ${e.city}`}</>],
     ["Host", `${e.host}${e.hostTitle ? `, ${e.hostTitle}` : ""}`],
     ["Who it's for", e.audience],
   ];
