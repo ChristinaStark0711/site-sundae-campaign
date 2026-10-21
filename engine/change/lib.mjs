@@ -277,4 +277,9 @@ export function checkSource(src, isVideo) {
 }
 
 export const kitAssets = () => fs.readdirSync(path.join(ENGINE, 'kit/assets')).sort();
+// What each kit file usable in this scope shows, with its source and required credit (kit/assets.json "what"), so a
+// request like "use the skyline photo and update the credit" can be made from the record instead of guessed.
+export const kitAssetNotes = (scopeDir) => Object.entries(readJSON(path.join(ENGINE, 'kit/assets.json'), { assets: {} }).assets)
+  .filter(([, m]) => m.what && m.use !== 'retired' && (!m.event || `events/${m.event}` === scopeDir))
+  .map(([name, m]) => `${name}: ${m.what}`).sort();
 export const kitClips = () => fs.existsSync(path.join(ENGINE, 'kit/aiclips')) ? fs.readdirSync(path.join(ENGINE, 'kit/aiclips')).filter((f) => f.endsWith('.mp4')).map((f) => f.slice(0, -4)).sort() : [];

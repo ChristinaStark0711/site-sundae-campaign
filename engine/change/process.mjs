@@ -14,7 +14,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { auditSource } from './audit.mjs';
-import { ENGINE, OUT, REPO, REQ, checkSource, kitAssets, kitClips, kitImageNotes, log, lostWording, missingFacts, newClaims, newFacts, newNames, newScripts, newSpecNumbers, nextVariantId, readJSON, redact, redactDeep, resolveAsset, slugify, writeJSON } from './lib.mjs';
+import { ENGINE, OUT, REPO, REQ, checkSource, kitAssetNotes, kitAssets, kitClips, kitImageNotes, log, lostWording, missingFacts, newClaims, newFacts, newNames, newScripts, newSpecNumbers, nextVariantId, readJSON, redact, redactDeep, resolveAsset, slugify, writeJSON } from './lib.mjs';
 
 const MODEL = process.env.CHANGE_MODEL || 'claude-opus-5-5';
 const DAILY_CAP = Number(process.env.CHANGE_DAILY_CAP || 30);
@@ -134,6 +134,7 @@ const describe = () => [
   `ASSET: ${A.entry.title} (${A.kind.slice(0, -1)} ${A.id}), ${A.entry.spec}; used for: ${A.entry.use}`,
   `FACTS ON RECORD:\n${facts}`,
   `FILES IN /kit/assets/: ${kitAssets().join(', ')}`,
+  `WHAT THE KIT FILES FOR THIS ASSET SHOW (with each photo's required credit; use these words for a credit, never invent one):\n${kitAssetNotes(A.scopeDir).join('\n')}`,
   ...(A.isVideo ? [`AI CLIPS (use by name in "clip"): ${kitClips().join(', ')}`] : []),
   reference,
   `CURRENT SOURCE (${path.relative(REPO, A.source)}):\n${original}`,
