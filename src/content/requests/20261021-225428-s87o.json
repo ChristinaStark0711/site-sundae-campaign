@@ -1,0 +1,17 @@
+{
+  "id": "20261021-225428-s87o",
+  "at": "2026-10-21T22:54:28.389Z",
+  "asset": "events/fresno-2026-11-18/images/01",
+  "assetTitle": "Save the date",
+  "mode": "variant",
+  "text": "Change the photo to the downtown Fresno skyline and update the photo credit to match.",
+  "status": "held",
+  "reason": "This request needs a person to look at it.",
+  "finishedAt": "2026-10-21T22:55:24.532Z",
+  "model": "claude-opus-5-5",
+  "usage": {
+    "input_tokens": 8703,
+    "output_tokens": 445,
+    "calls": 1
+  }
+}
