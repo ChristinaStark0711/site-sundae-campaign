@@ -33,7 +33,7 @@ async function download(url, file, timeoutMs = 60e3) {
   }
   if (!r.ok) throw new Error(`download ${r.status}`);
   const buf = Buffer.from(await r.arrayBuffer());
-  if (buf.length > 40e6) throw new Error('image too large');
+  if (buf.length > 150e6) throw new Error('image too large');
   fs.writeFileSync(file, buf);
 }
 
@@ -60,7 +60,8 @@ async function commons(query) {
     const lic = strip(m.LicenseShortName?.value);
     const by = /^CC BY (\d\.\d)$/i.exec(lic);
     const license = by ? 'by' : /^CC0/i.test(lic) ? 'cc0' : /^public domain$/i.test(lic) ? 'pdm' : null;
-    return { title: pg.title, creator: strip(m.Artist?.value).slice(0, 80), license, version: by?.[1] || '', landing: ii.descriptionurl, url: ii.url, thumbUrl: ii.thumburl, width: ii.width, height: ii.height };
+    const big = ii.width > 2400 && ii.thumburl ? ii.thumburl.replace(/\/\d+px-/, '/2400px-') : null;
+    return { title: pg.title, creator: strip(m.Artist?.value).slice(0, 80), license, version: by?.[1] || '', landing: ii.descriptionurl, url: ii.url, bigUrl: big, thumbUrl: ii.thumburl, width: ii.width, height: ii.height };
   }).filter((x) => x.license && x.url && x.creator);
 }
 
@@ -103,7 +104,9 @@ const prefix = (A) => (A.event ? path.basename(A.scopeDir) : 'brand');
 export async function addSearchedPhoto(A, c, outDir) {
   const name = uniqueName(`${prefix(A)}-web-${slugify(c.title || 'photo').slice(0, 32) || 'photo'}`);
   const raw = path.join(outDir, `${name}.raw`), file = path.join(outDir, name);
-  await download(c.url, raw);
+  let got = false;
+  for (const u of [c.bigUrl, c.url].filter(Boolean)) { try { await download(u, raw, 120e3); got = true; break; } catch { /* next */ } }
+  if (!got) throw new Error('the photo couldn\'t be downloaded');
   toJpg(raw, file, 2400);
   fs.rmSync(raw);
   const lic = `${LICENSES[c.license]}${c.license === 'by' && c.version ? ` ${c.version}` : ''}`;

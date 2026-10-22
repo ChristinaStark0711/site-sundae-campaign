@@ -26,7 +26,7 @@ const UPDATES = (process.env.CHANGE_UPDATES || 'auto').toLowerCase(); // "auto" 
 const AUTO = UPDATES === 'auto';
 // in auto mode nothing waits: a request that can't run now is refused with its reason, to be sent again
 const wait = (reason, summary) => (AUTO ? finish('failed', { reason, summary }) : finish('held', { reason, summary }));
-const MAX_CALLS = 7; // edit, a photo pick and an edit with the new photo, reviews
+const MAX_CALLS = 8; // edit, a photo pick and an edit with the new photo, reviews
 const req = readJSON(path.join(REQ, 'request.json'));
 if (fs.existsSync(path.join(OUT, 'result.json'))) { log('already decided by intake'); process.exit(0); } // e.g. an approval closed by intake
 const A = resolveAsset(req.asset);
@@ -365,14 +365,21 @@ try {
       ], REVIEW_TOOL);
       log(`review ${round}: ${rv.ok ? 'ok' : 'not ok'}${rv.issues ? ` (${String(rv.issues).replace(/\s+/g, ' ').slice(0, 400)})` : ''}`);
       if (rv.ok && lr.ok) break;
-      if (rv.ok && !lr.ok) fail('The result broke a brand rule (text color, font or contrast), so it was not published. Try rewording the request.', summary);
-      if (round >= 3 || !rv.source || usage.calls >= MAX_CALLS) {
-        // the review is still not satisfied: a result that passed every safety and brand check goes to the owner as a
-        // proposal with its preview (never published unreviewed), so a hard request never ends with nothing to look at
+      // the owner's rule (2026-10-22): the brand guidelines are the one requirement, and every change is made to fit
+      // them. A result that breaks one is corrected (the review's fix, or an edit given the brand check's report),
+      // never refused for it; only a result still off-brand after the last round is not published.
+      const last = round >= 3 || usage.calls >= MAX_CALLS;
+      if (last) {
         const why = publicText(rv.issues);
         if (lr.ok && AUTO) { log('review still unsure; published anyway (auto mode)'); break; }
         if (lr.ok) holdProposal(g, `The automatic review wasn't sure this came out right${why ? ` (${why})` : ''}. Look at the preview before approving.`, summary, variantTitle);
-        fail(`The change didn't come out right${why ? ` (${why})` : ''}. Nothing was changed; try rewording the request.`, summary);
+        fail(`The change couldn't be made to fit Sundae's brand guidelines${why ? ` (${why})` : ''}. Nothing was changed; try rewording the request.`, summary);
+      }
+      if (!rv.source) { // the review passed it but the brand check didn't: ask for an on-brand version of the same change
+        const f = await callModel([{ type: 'text', text: 'AFTER (the edit, rendered):' }, imageBlock(after), { type: 'text', text: `${describe()}\n\nTHE EDIT:\n${src}\n\nBRAND CHECK FAILED:\n${lr.report}\n\nReturn (decision "apply") the complete source with the same change made to fit Sundae's brand guidelines: fix every brand problem listed, choosing the closest on-brand color, font or size, and keep everything the request asked for.` }], EDIT_TOOL);
+        rv.source = f.decision === 'apply' ? f.source : null;
+        if (!rv.source) fail('The change couldn\'t be made to fit Sundae\'s brand guidelines. Nothing was changed; try rewording the request.', summary);
+        log('brand fix requested');
       }
       src = String(rv.source);
       g = await gate(src);
