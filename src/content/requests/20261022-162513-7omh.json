@@ -1,0 +1,21 @@
+{
+  "id": "20261022-162513-7omh",
+  "at": "2026-10-22T16:25:13.608Z",
+  "asset": "events/fresno-2026-11-18/images/06",
+  "assetTitle": "Sacramento to Fresno",
+  "mode": "update",
+  "text": "Edit the existing LinkedIn graphic, preserving its overall design, photo, colors, branding, CTA, and dimensions. Remove the “Sacramento – September 2026” label from the photo. Keep the photo unchanged otherwise. Move “Fresno” to the right of “Next stop:” so the headline is on one line. Keep “Fresno” red and visually prominent.",
+  "status": "done",
+  "summary": "Changed as asked.",
+  "result": {
+    "id": "06",
+    "file": "06-sacramento-to-fresno.jpg"
+  },
+  "finishedAt": "2026-10-22T16:27:14.151Z",
+  "model": "claude-opus-5-5",
+  "usage": {
+    "input_tokens": 38339,
+    "output_tokens": 4467,
+    "calls": 3
+  }
+}
