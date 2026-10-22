@@ -28,7 +28,7 @@ export default async function EventLayout({ children, params }: { children: Reac
                 <p className="text-base leading-snug">{whenLine(e)} · {whereLine(e)}</p>
               </div>
             </div>
-            {e.kind === "campaign" && <EventTabs slug={e.slug} firstPlan={e.plans[0]?.slug} />}
+            {e.kind === "campaign" && <EventTabs slug={e.slug} />}
           </div>
         </div>
       </section>

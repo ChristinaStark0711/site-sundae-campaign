@@ -12,11 +12,12 @@ const nextConfig: NextConfig = {
       // the hub is the events and their content (2026-10-22): the overview, brand library, membership plans and
       // projections pages are gone, so their old links land on the events list
       ...["/events", "/creative", "/captions", "/projections", "/plans/:slug"].map((source) => ({ source, destination: "/", permanent: false })),
-      { source: "/events/:slug/projections", destination: "/events/:slug", permanent: false },
-      { source: "/plans/event-organic", destination: `${MB}/plans/organic`, permanent: false },
-      { source: "/plans/event-paid", destination: `${MB}/plans/paid`, permanent: false },
-      { source: "/plans/filming", destination: `${MB}/plans/filming`, permanent: false },
-      { source: "/plans/action-plan", destination: `${MB}/plans/action-plan`, permanent: false },
+      // each event is its creative library and captions (2026-10-22): its overview, plans and projections links open the library
+      ...["/events/:slug", "/events/:slug/projections", "/events/:slug/plans/:plan"].map((source) => ({ source, destination: "/events/:slug/creative", permanent: false })),
+      { source: "/plans/event-organic", destination: `${MB}/creative`, permanent: false },
+      { source: "/plans/event-paid", destination: `${MB}/creative`, permanent: false },
+      { source: "/plans/filming", destination: `${MB}/creative`, permanent: false },
+      { source: "/plans/action-plan", destination: `${MB}/creative`, permanent: false },
     ];
   },
 };

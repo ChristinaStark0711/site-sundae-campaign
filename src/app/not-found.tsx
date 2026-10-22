@@ -10,7 +10,7 @@ import { apDate } from "@/lib/format";
 export const metadata: Metadata = { title: "Page not found" };
 export default function NotFound() {
   const links = [
-    ...getEvents().map((e) => ({ href: `/events/${e.slug}`, title: `${e.city} · ${apDate(e.date)}` })),
+    ...getEvents().filter((e) => e.kind === "campaign").map((e) => ({ href: `/events/${e.slug}/creative`, title: `${e.city} · ${apDate(e.date)}` })),
   ];
   return (
     <main className="mx-auto max-w-7xl px-5 md:px-8">

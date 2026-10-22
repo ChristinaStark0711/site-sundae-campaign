@@ -10,7 +10,7 @@ export default function Events() {
       <header className="py-16 md:py-24">
         <p className="eyebrow">Events</p>
         <h1 className="display h-bar h-bar-lg mt-5 max-w-4xl text-[clamp(2.375rem,4.6vw,4rem)]">Every Sundae event, city by city.</h1>
-        <p className="lede mt-7 max-w-3xl">Each event has its own page: the creative library, captions and plans. Type a change in the box under any asset to update it or make a new variation. Upcoming events come first; past ones stay on record.</p>
+        <p className="lede mt-7 max-w-3xl">Each event has its creative library (images, flyers, videos and Reels) and its captions. Type a change in the box under any asset to update it or make a new variation. Upcoming events come first; past ones stay on record.</p>
       </header>
       <EventsBoard
         builtAt={Date.now()}

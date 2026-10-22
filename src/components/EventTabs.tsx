@@ -3,13 +3,12 @@ import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 
-// The tab row under an event's title bar: the event's own overview, creative, captions and plans.
-export default function EventTabs({ slug, firstPlan }: { slug: string; firstPlan?: string }) {
+// The tab row under an event's title bar: the event's creative library and its captions (owner's choice, 2026-10-22).
+export default function EventTabs({ slug }: { slug: string }) {
   const path = usePathname();
   const b = `/events/${slug}`;
-  const tabs: [string, string, string][] = [[b, "Overview", b], [`${b}/creative`, "Creative", `${b}/creative`], [`${b}/captions`, "Captions", `${b}/captions`]];
-  if (firstPlan) tabs.push([`${b}/plans/${firstPlan}`, "Plans", `${b}/plans`]);
-  // on phones the row scrolls sideways and would always open at its start, hiding a later tab such as Plans:
+  const tabs: [string, string, string][] = [[`${b}/creative`, "Creative", `${b}/creative`], [`${b}/captions`, "Captions", `${b}/captions`]];
+  // on phones the row scrolls sideways and would always open at its start, hiding a later tab:
   // center the current tab in the row (the row only; the page itself doesn't move)
   const nav = useRef<HTMLElement>(null);
   useEffect(() => {
