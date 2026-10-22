@@ -74,6 +74,15 @@ if (r.status === 'done') {
     }
     writeJSON(libFile, lib);
     allowed.push(library.path);
+    // a picture found or generated for this request joins the kit with its record (source, license, credit)
+    for (const k of r.apply.kit || []) {
+      if (!/^[a-z0-9][a-z0-9-]*\.jpg$/.test(k.name)) throw new Error(`bad kit file name ${k.name}`);
+      fs.copyFileSync(path.join(REPO, k.from), path.join(ENGINE, 'kit/assets', k.name));
+      const kp = path.join(ENGINE, 'kit/assets.json'), kj = readJSON(kp);
+      kj.assets[k.name] = k.meta;
+      writeJSON(kp, kj);
+      allowed.push(`engine/kit/assets/${k.name}`, 'engine/kit/assets.json');
+    }
     if (plan.id) r.log.result = { id: plan.id, file: plan.file };
     if (r.apply.clearHeld) { removeHeld(); delete r.log.proposal; }
   }

@@ -4,6 +4,8 @@
 #
 # Secrets (repo Settings > Secrets and variables > Actions):
 #   ANTHROPIC_API_KEY   required: pays for the AI edit (up to five model calls per request; usage is logged per request)
+#   HF_API_KEY_ID, HF_API_KEY_SECRET  optional: Sundae's Higgsfield API key (console.higgsfield.ai); switches on AI images,
+#                       at most CHANGE_AI_DAILY_USD (default 20) dollars in any 24 hours
 #   VERCEL_DEPLOY_HOOK  optional: a Vercel deploy hook URL, called after the push in case the push alone doesn't deploy
 # Variables (same page, Variables tab, all optional): CHANGE_MODEL (default claude-opus-5-5), CHANGE_DAILY_CAP
 # (default 30 a day), CHANGE_UPDATES ("auto", the default: every change that passes the checks publishes straight
@@ -72,6 +74,9 @@ jobs:
           CHANGE_MODEL: ${{ vars.CHANGE_MODEL }}
           CHANGE_DAILY_CAP: ${{ vars.CHANGE_DAILY_CAP }}
           CHANGE_UPDATES: ${{ vars.CHANGE_UPDATES }}
+          HF_API_KEY_ID: ${{ secrets.HF_API_KEY_ID }}
+          HF_API_KEY_SECRET: ${{ secrets.HF_API_KEY_SECRET }}
+          CHANGE_AI_DAILY_USD: ${{ vars.CHANGE_AI_DAILY_USD }}
         run: node engine/change/process.mjs
 
       - name: Check the site still builds with the change

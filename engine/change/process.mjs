@@ -14,6 +14,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { auditSource } from './audit.mjs';
+import { AI_ASPECTS, addAiImage, addSearchedPhoto, aiAvailable, aiDailyUsd, installKitFile, searchPhotos } from './media.mjs';
 import { ENGINE, OUT, REPO, REQ, checkSource, kitAssetNotes, kitAssets, kitClips, kitImageNotes, log, lostWording, missingFacts, newClaims, newFacts, newNames, newScripts, newSpecNumbers, nextVariantId, readJSON, redact, redactDeep, resolveAsset, slugify, writeJSON } from './lib.mjs';
 
 const MODEL = process.env.CHANGE_MODEL || 'claude-opus-5-5';
@@ -25,7 +26,7 @@ const UPDATES = (process.env.CHANGE_UPDATES || 'auto').toLowerCase(); // "auto" 
 const AUTO = UPDATES === 'auto';
 // in auto mode nothing waits: a request that can't run now is refused with its reason, to be sent again
 const wait = (reason, summary) => (AUTO ? finish('failed', { reason, summary }) : finish('held', { reason, summary }));
-const MAX_CALLS = 5;
+const MAX_CALLS = 7; // edit, a photo pick and an edit with the new photo, reviews
 const req = readJSON(path.join(REQ, 'request.json'));
 if (fs.existsSync(path.join(OUT, 'result.json'))) { log('already decided by intake'); process.exit(0); } // e.g. an approval closed by intake
 const A = resolveAsset(req.asset);
@@ -34,6 +35,7 @@ const CAND = path.join(ENGINE, '.cache/candidates', A.kind); // inside engine/ s
 fs.mkdirSync(path.join(OUT, 'files'), { recursive: true });
 fs.mkdirSync(WORK, { recursive: true }); fs.mkdirSync(CAND, { recursive: true });
 const usage = { input_tokens: 0, output_tokens: 0, calls: 0 };
+let newKit = null, aiSpend = null; // a picture added to the kit for this request, and what an AI image cost
 const today = new Date().toISOString().slice(0, 10);
 const base = A.entry.variantOf ? (A.lib[A.kind].find((a) => a.id === A.entry.variantOf) ?? A.entry) : A.entry;
 const sha = (t) => crypto.createHash('sha256').update(t).digest('hex');
@@ -45,6 +47,8 @@ function finish(status, extra = {}) {
     id: req.id, at: req.at, asset: req.asset, assetTitle: A.entry.title, mode: req.mode, text: req.text, status,
     ...(extra.summary && status !== 'held' ? { summary: extra.summary } : {}), ...(extra.reason ? { reason: extra.reason } : {}),
     ...(extra.result ? { result: extra.result } : {}), ...(extra.proposal ? { proposal: extra.proposal } : {}), ...(req.approved && status !== 'held' ? { approved: true } : {}),
+    ...(newKit ? { newImage: { file: newKit.name, ...(newKit.meta.ai ? { ai: true } : { license: newKit.meta.license, source: newKit.meta.source }) } } : {}),
+    ...(aiSpend ? { ai: aiSpend } : {}), // counted against the daily AI budget whatever happens to the change
     finishedAt: new Date().toISOString(), model: usage.calls ? MODEL : undefined, usage: usage.calls ? usage : undefined,
   };
   writeJSON(path.join(OUT, 'result.json'), { status, request: req, sourceHash, log: redactDeep(logRec), ...(extra.apply ? { apply: extra.apply } : {}), ...(extra.held ? { held: extra.held } : {}) });
@@ -109,10 +113,23 @@ async function callModel(content, tool) {
     await new Promise((res) => setTimeout(res, 2000 * 2 ** attempt));
   }
 }
+const AI_PROMPT_HELP = aiAvailable()
+  ? 'a one-sentence description of a generic, non-representational picture to generate with AI if no real photo fits (a mood, texture, object or generic scene; never a real or named place, a venue, a landmark, Josh or any real person). Omit if only a real photo would do.'
+  : 'leave empty: AI images are not switched on.';
+const PICK_TOOL = {
+  name: 'pick_photo', description: 'Pick the candidate photo that fits the request, or none.',
+  input_schema: { type: 'object', additionalProperties: false, required: ['pick', 'why'], properties: {
+    pick: { type: 'integer', description: 'The candidate number, or -1 if none fits.' },
+    why: { type: 'string', description: 'One short sentence.' },
+  } },
+};
 const EDIT_TOOL = {
   name: 'submit_change', description: 'Return the decision and, when applying, the complete new source file.',
   input_schema: { type: 'object', additionalProperties: false, required: ['decision', 'summary'], properties: {
-    decision: { type: 'string', enum: ['apply', 'hold'] },
+    decision: { type: 'string', enum: ['apply', 'hold', 'need_image'] },
+    image_search: { type: 'string', description: 'need_image: 2-6 plain search words for a real, openly licensed photo (e.g. "Tower Theatre Fresno"), or omit when no real photo could fit.' },
+    image_ai_prompt: { type: 'string', description: `need_image: ${AI_PROMPT_HELP}` },
+    image_aspect: { type: 'string', enum: AI_ASPECTS, description: 'need_image: the shape the picture fills, width:height.' },
     summary: { type: 'string', description: 'One plain sentence: what changed (or would change).' },
     reason: { type: 'string', description: 'When holding: why, in one or two plain sentences to the Sundae team.' },
     variant_title: { type: 'string', description: 'New variation only: 2-5 words naming what is different, e.g. "Blue headline box".' },
@@ -145,6 +162,35 @@ const describe = () => [
   reference,
   `CURRENT SOURCE (${path.relative(REPO, A.source)}):\n${original}`,
 ].join('\n\n');
+
+// --- a picture the kit doesn't have: an openly licensed photo first, then (if asked for and allowed) an AI image
+async function findImage(r) {
+  const dir = path.join(OUT, 'files', 'kit');
+  fs.mkdirSync(dir, { recursive: true });
+  const why = [];
+  const q = String(r.image_search || '').replace(/[^\p{L}\p{N} '&-]/gu, ' ').trim().slice(0, 80);
+  if (q) {
+    try {
+      const cands = await searchPhotos(q, WORK);
+      log(`photo search "${q}": ${cands.length} candidate(s)`);
+      if (cands.length) {
+        const pick = await callModel([
+          { type: 'text', text: `${describe()}\n\nThe kit had no picture for this request, so these openly licensed photos were found for "${q}". Pick the one that best fits the request and the asset, or -1 if none does. A photo fits only if it clearly shows what was asked for, is sharp and well lit, suits Sundae's bright, warm look, and has no prominent text, signs, billboards, logos, brand names, license plates or watermarks, and no identifiable person as its subject (a crowd far away is fine).` },
+          ...cands.flatMap((c, i) => [{ type: 'text', text: `Candidate ${i}: "${c.title}" by ${c.creator} (${c.width}×${c.height})` }, imageBlock(c.thumb)]),
+        ], PICK_TOOL);
+        log(`photo pick: ${pick.pick} (${String(pick.why || '').slice(0, 200)})`);
+        if (Number.isInteger(pick.pick) && pick.pick >= 0 && pick.pick < cands.length) return await addSearchedPhoto(A, cands[pick.pick], dir);
+        why.push('none of the openly licensed photos found fit');
+      } else why.push('no openly licensed photo was found');
+    } catch (e) { why.push(`the photo search didn't work (${String(e.message).slice(0, 120)})`); }
+  }
+  const prompt = String(r.image_ai_prompt || '').replace(/\s+/g, ' ').trim().slice(0, 400);
+  if (prompt && aiAvailable()) {
+    try { const k = await addAiImage(A, prompt, r.image_aspect, dir); aiSpend = { usd: k.usd, provider: 'higgsfield' }; return k; }
+    catch (e) { why.push(String(e.message).slice(0, 160)); }
+  } else if (!q) why.push(aiAvailable() ? 'the request needs a picture that can only be a real photo' : 'AI images aren\'t switched on');
+  fail(`A new picture was needed but couldn't be added: ${why.join('; ')}. Nothing was changed.`);
+}
 
 // --- the gate
 const BASE_TAGS = new Set(['html', 'head', 'meta', 'link', 'style', 'body', 'div', 'span', 'i', 'b', 'br', 'img', 'p', 'h1', 'h2', 'h3', 'strong', 'em', 'small', 'sup', 'sub', 'u', 'svg', 'path', 'circle', 'rect', 'line', 'polyline', 'polygon', 'g']);
@@ -180,6 +226,14 @@ async function gate(src) {
   // kit files the page really fetched that the original didn't: text inside an image is invisible to the text checks
   const assets = readJSON(path.join(ENGINE, 'kit/assets.json'), { assets: {}, clips: {} });
   const had = new Set(origAudit.fetched), media = [];
+  // a picture added for a request must carry its label: "AI-generated image", or a CC BY photo's credit (creator's name)
+  const seen = `${au.visible ?? ''}\n${au.text ?? ''}`;
+  for (const f of au.fetched) {
+    const m = assets.assets[/^\/kit\/assets\/(.+)$/.exec(f)?.[1]];
+    if (m?.ai && !/AI-generated/i.test(seen)) p.push('uses an AI-generated image without the "AI-generated image" label');
+    const by = m?.license?.startsWith('CC BY') && /credit line "Photo: (.+?) \(/.exec(m.what || '')?.[1];
+    if (by && !seen.includes(by)) p.push(`uses a photo by ${by} without its credit line`);
+  }
   for (const f of au.fetched) {
     if (had.has(f)) continue;
     const asset = /^\/kit\/assets\/(.+)$/.exec(f)?.[1], clip = /^\/cache\/clips\/([^/]+)\//.exec(f)?.[1];
@@ -276,6 +330,13 @@ try {
     const beforeImg = A.isVideo ? render(A.source, path.join(WORK, 'before'), 'before', true)[0] : path.join(A.mediaDir, A.entry.file);
     const before = imageBlock(beforeImg);
     let r = await callModel([{ type: 'text', text: 'BEFORE (as published):' }, before, { type: 'text', text: describe() }], EDIT_TOOL);
+    if (r.decision === 'need_image') {
+      newKit = await findImage(r);
+      installKitFile(newKit);
+      log('new kit file', newKit.name);
+      r = await callModel([{ type: 'text', text: 'BEFORE (as published):' }, before, { type: 'text', text: `${describe()}\n\nNEW KIT FILE ADDED FOR THIS REQUEST: /kit/assets/${newKit.name}\n${newKit.meta.what}\nUse it now (decision "apply"), with its ${newKit.meta.ai ? '"AI-generated image" label' : 'credit line'} visible on the asset.` }], EDIT_TOOL);
+      if (r.decision === 'need_image') r = { decision: 'hold', reason: 'The new picture didn\'t fit the request. Try describing the photo differently.', summary: r.summary };
+    }
     if (r.decision === 'hold') hold(publicText(r.reason) || (AUTO ? 'This request couldn\'t be made automatically. Try rewording it.' : 'This request needs a person to look at it.'), r.summary);
     src = String(r.source || '');
     g = src ? await gate(src) : { problems: ['is empty'] };
@@ -345,7 +406,7 @@ try {
   }
   finish('done', {
     summary, result: { id, file: entry.file },
-    apply: { files, library: { path: path.relative(REPO, A.libPath), kind: A.kind, op: req.mode === 'variant' ? 'insert' : 'replace', baseId: base.id, entry }, clearHeld: !!req.candidate },
+    apply: { files, ...(newKit ? { kit: [{ name: newKit.name, from: path.relative(REPO, newKit.from), meta: newKit.meta }] } : {}), library: { path: path.relative(REPO, A.libPath), kind: A.kind, op: req.mode === 'variant' ? 'insert' : 'replace', baseId: base.id, entry }, clearHeld: !!req.candidate },
   });
 } catch (e) {
   console.error(String(e?.stack || e).split('\n').slice(0, 3).join('\n')); // no request text or model output in the public log

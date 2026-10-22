@@ -57,6 +57,21 @@ in the change log on the hub, and the box says so.
      refuses it commits a "failed" log entry instead, so every request ends in the log. Vercel redeploys.
 3. Results: **Done** (published), **Waiting for approval** (held) or **Couldn't apply** (failed; nothing changed).
 
+## New pictures (photo search and AI images)
+
+When a request needs a picture the kit doesn't have, the model asks for one (`need_image`; `media.mjs`):
+1. **Openly licensed photo first.** Openverse (Wikimedia Commons, Flickr and more) is searched for photos licensed CC BY,
+   CC0 or public domain (commercial use, no share-alike), at least 1,000 px wide. The model looks at up to six and picks
+   one, or none (it skips photos with prominent text, signs, logos or an identifiable person as the subject). The credit
+   line comes from the record, never from the model, and the change is refused if a CC BY photo's credit isn't visible.
+2. **AI image, only if no real photo fits** and the request allows a generic picture: one SOUL V2 image from Sundae's
+   Higgsfield API account (secrets `HF_API_KEY_ID` and `HF_API_KEY_SECRET`, from console.higgsfield.ai, a USD balance).
+   The price is estimated first; the request is refused if the last 24 hours' AI spend plus the estimate would pass
+   `CHANGE_AI_DAILY_USD` (default **$20**, the owner's ceiling). Each request's cost is in its log entry (`ai.usd`).
+   Never a real or named place, the venue, Josh or any real person; the asset must show "AI-generated image".
+The picture joins `engine/kit/assets/` with its record in `kit/assets.json` (source, license, credit), named
+`<event-slug>-web-…` or `<event-slug>-ai-…`, and is usable by later requests for the same event.
+
 ## What waits for approval, and how to approve
 **Current setting (the owner's choice, 2026-10-21): `CHANGE_UPDATES` is `auto` (the default), so nothing waits.**
 Every change that passes the safety and brand checks publishes straight away, fact changes, names, claims and new
