@@ -1,0 +1,21 @@
+{
+  "id": "20261022-165006-h866",
+  "at": "2026-10-22T16:50:06.464Z",
+  "asset": "events/fresno-2026-11-18/images/06",
+  "assetTitle": "Sacramento to Fresno",
+  "mode": "update",
+  "text": "Replace the body copy with: \"AI is changing real estate. What's next for investors? Join Sundae Co-Founder & CEO Josh Stech and local real estate investors for an evening of candid conversations about today's market, emerging opportunities, and the future of AI in real estate.\" Update date/time to “November 18 | 6–8:30 PM PT” and increase its font size. Make the opening question bold. Maintain clean spacing and mobile readability. Do not change any other elements.",
+  "status": "done",
+  "summary": "Changed as asked.",
+  "result": {
+    "id": "06",
+    "file": "06-sacramento-to-fresno.jpg"
+  },
+  "finishedAt": "2026-10-22T16:53:18.655Z",
+  "model": "claude-opus-5-5",
+  "usage": {
+    "input_tokens": 24873,
+    "output_tokens": 2241,
+    "calls": 2
+  }
+}
