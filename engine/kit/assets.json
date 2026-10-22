@@ -158,6 +158,22 @@
       "source": "https://commons.wikimedia.org/wiki/File:Tower_Theater,_Fresno,_California_LCCN2017707872.tif",
       "license": "public domain",
       "added": "2026-10-22"
+    },
+    "fresno-2026-11-18-dinner-candlelit.jpg": {
+      "use": "event",
+      "event": "fresno-2026-11-18",
+      "what": "A candlelit dinner table with wine glasses (a mood photo of a dinner table, not the Fresno venue or a Sundae event): \"Dinner @ The Village Pub\" by Swami Stream, CC BY 2.0, from https://www.flickr.com/photos/21063397@N00/1328979437; credit line \"Photo: Swami Stream (CC BY 2.0)\" wherever it shows",
+      "source": "https://www.flickr.com/photos/21063397@N00/1328979437",
+      "license": "CC BY 2.0",
+      "added": "2026-10-22"
+    },
+    "fresno-2026-11-18-dinner-table.jpg": {
+      "use": "event",
+      "event": "fresno-2026-11-18",
+      "what": "A white-linen dinner place setting with glasses (a mood photo of a dinner table, not the Fresno venue or a Sundae event): \"2015 Stevie Awards 0206\" by mikeg44311, CC BY 2.0, from https://www.flickr.com/photos/65131746@N00/16650014096; credit line \"Photo: mikeg44311 (CC BY 2.0)\" wherever it shows",
+      "source": "https://www.flickr.com/photos/65131746@N00/16650014096",
+      "license": "CC BY 2.0",
+      "added": "2026-10-22"
     }
   },
   "clips": {

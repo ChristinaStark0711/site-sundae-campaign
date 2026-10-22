@@ -2,72 +2,81 @@
  "w": 1080,
  "h": 1920,
  "tag": "Nov. 18 · Fresno",
- "poster": 6,
+ "poster": 5,
  "event": {
   "weekday": "Wednesday",
   "month": "Nov.",
   "day": "18",
   "time": "6-8:30 p.m.",
-  "venue": "Location sent when you register",
-  "venueShort": "Location sent when you register",
-  "hotel": "Location sent when you register",
+  "venue": "Fresno · location sent when you register",
+  "venueShort": "Fresno, California",
+  "hotel": "Fresno",
   "city": "Fresno",
-  "cityLine": "Fresno, California",
+  "cityLine": "Location sent when you register",
   "address": "Location sent when you register",
-  "included": "Networking and an open conversation",
-  "name": "Sundae &lt;&gt; Deal Champs Meetup",
+  "included": "Dinner served · Seats are limited",
+  "name": "Private Dinner &amp; Dialogue",
   "nameLines": [
-   "AI, Real Estate",
-   "&amp; What’s Next"
+   "Private Dinner",
+   "&amp; Dialogue"
   ],
   "hostLine": "with Josh Stech, co-founder and CEO",
-  "pill": "Save your spot"
+  "pill": "Save your seat →"
  },
  "scenes": [
   {
    "type": "title",
-   "dur": 2.8,
+   "dur": 3.2,
    "kicker": "Nov. 18 · Fresno",
    "title": [
-    "Who should",
-    "come"
+    "Three reasons to be",
+    "at dinner",
+    "on Nov. 18"
    ],
-   "accent": 1
+   "accent": 2,
+   "bulbs": true
   },
   {
-   "type": "list",
-   "dur": 6.4,
-   "img": "fresno-2026-11-18-skyline.jpg",
-   "pos": "50% 40%",
-   "kicker": "Sundae &lt;&gt; Deal Champs Meetup",
+   "type": "reason",
+   "dur": 3.6,
+   "n": "01",
+   "img": "sac-dinner.jpg",
+   "pos": "45% 40%",
    "title": [
-    "You’re in the",
-    "right place if…"
+    "Josh’s read on",
+    "the market"
    ],
-   "items": [
-    [
-     "Local real estate investors",
-     "in and around Fresno"
-    ],
-    [
-     "Wholesalers",
-     "and fix-and-flip operators"
-    ],
-    [
-     "Acquisition teams",
-     "finding and closing deals"
-    ],
-    [
-     "Experienced operators",
-     "looking to scale"
-    ]
-   ]
+   "sub": "How AI is changing real estate and where seller opportunities are emerging"
+  },
+  {
+   "type": "reason",
+   "dur": 3.6,
+   "n": "02",
+   "img": "fresno-2026-11-18-water-tower-dusk.jpg",
+   "pos": "50% 40%",
+   "title": [
+    "A room of serious",
+    "Fresno operators"
+   ],
+   "sub": "Wholesalers, flippers and acquisition teams"
+  },
+  {
+   "type": "reason",
+   "dur": 3.6,
+   "n": "03",
+   "img": "fresno-2026-11-18-dinner-candlelit.jpg",
+   "pos": "60% 75%",
+   "title": [
+    "Great food,",
+    "better conversation"
+   ],
+   "sub": "Dinner with Fresno-area investors"
   },
   {
    "type": "cta",
-   "dur": 4.0,
+   "dur": 3.8,
    "when": "Wednesday, Nov. 18 · 6-8:30 p.m.<br>Fresno, California",
-   "foot": "Register at meet.sundae.com/fresno-nov-2026<br>Photo: DoulosBen (CC BY 4.0)"
+   "foot": "Register at meet.sundae.com/fresno-nov-2026<br>Photos: Sundae; Mel B. (CC BY 2.0); Swami Stream (CC BY 2.0)"
   }
  ]
 }

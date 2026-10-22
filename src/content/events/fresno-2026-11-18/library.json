@@ -2,63 +2,24 @@
   "images": [
     {
       "id": "01",
-      "title": "Save your spot",
-      "file": "01-save-the-date.jpg",
+      "title": "Save your seat",
+      "file": "01-save-your-seat.jpg",
       "spec": "1080×1350 · 4:5",
       "use": "Instagram and Facebook feed, Meta ads and the pinned post",
       "pair": "C01 · C02"
     },
     {
       "id": "01B",
-      "title": "Save your spot — water tower at golden hour",
-      "file": "01b-save-the-date-golden-hour.jpg",
+      "title": "Save your seat — Fresno water tower",
+      "file": "01b-save-your-seat-water-tower.jpg",
       "spec": "1080×1350 · 4:5",
       "use": "Variation of 01 · Instagram and Facebook feed, Meta ads",
       "pair": "C01 · C02",
       "variantOf": "01"
     },
     {
-      "id": "01C",
-      "title": "Save your spot — downtown skyline",
-      "file": "01c-downtown-skyline-photo.jpg",
-      "spec": "1080×1350 · 4:5",
-      "use": "Variation of 01 · Instagram and Facebook feed, Meta ads",
-      "pair": "C01 · C02",
-      "variantOf": "01",
-      "updated": "2026-10-21"
-    },
-    {
-      "id": "01D",
-      "title": "Save your spot — with Josh Stech",
-      "file": "01d-save-your-spot-josh.jpg",
-      "spec": "1080×1350 · 4:5",
-      "use": "Variation of 01 · Instagram and Facebook feed, Meta ads",
-      "variantOf": "01",
-      "pair": "C01 · C02"
-    },
-    {
-      "id": "01E",
-      "title": "Save your spot — Josh Stech headshot photo",
-      "file": "01e-josh-stech-headshot-photo.jpg",
-      "spec": "1080×1350 · 4:5",
-      "use": "Variation of 01 · Instagram and Facebook feed, Meta ads and the pinned post",
-      "pair": "C01 · C02",
-      "variantOf": "01",
-      "updated": "2026-10-22"
-    },
-    {
-      "id": "01F",
-      "title": "Save your spot — Put AI to work headline",
-      "file": "01f-put-ai-to-work-headline.jpg",
-      "spec": "1080×1350 · 4:5",
-      "use": "Variation of 01 · Instagram and Facebook feed, Meta ads and the pinned post",
-      "pair": "C01 · C02",
-      "variantOf": "01",
-      "updated": "2026-10-22"
-    },
-    {
       "id": "02",
-      "title": "Meet the speaker",
+      "title": "Meet your host",
       "file": "02-meet-your-host.jpg",
       "spec": "1080×1350 · 4:5",
       "use": "Instagram, Facebook and LinkedIn feed; Meta ads",
@@ -66,15 +27,15 @@
     },
     {
       "id": "03",
-      "title": "What Josh will cover",
-      "file": "03-what-well-cover.jpg",
+      "title": "Seats are limited",
+      "file": "03-seats-limited.jpg",
       "spec": "1080×1350 · 4:5",
-      "use": "Josh’s LinkedIn and an Instagram carousel",
-      "pair": "C07"
+      "use": "Feed and Meta retargeting",
+      "pair": "C05"
     },
     {
       "id": "04",
-      "title": "Real estate is changing",
+      "title": "The market has changed",
       "file": "04-the-market-has-changed.jpg",
       "spec": "1080×1350 · 4:5",
       "use": "Josh’s LinkedIn and Meta ads",
@@ -82,43 +43,39 @@
     },
     {
       "id": "05",
-      "title": "Who should come",
-      "file": "05-who-its-for.jpg",
+      "title": "What we’ll cover",
+      "file": "05-what-well-cover.jpg",
+      "spec": "1080×1350 · 4:5",
+      "use": "Josh’s LinkedIn and an Instagram carousel",
+      "pair": "C07"
+    },
+    {
+      "id": "06",
+      "title": "Sacramento to Fresno",
+      "file": "06-sacramento-to-fresno.jpg",
+      "spec": "1080×1350 · 4:5",
+      "use": "Instagram, Facebook and LinkedIn feed",
+      "pair": "C03"
+    },
+    {
+      "id": "07",
+      "title": "LinkedIn event banner",
+      "file": "07-linkedin-event-banner.jpg",
+      "spec": "1200×627 · 1.91:1",
+      "use": "LinkedIn event cover, post and ad image, email header"
+    },
+    {
+      "id": "08",
+      "title": "Who it’s for",
+      "file": "08-who-its-for.jpg",
       "spec": "1080×1350 · 4:5",
       "use": "Instagram, Facebook and LinkedIn feed",
       "pair": "C06"
     },
     {
-      "id": "05B",
-      "title": "Who should come — Josh headshot circle",
-      "file": "05b-josh-headshot-circle.jpg",
-      "spec": "1080×1350 · 4:5",
-      "use": "Variation of 05 · Instagram, Facebook and LinkedIn feed",
-      "pair": "C06",
-      "variantOf": "05",
-      "updated": "2026-10-22"
-    },
-    {
-      "id": "05C",
-      "title": "Who should come — Tower Theater photo",
-      "file": "05c-tower-theater-photo.jpg",
-      "spec": "1080×1350 · 4:5",
-      "use": "Variation of 05 · Instagram, Facebook and LinkedIn feed",
-      "pair": "C06",
-      "variantOf": "05",
-      "updated": "2026-10-22"
-    },
-    {
-      "id": "06",
-      "title": "LinkedIn banner",
-      "file": "06-linkedin-banner.jpg",
-      "spec": "1200×627 · 1.91:1",
-      "use": "LinkedIn post and ad image, email header"
-    },
-    {
-      "id": "07",
+      "id": "09",
       "title": "Story — You’re invited",
-      "file": "07-story-save-the-date.jpg",
+      "file": "09-story-you-are-invited.jpg",
       "spec": "1080×1920 · 9:16",
       "use": "Instagram and Facebook Stories; add the registration link sticker"
     }
@@ -126,45 +83,69 @@
   "flyers": [
     {
       "id": "01",
-      "title": "Invitation",
-      "file": "01-save-the-date-invitation.jpg",
-      "pdf": "01-save-the-date-invitation.pdf",
+      "title": "Classic invitation",
+      "file": "01-classic-invite.jpg",
       "spec": "8.5×11 in · print and PDF",
-      "use": "Email attachment, partner groups and handouts (QR code to the registration page)"
+      "use": "Email attachment, partner groups and handouts (QR code to the registration page)",
+      "pdf": "01-classic-invite.pdf"
     },
     {
       "id": "02",
-      "title": "Speaker feature",
-      "file": "02-speaker-feature.jpg",
-      "pdf": "02-speaker-feature.pdf",
-      "spec": "8.5×11 in",
-      "use": "LinkedIn document post and partner groups (QR code to the registration page)"
+      "title": "Formal invitation card",
+      "file": "02-invitation-card.jpg",
+      "spec": "5×7 in · print",
+      "use": "Personal invitations from Josh, email and print",
+      "pdf": "02-invitation-card.pdf"
     },
     {
       "id": "03",
+      "title": "Speaker feature",
+      "file": "03-speaker-flyer.jpg",
+      "spec": "8.5×11 in · print and PDF",
+      "use": "LinkedIn document post and partner groups (QR code to the registration page)",
+      "pdf": "03-speaker-flyer.pdf"
+    },
+    {
+      "id": "04",
+      "title": "Why attend",
+      "file": "04-why-attend.jpg",
+      "spec": "8.5×11 in · print and PDF",
+      "use": "Email attachment and partner groups (QR code to the registration page)",
+      "pdf": "04-why-attend.pdf"
+    },
+    {
+      "id": "05",
       "title": "Square digital flyer",
-      "file": "03-square-digital-flyer.jpg",
-      "pdf": "03-square-digital-flyer.pdf",
-      "spec": "1080×1080",
+      "file": "05-square-digital.jpg",
+      "spec": "1080×1080 · digital and PDF",
       "use": "SMS and MMS, WhatsApp, Deal Champs and partner group posts (QR code to the registration page)",
-      "pair": "C10"
+      "pair": "C10",
+      "pdf": "05-square-digital.pdf"
+    },
+    {
+      "id": "06",
+      "title": "Last roll call — square",
+      "file": "06-last-roll-call-square.jpg",
+      "spec": "1080×1080 · digital and PDF",
+      "use": "The final week: feed, groups and texts (QR code to the registration page)",
+      "pdf": "06-last-roll-call-square.pdf"
     }
   ],
   "videos": [
     {
       "id": "V1",
       "title": "Event trailer",
-      "file": "video-01-save-the-date.mp4",
-      "poster": "video-01-save-the-date-poster.jpg",
+      "file": "video-01-event-trailer.mp4",
+      "poster": "video-01-event-trailer-poster.jpg",
       "spec": "1920×1080",
-      "dur": "28s",
+      "dur": "27s",
       "aspect": "16:9",
       "use": "LinkedIn, YouTube, Facebook feed and email",
       "pair": "C09"
     },
     {
       "id": "V2",
-      "title": "Meet the speaker",
+      "title": "Meet your host",
       "file": "video-02-meet-your-host.mp4",
       "poster": "video-02-meet-your-host-poster.jpg",
       "spec": "1920×1080",
@@ -174,22 +155,33 @@
     },
     {
       "id": "V3",
-      "title": "Real estate is changing",
+      "title": "The market has changed",
       "file": "video-03-the-market-has-changed.mp4",
       "poster": "video-03-the-market-has-changed-poster.jpg",
       "spec": "1920×1080",
       "dur": "26s",
       "aspect": "16:9",
       "use": "Josh’s LinkedIn and Meta prospecting",
-      "pair": "C03"
+      "pair": "C08"
+    },
+    {
+      "id": "V4",
+      "title": "Seats are limited",
+      "file": "video-04-seats-limited-square.mp4",
+      "poster": "video-04-seats-limited-square-poster.jpg",
+      "spec": "1080×1080",
+      "dur": "14s",
+      "aspect": "1:1",
+      "use": "Feed and Meta retargeting",
+      "pair": "C05"
     }
   ],
   "reels": [
     {
       "id": "R1",
-      "title": "AI is changing real estate",
-      "file": "reel-01-save-the-date.mp4",
-      "poster": "reel-01-save-the-date-poster.jpg",
+      "title": "POV: you’re invited",
+      "file": "reel-01-pov-invite.mp4",
+      "poster": "reel-01-pov-invite-poster.jpg",
       "spec": "1080×1920",
       "dur": "18s",
       "aspect": "9:16",
@@ -198,9 +190,31 @@
     },
     {
       "id": "R2",
-      "title": "Who should come",
-      "file": "reel-02-who-its-for.mp4",
-      "poster": "reel-02-who-its-for-poster.jpg",
+      "title": "Three reasons to be there",
+      "file": "reel-02-three-reasons.mp4",
+      "poster": "reel-02-three-reasons-poster.jpg",
+      "spec": "1080×1920",
+      "dur": "18s",
+      "aspect": "9:16",
+      "use": "Reels and Stories",
+      "pair": "C03"
+    },
+    {
+      "id": "R3",
+      "title": "Harder market?",
+      "file": "reel-03-harder-market.mp4",
+      "poster": "reel-03-harder-market-poster.jpg",
+      "spec": "1080×1920",
+      "dur": "17s",
+      "aspect": "9:16",
+      "use": "Meta prospecting ad",
+      "pair": "C08"
+    },
+    {
+      "id": "R4",
+      "title": "Who it’s for",
+      "file": "reel-04-who-its-for.mp4",
+      "poster": "reel-04-who-its-for-poster.jpg",
       "spec": "1080×1920",
       "dur": "13s",
       "aspect": "9:16",
@@ -208,15 +222,15 @@
       "pair": "C06"
     },
     {
-      "id": "R3",
-      "title": "A harder market",
-      "file": "reel-03-harder-market.mp4",
-      "poster": "reel-03-harder-market-poster.jpg",
+      "id": "R5",
+      "title": "A few seats left",
+      "file": "reel-05-seats-limited.mp4",
+      "poster": "reel-05-seats-limited-poster.jpg",
       "spec": "1080×1920",
-      "dur": "17s",
+      "dur": "12s",
       "aspect": "9:16",
-      "use": "Meta prospecting ad",
-      "pair": "C05"
+      "use": "The final week: Reels, Stories and retargeting",
+      "pair": "C10"
     }
   ]
 }

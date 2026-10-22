@@ -8,20 +8,20 @@
   "month": "Nov.",
   "day": "18",
   "time": "6-8:30 p.m.",
-  "venue": "Location sent when you register",
-  "venueShort": "Location sent when you register",
-  "hotel": "Location sent when you register",
+  "venue": "Fresno · location sent when you register",
+  "venueShort": "Fresno, California",
+  "hotel": "Fresno",
   "city": "Fresno",
-  "cityLine": "Fresno, California",
+  "cityLine": "Location sent when you register",
   "address": "Location sent when you register",
-  "included": "Networking and an open conversation",
-  "name": "Sundae &lt;&gt; Deal Champs Meetup",
+  "included": "Dinner served · Seats are limited",
+  "name": "Private Dinner &amp; Dialogue",
   "nameLines": [
-   "AI, Real Estate",
-   "&amp; What’s Next"
+   "Private Dinner",
+   "&amp; Dialogue"
   ],
   "hostLine": "with Josh Stech, co-founder and CEO",
-  "pill": "Save your spot"
+  "pill": "Save your seat →"
  },
  "scenes": [
   {
@@ -29,8 +29,8 @@
    "dur": 3.4,
    "kicker": "For Fresno real estate investors",
    "title": [
-    "Real estate",
-    "is changing."
+    "The market",
+    "has changed."
    ],
    "center": true
   },
@@ -38,8 +38,8 @@
    "type": "title",
    "dur": 3.4,
    "title": [
-    "AI is opening up",
-    "new possibilities."
+    "The opportunity",
+    "has not."
    ],
    "accent": 1,
    "center": true,
@@ -52,14 +52,14 @@
    "label": "Sacramento · September 2026",
    "dur": 4.8,
    "title": [
-    "How investors find,",
-    "evaluate and close deals"
+    "Let’s talk",
+    "about it over dinner"
    ]
   },
   {
    "type": "list",
    "dur": 5.2,
-   "kicker": "Let’s talk about it",
+   "kicker": "On the table",
    "title": [
     "With Josh Stech in Fresno"
    ],
@@ -77,25 +77,26 @@
      ""
     ]
    ],
-   "side": "fresno-2026-11-18-skyline.jpg",
-   "sidePos": "50% 40%"
+   "side": "fresno-2026-11-18-dinner-table.jpg",
+   "sidePos": "50% 60%"
   },
   {
    "type": "photo",
    "dur": 4.2,
-   "img": "fresno-2026-11-18-water-tower-dusk.jpg",
-   "pos": "50% 30%",
+   "img": "fresno-2026-11-18-dinner-candlelit.jpg",
+   "pos": "50% 75%",
    "kicker": "Wednesday, Nov. 18 · 6-8:30 p.m.",
    "title": [
-    "Coming to",
-    "Fresno."
+    "Dinner",
+    "in Fresno."
    ]
   },
   {
    "type": "cta",
    "dur": 4.6,
+   "sub": "Seats are limited",
    "when": "Wednesday, Nov. 18 · 6-8:30 p.m.<br>Fresno, California",
-   "foot": "Register at meet.sundae.com/fresno-nov-2026<br>Photos: Sundae; Mel B. (CC BY 2.0); DoulosBen (CC BY 4.0)"
+   "foot": "Register at meet.sundae.com/fresno-nov-2026<br>Photos: Sundae; mikeg44311 (CC BY 2.0); Swami Stream (CC BY 2.0)"
   }
  ]
 }

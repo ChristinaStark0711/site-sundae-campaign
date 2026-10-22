@@ -11,8 +11,9 @@ community.\
 Meta Pixel / Conversions API, LinkedIn Insight Tag and Google tag to it (or share its tracking IDs) before launch.
 Without them, optimize for landing-page views and read registrations from HubSpot by UTM.
 
-> **Only facts from Sundae's page run in ads:** the name, date, time, city, Deal Champs and Stratton Brown, the three
-> topics and Josh's bio. No food, price, seat-limit or "spots left" claims; the page doesn't make any.
+> **Only facts on file run in ads:** the date, time, city, Deal Champs and Stratton Brown, the three topics and Josh's
+> bio (Sundae's page), and dinner served and seats limited (the Sundae team, Oct. 22). No drinks, price or seat-count
+> claims.
 
 ---
 

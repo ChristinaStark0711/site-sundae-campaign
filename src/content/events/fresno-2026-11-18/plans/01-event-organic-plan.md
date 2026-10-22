@@ -10,9 +10,9 @@ hosted with Stratton Brown of Deal Champs (their final meetup in Fresno)\
 15 intro calls), carried over from the Manhattan Beach model and labeled as assumptions until Fresno has its own data.\
 **Window:** four weeks (Wednesday, Oct. 21 → Wednesday, Nov. 18).
 
-> **Facts on file come from Sundae's page:** the name, the date and time, Deal Champs and Stratton Brown, the three
-> topics and Josh's bio. The page does not mention food, drinks, a seat limit or a price, so no post claims any of
-> them. Ask Sundae before adding one.
+> **Facts on file:** from Sundae's page, the date and time, Deal Champs and Stratton Brown, the three topics and
+> Josh's bio; from the Sundae team (Oct. 22), dinner is served and seats are limited, so the creative presents it as
+> a Private Dinner & Dialogue. Drinks, a price or a seat count aren't on file, so no post claims them.
 
 ---
 

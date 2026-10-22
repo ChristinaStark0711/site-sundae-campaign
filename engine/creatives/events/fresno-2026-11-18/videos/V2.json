@@ -8,26 +8,26 @@
   "month": "Nov.",
   "day": "18",
   "time": "6-8:30 p.m.",
-  "venue": "Location sent when you register",
-  "venueShort": "Location sent when you register",
-  "hotel": "Location sent when you register",
+  "venue": "Fresno · location sent when you register",
+  "venueShort": "Fresno, California",
+  "hotel": "Fresno",
   "city": "Fresno",
-  "cityLine": "Fresno, California",
+  "cityLine": "Location sent when you register",
   "address": "Location sent when you register",
-  "included": "Networking and an open conversation",
-  "name": "Sundae &lt;&gt; Deal Champs Meetup",
+  "included": "Dinner served · Seats are limited",
+  "name": "Private Dinner &amp; Dialogue",
   "nameLines": [
-   "AI, Real Estate",
-   "&amp; What’s Next"
+   "Private Dinner",
+   "&amp; Dialogue"
   ],
   "hostLine": "with Josh Stech, co-founder and CEO",
-  "pill": "Save your spot"
+  "pill": "Save your seat →"
  },
  "scenes": [
   {
    "type": "josh",
    "dur": 5.6,
-   "kicker": "Meet the speaker",
+   "kicker": "Your host",
    "facts": [
     "Founding partner, LendingHome",
     "Co-founded Purpose Built Investments, launching three funds",
@@ -65,19 +65,19 @@
    "pos": "50% 38%",
    "label": "Sacramento · September 2026",
    "dur": 4.6,
-   "kicker": "Sundae’s event series",
+   "kicker": "After Sacramento and Manhattan Beach",
    "title": [
-    "Next, Josh is",
-    "in Fresno"
+    "Next stop:",
+    "Fresno"
    ]
   },
   {
    "type": "details",
    "dur": 4.6,
-   "img": "fresno-2026-11-18-water-tower.jpg",
-   "pos": "50% 30%",
+   "img": "fresno-2026-11-18-dinner-candlelit.jpg",
+   "pos": "50% 75%",
    "title": [
-    "Save your spot"
+    "Join him for dinner"
    ],
    "rows": [
     [
@@ -86,11 +86,11 @@
     ],
     [
      "Where",
-     "Fresno, California · Location sent when you register"
+     "Fresno · Location sent when you register"
     ],
     [
-     "With",
-     "Josh Stech, co-founder and CEO of Sundae, and Stratton Brown of Deal Champs"
+     "Included",
+     "Dinner · Seats are limited"
     ],
     [
      "Register",
@@ -101,8 +101,9 @@
   {
    "type": "cta",
    "dur": 4.6,
+   "sub": "Seats are limited · Dinner served",
    "when": "Wednesday, Nov. 18 · 6-8:30 p.m.<br>Fresno, California",
-   "foot": "Register at meet.sundae.com/fresno-nov-2026<br>Photos: Sundae; Mel B. (CC BY 2.0)"
+   "foot": "Register at meet.sundae.com/fresno-nov-2026<br>Photos: Sundae; Swami Stream (CC BY 2.0)"
   }
  ]
 }
