@@ -102,7 +102,7 @@ const prefix = (A) => (A.event ? path.basename(A.scopeDir) : 'brand');
 
 // Save a picked Openverse photo into the kit; returns { name, meta, from } for the result.
 export async function addSearchedPhoto(A, c, outDir) {
-  const name = uniqueName(`${prefix(A)}-web-${slugify(c.title || 'photo').slice(0, 32) || 'photo'}`);
+  const name = uniqueName(`${prefix(A)}-web-${slugify(c.title || 'photo').slice(0, 32).replace(/-+$/, '') || 'photo'}`);
   const raw = path.join(outDir, `${name}.raw`), file = path.join(outDir, name);
   let got = false;
   for (const u of [c.bigUrl, c.url].filter(Boolean)) { try { await download(u, raw, 120e3); got = true; break; } catch { /* next */ } }
@@ -155,7 +155,7 @@ export async function addAiImage(A, prompt, aspect, outDir) {
     if (st?.status !== 'failed' && st?.status !== 'nsfw' && st?.status !== 'canceled') await fetch(`${HF}/requests/${rid}/cancel`, { method: 'POST', headers: hfHeaders() }).catch(() => null);
     throw new Error(`the AI image didn't finish (${st?.status || 'timed out'})`);
   }
-  const name = uniqueName(`${prefix(A)}-ai-${slugify(prompt).slice(0, 32) || 'image'}`);
+  const name = uniqueName(`${prefix(A)}-ai-${slugify(prompt).slice(0, 32).replace(/-+$/, '') || 'image'}`);
   const raw = path.join(outDir, `${name}.raw`), file = path.join(outDir, name);
   await download(st.images[0].url, raw);
   toJpg(raw, file, 2400);
