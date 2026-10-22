@@ -5,8 +5,8 @@
   "assetTitle": "Save the date",
   "mode": "variant",
   "text": "change the photo to another popular Fresno landmark?",
-  "status": "held",
-  "reason": "This request needs a person to look at it.",
+  "status": "failed",
+  "reason": "Closed: replaced by a clearer request, made as image 01C.",
   "finishedAt": "2026-10-21T22:52:20.983Z",
   "model": "claude-opus-5-5",
   "usage": {

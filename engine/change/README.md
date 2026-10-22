@@ -58,6 +58,13 @@ in the change log on the hub, and the box says so.
 3. Results: **Done** (published), **Waiting for approval** (held) or **Couldn't apply** (failed; nothing changed).
 
 ## What waits for approval, and how to approve
+**Current setting (the owner's choice, 2026-10-21): `CHANGE_UPDATES` is `auto` (the default), so nothing waits.**
+Every change that passes the safety and brand checks publishes straight away, fact changes, names, claims and new
+layout parts included (the Actions log records what was auto-approved). Still refused, with the reason in the log:
+off-brand results (lint), earnings or income claims and guarantees, files not in the kit, look-alike letters from
+another alphabet, and requests that aren't a design change. Set `CHANGE_UPDATES` to `review` to hold fact changes and
+new layout parts again, or to `approve` to hold everything. The rest of this section applies to those two settings.
+
 Held as a **proposal**: anything that changes what the asset says (facts, claims, contact details, names, legal
 wording) or hides part of it, and, if `CHANGE_UPDATES` is `approve`, every update and every new variation. Its source
 and preview are kept in the repo (`engine/held/<id>.html|json` and `engine/held/<id>.jpg`), which the site never
@@ -89,7 +96,7 @@ first.
    owner credential: whoever holds it can also start an approval run, which publishes a held proposal.
 3. Optional: `VERCEL_DEPLOY_HOOK` secret (a Vercel deploy hook URL) if bot pushes ever stop triggering deploys;
    repository variables `CHANGE_MODEL` (default `claude-opus-5-5`), `CHANGE_DAILY_CAP` (default 30; set the same
-   number as a Vercel env var `CHANGE_DAILY_CAP` so the site refuses early) and `CHANGE_UPDATES` (`auto` or `approve`;
+   number as a Vercel env var `CHANGE_DAILY_CAP` so the site refuses early) and `CHANGE_UPDATES` (`auto`, `review` or `approve`;
    `approve` holds updates and new variations alike).
 Never paste a key or token into a chat.
 

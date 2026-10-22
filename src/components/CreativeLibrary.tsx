@@ -57,7 +57,7 @@ export default function CreativeLibrary({ scope, lib, base, header, captions, re
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" data-stagger>{lib.reels.map((a) => <VideoCard key={a.file} a={a} base={`${base}/reels`} keyBase={`${kb}/reels`} />)}</div>
         </Section>
       )}
-      <Section id="changes" eyebrow="Change requests" title="What's been asked for" sub="Type a change in the box under any asset. Updates replace the file; variations appear next to the original. Changes to facts (dates, times, places, prices) and anything that needs new photos or AI footage wait for approval.">
+      <Section id="changes" eyebrow="Change requests" title="What's been asked for" sub="Type a change in the box under any asset. Updates replace the file; variations appear next to the original. Every change publishes automatically once it passes the brand checks; one that can't be made says why.">
         <RequestLog requests={requests} />
       </Section>
     </>

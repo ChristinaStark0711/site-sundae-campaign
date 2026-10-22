@@ -19,6 +19,12 @@ import { ENGINE, OUT, REPO, REQ, checkSource, kitAssetNotes, kitAssets, kitClips
 const MODEL = process.env.CHANGE_MODEL || 'claude-opus-5-5';
 const DAILY_CAP = Number(process.env.CHANGE_DAILY_CAP || 30);
 const UPDATES = (process.env.CHANGE_UPDATES || 'auto').toLowerCase(); // "auto" (as asked for) or "approve"
+// "auto" (the owner's choice, 2026-10-21: the hub is a private link, so nothing waits for approval): every change that
+// passes the safety and brand checks publishes straight away, fact changes and new layout parts included; what can't be
+// made is refused with its reason. "review": fact changes and new layout parts wait for approval. "approve": everything waits.
+const AUTO = UPDATES === 'auto';
+// in auto mode nothing waits: a request that can't run now is refused with its reason, to be sent again
+const wait = (reason, summary) => (AUTO ? finish('failed', { reason, summary }) : finish('held', { reason, summary }));
 const MAX_CALLS = 5;
 const req = readJSON(path.join(REQ, 'request.json'));
 if (fs.existsSync(path.join(OUT, 'result.json'))) { log('already decided by intake'); process.exit(0); } // e.g. an approval closed by intake
@@ -46,11 +52,11 @@ function finish(status, extra = {}) {
   process.exit(0);
 }
 const fail = (reason, summary) => finish('failed', { reason, summary });
-const hold = (reason, summary) => finish('held', { reason, summary });
+const hold = (reason, summary) => wait(reason, summary);
 
 // --- daily cap: runs of this workflow started today, counted by GitHub (intake.mjs), so parallel runs can't all slip under it
-if (!req.approved && req.runsToday == null) hold('Today\'s limit of automatic changes couldn\'t be checked, so this request waits. The account owner can approve it to run it now, or it can be sent again later.');
-if (!req.approved && req.runsToday > DAILY_CAP) hold(`Today's limit of ${DAILY_CAP} automatic changes is used up. The account owner can approve this request to run it now, or it can be sent again tomorrow.`);
+if (!req.approved && req.runsToday == null) hold(AUTO ? 'Today\'s limit of automatic changes couldn\'t be checked. Send the request again in a few minutes.' : 'Today\'s limit of automatic changes couldn\'t be checked, so this request waits. The account owner can approve it to run it now, or it can be sent again later.');
+if (!req.approved && req.runsToday > DAILY_CAP) hold(AUTO ? `Today's limit of ${DAILY_CAP} automatic changes is used up. Send the request again tomorrow.` : `Today's limit of ${DAILY_CAP} automatic changes is used up. The account owner can approve this request to run it now, or it can be sent again tomorrow.`);
 
 // --- helpers
 const sh = (args, timeout) => execFileSync(process.execPath, args, { cwd: REPO, timeout, stdio: ['ignore', 'pipe', 'pipe'], maxBuffer: 64 << 20 }).toString();
@@ -237,6 +243,14 @@ const publicText = (t, max = 200) => {
 };
 const plainProblem = (p) => p.split(': ')[0]; // "has generated text div::before" without the text itself
 // keep a proposal the owner can approve exactly as shown: its source and a preview image
+// fact changes, new names, claims and new layout parts: published in auto mode (logged), held otherwise
+function factGate(g, summary, variantTitle) {
+  const what = describeFacts(g);
+  if (!what.length) return;
+  if (g.scripts?.length) fail('The result uses letters from another alphabet, which can make an address look like Sundae\'s, so it was not published.', summary);
+  if (AUTO) { log(`auto-approved: ${what.join('; ').slice(0, 400)}`); return; }
+  holdProposal(g, heldReason(g), summary, variantTitle);
+}
 function holdProposal(g, reason, summary, variantTitle) {
   // only a publishable proposal reaches the owner: it must pass the brand lint first
   if (!lint(g.file).ok) fail('The result broke a brand rule (text color, font or contrast), so it was not published. Try rewording the request.', summary);
@@ -262,12 +276,12 @@ try {
     const beforeImg = A.isVideo ? render(A.source, path.join(WORK, 'before'), 'before', true)[0] : path.join(A.mediaDir, A.entry.file);
     const before = imageBlock(beforeImg);
     let r = await callModel([{ type: 'text', text: 'BEFORE (as published):' }, before, { type: 'text', text: describe() }], EDIT_TOOL);
-    if (r.decision === 'hold') hold(publicText(r.reason) || 'This request needs a person to look at it.', r.summary);
+    if (r.decision === 'hold') hold(publicText(r.reason) || (AUTO ? 'This request couldn\'t be made automatically. Try rewording it.' : 'This request needs a person to look at it.'), r.summary);
     src = String(r.source || '');
     g = src ? await gate(src) : { problems: ['is empty'] };
     if (g.problems.length) { // one retry with the reasons
       r = await callModel([{ type: 'text', text: 'BEFORE (as published):' }, before, { type: 'text', text: describe() + `\n\nYOUR PREVIOUS ATTEMPT WAS REJECTED because it ${g.problems.join('; ')}. Return a corrected complete source that avoids this.` }], EDIT_TOOL);
-      if (r.decision === 'hold') hold(publicText(r.reason) || 'This request needs a person to look at it.', r.summary);
+      if (r.decision === 'hold') hold(publicText(r.reason) || (AUTO ? 'This request couldn\'t be made automatically. Try rewording it.' : 'This request needs a person to look at it.'), r.summary);
       src = String(r.source || '');
       g = src ? await gate(src) : { problems: ['is empty'] };
       if (g.problems.length) fail(`The edit couldn't be made safely: the result ${plainProblem(g.problems[0])}. Nothing was changed.`);
@@ -276,7 +290,7 @@ try {
     // a variation's title is public (gallery, file name, alt text): a few plain words that add nothing, or "variation"
     const vt = req.mode === 'variant' ? publicText(r.variant_title, 40) : null;
     variantTitle = vt && /^[\p{L}'’&-]+(?: [\p{L}'’&-]+){0,4}$/u.test(vt) ? vt : null;
-    if (describeFacts(g).length) holdProposal(g, heldReason(g), summary, variantTitle);
+    factGate(g, summary, variantTitle);
     if (UPDATES === 'approve') holdProposal(g, `${req.mode === 'update' ? 'Updates to a published asset' : 'New variations'} wait for the account owner's approval.`, summary, variantTitle);
 
     // preview, lint, review; a corrected source is gated, linted and reviewed again
@@ -294,13 +308,14 @@ try {
         // the review is still not satisfied: a result that passed every safety and brand check goes to the owner as a
         // proposal with its preview (never published unreviewed), so a hard request never ends with nothing to look at
         const why = publicText(rv.issues);
+        if (lr.ok && AUTO) { log('review still unsure; published anyway (auto mode)'); break; }
         if (lr.ok) holdProposal(g, `The automatic review wasn't sure this came out right${why ? ` (${why})` : ''}. Look at the preview before approving.`, summary, variantTitle);
         fail(`The change didn't come out right${why ? ` (${why})` : ''}. Nothing was changed; try rewording the request.`, summary);
       }
       src = String(rv.source);
       g = await gate(src);
       if (g.problems.length) fail(`The corrected edit couldn't be used: it ${plainProblem(g.problems[0])}. Nothing was changed.`, summary);
-      if (describeFacts(g).length) holdProposal(g, heldReason(g), summary, variantTitle);
+      factGate(g, summary, variantTitle);
     }
   }
 
