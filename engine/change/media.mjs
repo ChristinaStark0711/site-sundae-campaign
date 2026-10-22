@@ -37,23 +37,55 @@ async function download(url, file, timeoutMs = 60e3) {
   fs.writeFileSync(file, buf);
 }
 
-// Openverse candidates for a query, best first; each with a small JPEG for the model to look at.
-export async function searchPhotos(query, workDir, n = 6) {
+// Openverse results (Wikimedia Commons, Flickr and more) as candidate records
+async function openverse(query) {
   const u = new URL('https://api.openverse.org/v1/images/');
   u.search = new URLSearchParams({ q: query, license: Object.keys(LICENSES).join(','), license_type: 'commercial', page_size: '20', mature: 'false' }).toString();
-  const r = await fetch(u, { signal: AbortSignal.timeout(30e3), headers: { 'user-agent': UA } });
+  let r;
+  for (let i = 0; i < 2 && !r?.ok; i++) r = await fetch(u, { signal: AbortSignal.timeout(45e3), headers: { 'user-agent': UA } }).catch((e) => ({ ok: false, status: e.name }));
   if (!r.ok) throw new Error(`Openverse ${r.status}`);
-  const results = ((await r.json()).results || []).filter((x) => LICENSES[x.license] && (x.width || 0) >= MIN_WIDTH && x.url && x.creator && !x.mature);
+  return ((await r.json()).results || []).filter((x) => LICENSES[x.license] && !x.mature)
+    .map((x) => ({ title: x.title, creator: x.creator, license: x.license, version: x.license_version || '', landing: x.foreign_landing_url || x.url, url: x.url, thumbUrl: x.thumbnail, width: x.width, height: x.height }));
+}
+// Wikimedia Commons' own search, read straight from each file's license record
+const strip = (h) => String(h || '').replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+async function commons(query) {
+  const u = new URL('https://commons.wikimedia.org/w/api.php');
+  u.search = new URLSearchParams({ action: 'query', format: 'json', generator: 'search', gsrsearch: `${query} filetype:bitmap`, gsrnamespace: '6', gsrlimit: '20', prop: 'imageinfo', iiprop: 'url|size|extmetadata', iiurlwidth: '640' }).toString();
+  const r = await fetch(u, { signal: AbortSignal.timeout(45e3), headers: { 'user-agent': UA } });
+  if (!r.ok) throw new Error(`Wikimedia Commons ${r.status}`);
+  const pages = Object.values((await r.json()).query?.pages || {}).sort((a, b) => (a.index || 0) - (b.index || 0));
+  return pages.map((pg) => {
+    const ii = pg.imageinfo?.[0] || {}, m = ii.extmetadata || {};
+    const lic = strip(m.LicenseShortName?.value);
+    const by = /^CC BY (\d\.\d)$/i.exec(lic);
+    const license = by ? 'by' : /^CC0/i.test(lic) ? 'cc0' : /^public domain$/i.test(lic) ? 'pdm' : null;
+    return { title: pg.title, creator: strip(m.Artist?.value).slice(0, 80), license, version: by?.[1] || '', landing: ii.descriptionurl, url: ii.url, thumbUrl: ii.thumburl, width: ii.width, height: ii.height };
+  }).filter((x) => x.license && x.url && x.creator);
+}
+
+// Candidates for a query from both sources (Commons first), best first; each with a small JPEG for the model.
+export async function searchPhotos(query, workDir, n = 6) {
+  const [c, o] = await Promise.allSettled([commons(query), openverse(query)]);
+  const errors = [c, o].filter((x) => x.status === 'rejected').map((x) => String(x.reason?.message || x.reason).slice(0, 80));
+  log(`photo sources: Commons ${c.status === 'fulfilled' ? c.value.length : 'failed'}, Openverse ${o.status === 'fulfilled' ? o.value.length : 'failed'}${errors.length ? ` (${errors.join('; ')})` : ''}`);
+  if (errors.length === 2) throw new Error(errors.join('; '));
+  const seen = new Set(), all = [];
+  for (const x of [...(c.value || []), ...(o.value || [])]) {
+    const key = decodeURIComponent(String(x.url).split('/').pop()).toLowerCase();
+    if (seen.has(key) || (x.width || 0) < MIN_WIDTH) continue;
+    seen.add(key); all.push(x);
+  }
   const out = [];
-  for (const x of results) {
+  for (const x of all) {
     if (out.length >= n) break;
     const thumb = path.join(workDir, `cand-${out.length}.jpg`);
     let ok = false;
-    for (const u of [x.thumbnail, x.url].filter(Boolean)) {
+    for (const u of [x.thumbUrl, x.url].filter(Boolean)) {
       try { await download(u, thumb + '.raw', 30e3); toJpg(thumb + '.raw', thumb, 640); ok = true; break; } catch { /* next */ }
     }
     if (!ok) continue;
-    out.push({ title: String(x.title || '').replace(/^File:/, '').replace(/\.(jpe?g|png|tiff?)$/i, '').slice(0, 120), creator: String(x.creator).slice(0, 80), license: x.license, version: x.license_version || '', landing: x.foreign_landing_url || x.url, url: x.url, width: x.width, height: x.height, thumb });
+    out.push({ ...x, title: String(x.title || '').replace(/^File:/, '').replace(/\.(jpe?g|png|tiff?|webp)$/i, '').slice(0, 120), creator: String(x.creator).slice(0, 80), thumb });
   }
   return out;
 }
