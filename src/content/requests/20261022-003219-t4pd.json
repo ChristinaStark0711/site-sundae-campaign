@@ -1,0 +1,17 @@
+{
+  "id": "20261022-003219-t4pd",
+  "at": "2026-10-22T00:32:19.878Z",
+  "asset": "events/fresno-2026-11-18/images/05",
+  "assetTitle": "Who should come",
+  "mode": "variant",
+  "text": "Use a photo of the Tower Theatre in Fresno instead of the water tower",
+  "status": "failed",
+  "reason": "A new picture was needed but couldn't be added: none of the openly licensed photos found fit. Nothing was changed.",
+  "finishedAt": "2026-10-22T00:33:41.074Z",
+  "model": "claude-opus-5-5",
+  "usage": {
+    "input_tokens": 21092,
+    "output_tokens": 712,
+    "calls": 2
+  }
+}
