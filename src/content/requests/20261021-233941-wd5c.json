@@ -5,21 +5,11 @@
   "assetTitle": "Save your spot",
   "mode": "variant",
   "text": "Change the photo to a photo with Josh Stech",
-  "status": "held",
-  "reason": "This needs the account owner's approval: it adds an image with its own text or changes how parts are shown.",
-  "proposal": {
-    "preview": "engine/held/20261021-233941-wd5c.jpg",
-    "changes": [
-      "adds parts to the layout (new elements or drawn shapes)"
-    ],
-    "baseHash": "d40f2495423138675b571ee23ebd146a4e1377a46c0ede6fbd4c3bf9ba88d131",
-    "variantTitle": "Josh Stech headshot photo"
+  "status": "done",
+  "result": {
+    "id": "01E",
+    "file": "01e-josh-stech-headshot-photo.jpg"
   },
-  "finishedAt": "2026-10-21T23:41:40.240Z",
-  "model": "claude-opus-5-5",
-  "usage": {
-    "input_tokens": 35425,
-    "output_tokens": 5299,
-    "calls": 3
-  }
+  "approved": true,
+  "finishedAt": "2026-10-22T00:07:10.458Z"
 }

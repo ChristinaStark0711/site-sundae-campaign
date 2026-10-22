@@ -37,6 +37,16 @@
       "pair": "C01 · C02"
     },
     {
+      "id": "01E",
+      "title": "Save your spot — Josh Stech headshot photo",
+      "file": "01e-josh-stech-headshot-photo.jpg",
+      "spec": "1080×1350 · 4:5",
+      "use": "Variation of 01 · Instagram and Facebook feed, Meta ads and the pinned post",
+      "pair": "C01 · C02",
+      "variantOf": "01",
+      "updated": "2026-10-22"
+    },
+    {
       "id": "02",
       "title": "Meet the speaker",
       "file": "02-meet-your-host.jpg",
