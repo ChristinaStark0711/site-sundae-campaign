@@ -171,16 +171,17 @@ async function findImage(r) {
   const q = String(r.image_search || '').replace(/[^\p{L}\p{N} '&-]/gu, ' ').trim().slice(0, 80);
   if (q) {
     try {
-      const cands = await searchPhotos(q, WORK);
+      const cands = await searchPhotos(q, WORK, 8);
       log(`photo search "${q}": ${cands.length} candidate(s)`);
       if (cands.length) {
         const pick = await callModel([
-          { type: 'text', text: `${describe()}\n\nThe kit had no picture for this request, so these openly licensed photos were found for "${q}". Pick the one that best fits the request and the asset, or -1 if none does. A photo fits only if it clearly shows what was asked for, is sharp and well lit, suits Sundae's bright, warm look, and has no prominent text, signs, billboards, logos, brand names, license plates or watermarks, and no identifiable person as its subject (a crowd far away is fine).` },
+          { type: 'text', text: `${describe()}\n\nThe kit had no picture for this request, so these openly licensed photos were found for "${q}". Pick the one that best fits the request and the asset, or -1 if none does. A photo fits only if it clearly shows what was asked for, is sharp and well lit, suits Sundae's bright, warm look, and has no identifiable person as its subject (a crowd far away is fine), no advertising (billboards, posters, shop or brand logos unrelated to the subject) and no watermark. A landmark's own name sign or marquee is part of the landmark and is fine, and a thin border or dark edge is fine (the photo is cropped to fit). Prefer the photo that shows the subject most clearly, in daylight or warm light.` },
           ...cands.flatMap((c, i) => [{ type: 'text', text: `Candidate ${i}: "${c.title}" by ${c.creator} (${c.width}×${c.height})` }, imageBlock(c.thumb)]),
         ], PICK_TOOL);
         log(`photo pick: ${pick.pick} (${String(pick.why || '').slice(0, 200)})`);
         if (Number.isInteger(pick.pick) && pick.pick >= 0 && pick.pick < cands.length) return await addSearchedPhoto(A, cands[pick.pick], dir);
-        why.push('none of the openly licensed photos found fit');
+        const reason = publicText(pick.why, 160);
+        why.push(`none of the openly licensed photos found fit${reason ? ` (${reason})` : ''}`);
       } else why.push('no openly licensed photo was found');
     } catch (e) { why.push(`the photo search didn't work (${String(e.message).slice(0, 120)})`); }
   }
