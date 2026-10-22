@@ -150,6 +150,14 @@
       "event": "fresno-2026-11-18",
       "what": "QR code to https://meet.sundae.com/fresno-nov-2026 (the Fresno registration page, Sundae's own HubSpot page)",
       "text": true
+    },
+    "fresno-2026-11-18-web-tower-theater-fresno-california-.jpg": {
+      "use": "event",
+      "event": "fresno-2026-11-18",
+      "what": "Tower Theater, Fresno, California LCCN2017707872 (openly licensed photo found for a change request; it shows the subject, not the venue): \"Tower Theater, Fresno, California LCCN2017707872\" by John Margolies, public domain, from https://commons.wikimedia.org/wiki/File:Tower_Theater,_Fresno,_California_LCCN2017707872.tif; credit line \"Photo: John Margolies (public domain; credit optional)\"",
+      "source": "https://commons.wikimedia.org/wiki/File:Tower_Theater,_Fresno,_California_LCCN2017707872.tif",
+      "license": "public domain",
+      "added": "2026-10-22"
     }
   },
   "clips": {
