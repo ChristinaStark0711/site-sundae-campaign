@@ -1,0 +1,21 @@
+{
+  "id": "20261022-183707-wye6",
+  "at": "2026-10-22T18:37:07.506Z",
+  "asset": "events/fresno-2026-11-18/images/06",
+  "assetTitle": "Sacramento to Fresno",
+  "mode": "update",
+  "text": "instead of manhattan beach, replace with Los Angeles",
+  "status": "done",
+  "summary": "Changed the eyebrow from \"After Sacramento and Manhattan Beach ...\" to \"After Sacramento and Los Angeles ...\" and left everything else as it was.",
+  "result": {
+    "id": "06",
+    "file": "06-sacramento-to-fresno.jpg"
+  },
+  "finishedAt": "2026-10-22T19:11:53.962Z",
+  "model": "claude-opus-5-5",
+  "usage": {
+    "input_tokens": 24724,
+    "output_tokens": 1239,
+    "calls": 2
+  }
+}
