@@ -19,7 +19,7 @@ export default async function EventLayout({ children, params }: { children: Reac
     <>
       <section aria-label={`${e.city} event`} className="border-b border-gray bg-mist">
         <div className="mx-auto max-w-7xl px-5 pb-5 pt-6 md:px-8">
-          <Link href="/events" className="inline-flex items-center gap-1.5 text-base font-bold text-blue"><Icon name="arrow-left" />All events</Link>
+          <Link href="/" className="inline-flex items-center gap-1.5 text-base font-bold text-blue"><Icon name="arrow-left" />All events</Link>
           <div className="mt-4 flex flex-wrap items-center justify-between gap-x-8 gap-y-4">
             <div className="flex min-w-0 items-center gap-4">
               {city && <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl border border-gray bg-white"><Image src={city.file} alt="" fill sizes="56px" className="object-cover" style={{ objectPosition: city.focus ?? "50% 50%" }} /></div>}

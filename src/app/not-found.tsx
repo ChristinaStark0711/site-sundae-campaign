@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Icon } from "@/components/Icon";
-import { getBrandPlans, getEvents } from "@/lib/content";
+import { getEvents } from "@/lib/content";
 import { apDate } from "@/lib/format";
 
 // House-style 404 for unknown URLs and unknown plan or event links (shared links can go stale).
@@ -11,7 +11,6 @@ export const metadata: Metadata = { title: "Page not found" };
 export default function NotFound() {
   const links = [
     ...getEvents().map((e) => ({ href: `/events/${e.slug}`, title: `${e.city} · ${apDate(e.date)}` })),
-    ...getBrandPlans().map((p) => ({ href: `/plans/${p.slug}`, title: p.title })),
   ];
   return (
     <main className="mx-auto max-w-7xl px-5 md:px-8">
@@ -19,14 +18,13 @@ export default function NotFound() {
         <div>
           <p className="eyebrow">404 · Page not found</p>
           <h1 id="nf" className="display h-bar h-bar-lg mt-5 max-w-3xl text-balance text-[clamp(2.375rem,4.6vw,4rem)]">This page isn&apos;t here.</h1>
-          <p className="lede mt-7 max-w-2xl text-pretty">The link may be mistyped or out of date. The overview, every event, the creative library, the projections and every plan are still one click away.</p>
+          <p className="lede mt-7 max-w-2xl text-pretty">The link may be mistyped or out of date. Every event is still one click away.</p>
           <div className="mt-10 flex flex-wrap gap-3">
-            <Link href="/" className="btn btn-blue">Back to the overview <Icon name="arrow-right" /></Link>
-            <Link href="/events" className="btn btn-outline">See the events</Link>
+            <Link href="/" className="btn btn-blue">See the events <Icon name="arrow-right" /></Link>
           </div>
         </div>
-        <nav aria-label="Events and plans" className="card-mist self-start p-5 md:p-6">
-          <p className="eyebrow px-3">Events and plans</p>
+        <nav aria-label="Events" className="card-mist self-start p-5 md:p-6">
+          <p className="eyebrow px-3">Events</p>
           <ul className="mt-3 grid gap-1">
             {links.map((p) => (
               <li key={p.href}><Link href={p.href} className="block rounded-xl px-3 py-2.5 text-lg leading-snug transition-colors hover:bg-white">{p.title}</Link></li>

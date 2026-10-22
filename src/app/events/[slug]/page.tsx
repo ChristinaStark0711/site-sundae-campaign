@@ -3,7 +3,6 @@ import Image from "next/image";
 import Link from "next/link";
 import DaysStat from "@/components/DaysStat";
 import { PhaseLabel, ResultsNote } from "@/components/WhenAware";
-import EventFunnel from "@/components/EventFunnel";
 import { Icon } from "@/components/Icon";
 import { getCaptions, getCities, getEvent, getEventProjections, getLibrary, libraryCount, originals, type City, type EventRec } from "@/lib/content";
 import { apDate, VENUE_TBA, whenLine } from "@/lib/format";
@@ -92,7 +91,6 @@ export default async function EventOverview({ params }: { params: Promise<{ slug
             <p className="lede mt-8 max-w-2xl text-pretty">{e.summary}</p>
             <div className="mt-10 flex flex-wrap gap-3">
               <Link href={`${b}/creative`} className="btn btn-blue">Open the creative library <Icon name="arrow-right" /></Link>
-              <Link href={`${b}/projections`} className="btn btn-outline">See the projections</Link>
               {e.plans.some((p) => p.slug === "action-plan") && <Link href={`${b}/plans/action-plan`} className="btn btn-outline">What needs to be done</Link>}
             </div>
           </div>
@@ -166,14 +164,6 @@ export default async function EventOverview({ params }: { params: Promise<{ slug
             </div>
             {e.creativeNote && <p className="mt-8 max-w-3xl text-lg leading-relaxed">{e.creativeNote}</p>}
           </div>
-        </section>
-      )}
-
-      {/* PROJECTIONS PREVIEW */}
-      {pj && (
-        <section className="mx-auto max-w-7xl px-5 py-24 md:px-8" aria-labelledby="proj">
-          <div className="flex flex-wrap items-end justify-between gap-6"><div><p className="eyebrow" data-reveal>Projected results</p><h2 id="proj" className="display h-bar mt-4 text-[2.25rem] md:text-[2.875rem]" data-reveal>From applications to signed members</h2></div><Link href={`${b}/projections`} className="btn btn-outline">All three scenarios <Icon name="arrow-right" /></Link></div>
-          <div className="mt-12 max-w-3xl"><EventFunnel pj={pj} /></div>
         </section>
       )}
 
