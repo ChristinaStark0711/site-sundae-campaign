@@ -1,0 +1,85 @@
+{
+ "w": 1920,
+ "h": 1080,
+ "tag": "Nov. 18 · Fresno",
+ "poster": 8,
+ "event": {
+  "weekday": "Wednesday",
+  "month": "Nov.",
+  "day": "18",
+  "time": "6-8:30 p.m.",
+  "venue": "Fresno · location sent when you sign up",
+  "venueShort": "Fresno, California",
+  "hotel": "Fresno",
+  "city": "Fresno",
+  "cityLine": "Location sent when you sign up",
+  "address": "Location sent when you sign up",
+  "included": "An evening of candid conversation",
+  "name": "An evening of candid conversation",
+  "nameLines": [
+   "What’s working.",
+   "What’s changing.",
+   "What’s next."
+  ],
+  "hostLine": "with Josh Stech and Stratton Brown of Deal Champs",
+  "pill": "Sign up to attend →"
+ },
+ "scenes": [
+  {
+   "type": "title",
+   "dur": 3.4,
+   "kicker": "For local Fresno real estate investors",
+   "title": [
+    "What’s working?"
+   ],
+   "center": true
+  },
+  {
+   "type": "title",
+   "dur": 3.4,
+   "title": [
+    "What’s changing?"
+   ],
+   "accent": 0,
+   "center": true,
+   "gx": 0.1
+  },
+  {
+   "type": "title",
+   "dur": 3.6,
+   "title": [
+    "Where new opportunities",
+    "may emerge."
+   ],
+   "accent": 1,
+   "center": true
+  },
+  {
+   "type": "photo",
+   "img": "sac-dinner.jpg",
+   "pos": "50% 38%",
+   "dur": 4.6,
+   "title": [
+    "Including the growing",
+    "role of AI in real estate"
+   ]
+  },
+  {
+   "type": "photo",
+   "dur": 4.2,
+   "img": "fresno-2026-11-18-tower-theatre.jpg",
+   "pos": "50% 85%",
+   "kicker": "Wednesday, Nov. 18 · 6-8:30 p.m.",
+   "title": [
+    "A candid evening",
+    "in Fresno."
+   ]
+  },
+  {
+   "type": "cta",
+   "dur": 4.6,
+   "when": "Wednesday, Nov. 18 · 6-8:30 p.m.<br>Fresno, California",
+   "foot": "Sign up at meet.sundae.com/fresno-nov-2026"
+  }
+ ]
+}

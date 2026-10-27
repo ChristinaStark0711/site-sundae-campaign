@@ -1,0 +1,74 @@
+{
+ "w": 1080,
+ "h": 1920,
+ "tag": "Nov. 18 · Fresno",
+ "poster": 6,
+ "event": {
+  "weekday": "Wednesday",
+  "month": "Nov.",
+  "day": "18",
+  "time": "6-8:30 p.m.",
+  "venue": "Fresno · location sent when you sign up",
+  "venueShort": "Fresno, California",
+  "hotel": "Fresno",
+  "city": "Fresno",
+  "cityLine": "Location sent when you sign up",
+  "address": "Location sent when you sign up",
+  "included": "An evening of candid conversation",
+  "name": "An evening of candid conversation",
+  "nameLines": [
+   "What’s working.",
+   "What’s changing.",
+   "What’s next."
+  ],
+  "hostLine": "with Josh Stech and Stratton Brown of Deal Champs",
+  "pill": "Sign up to attend →"
+ },
+ "scenes": [
+  {
+   "type": "title",
+   "dur": 2.8,
+   "kicker": "Nov. 18 · Fresno",
+   "title": [
+    "Who should",
+    "sign up"
+   ],
+   "accent": 1
+  },
+  {
+   "type": "list",
+   "dur": 6.4,
+   "img": "fresno-2026-11-18-tower-theatre.jpg",
+   "pos": "50% 85%",
+   "kicker": "Sundae and Deal Champs",
+   "title": [
+    "This evening",
+    "is for you if…"
+   ],
+   "items": [
+    [
+     "Local real estate investors",
+     "in and around Fresno"
+    ],
+    [
+     "Wholesalers",
+     "and fix-and-flip operators"
+    ],
+    [
+     "Acquisition teams",
+     "finding and closing deals"
+    ],
+    [
+     "Experienced operators",
+     "looking to scale"
+    ]
+   ]
+  },
+  {
+   "type": "cta",
+   "dur": 4.0,
+   "when": "Wednesday, Nov. 18 · 6-8:30 p.m.<br>Fresno, California",
+   "foot": "Sign up at meet.sundae.com/fresno-nov-2026"
+  }
+ ]
+}

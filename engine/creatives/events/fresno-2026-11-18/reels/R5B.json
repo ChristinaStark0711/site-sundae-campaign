@@ -1,0 +1,56 @@
+{
+ "w": 1080,
+ "h": 1920,
+ "tag": "Nov. 18 · Fresno",
+ "poster": 2.5,
+ "event": {
+  "weekday": "Wednesday",
+  "month": "Nov.",
+  "day": "18",
+  "time": "6-8:30 p.m.",
+  "venue": "Fresno · location sent when you sign up",
+  "venueShort": "Fresno, California",
+  "hotel": "Fresno",
+  "city": "Fresno",
+  "cityLine": "Location sent when you sign up",
+  "address": "Location sent when you sign up",
+  "included": "An evening of candid conversation",
+  "name": "An evening of candid conversation",
+  "nameLines": [
+   "What’s working.",
+   "What’s changing.",
+   "What’s next."
+  ],
+  "hostLine": "with Josh Stech and Stratton Brown of Deal Champs",
+  "pill": "Sign up to attend →"
+ },
+ "scenes": [
+  {
+   "type": "date",
+   "dur": 4.2,
+   "img": "fresno-2026-11-18-tower-theatre.jpg",
+   "pos": "50% 85%",
+   "title": [
+    "Last call",
+    "to sign up."
+   ],
+   "accent": 1
+  },
+  {
+   "type": "title",
+   "dur": 3.2,
+   "kicker": "A candid evening in Fresno",
+   "title": [
+    "See you",
+    "on Nov. 18."
+   ],
+   "accent": 1
+  },
+  {
+   "type": "cta",
+   "dur": 4.2,
+   "when": "Wednesday, Nov. 18 · 6-8:30 p.m.<br>Fresno, California",
+   "foot": "Sign up at meet.sundae.com/fresno-nov-2026"
+  }
+ ]
+}

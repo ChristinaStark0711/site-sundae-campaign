@@ -1,0 +1,94 @@
+{
+ "w": 1920,
+ "h": 1080,
+ "tag": "Nov. 18 · Fresno",
+ "poster": 3.5,
+ "event": {
+  "weekday": "Wednesday",
+  "month": "Nov.",
+  "day": "18",
+  "time": "6-8:30 p.m.",
+  "venue": "Fresno · location sent when you sign up",
+  "venueShort": "Fresno, California",
+  "hotel": "Fresno",
+  "city": "Fresno",
+  "cityLine": "Location sent when you sign up",
+  "address": "Location sent when you sign up",
+  "included": "An evening of candid conversation",
+  "name": "An evening of candid conversation",
+  "nameLines": [
+   "What’s working.",
+   "What’s changing.",
+   "What’s next."
+  ],
+  "hostLine": "with Josh Stech and Stratton Brown of Deal Champs",
+  "pill": "Sign up to attend →"
+ },
+ "scenes": [
+  {
+   "type": "josh",
+   "dur": 5.6,
+   "kicker": "In conversation",
+   "facts": [
+    "Co-founder and CEO, Sundae",
+    "Founding partner, LendingHome",
+    "Angel investor in 107 companies"
+   ]
+  },
+  {
+   "type": "title",
+   "dur": 4.8,
+   "kicker": "Josh Stech is excited to partner with",
+   "title": [
+    "Stratton Brown",
+    "of Deal Champs"
+   ],
+   "accent": 1,
+   "sub": "Bringing local Fresno real estate investors together"
+  },
+  {
+   "type": "photo",
+   "img": "sac-dinner.jpg",
+   "pos": "50% 38%",
+   "dur": 4.6,
+   "kicker": "After Sacramento and Los Angeles",
+   "title": [
+    "Next stop:",
+    "Fresno"
+   ]
+  },
+  {
+   "type": "details",
+   "dur": 4.6,
+   "img": "fresno-2026-11-18-tower-theatre.jpg",
+   "pos": "50% 85%",
+   "title": [
+    "Join the conversation"
+   ],
+   "rows": [
+    [
+     "When",
+     "Wednesday, Nov. 18, 2026 · 6-8:30 p.m. PT"
+    ],
+    [
+     "Where",
+     "Fresno · Location sent when you sign up"
+    ],
+    [
+     "With",
+     "Josh Stech of Sundae and Stratton Brown of Deal Champs"
+    ],
+    [
+     "Sign up",
+     "meet.sundae.com/fresno-nov-2026"
+    ]
+   ]
+  },
+  {
+   "type": "cta",
+   "dur": 4.6,
+   "when": "Wednesday, Nov. 18 · 6-8:30 p.m.<br>Fresno, California",
+   "foot": "Sign up at meet.sundae.com/fresno-nov-2026"
+  }
+ ]
+}

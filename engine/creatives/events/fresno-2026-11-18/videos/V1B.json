@@ -1,0 +1,122 @@
+{
+ "w": 1920,
+ "h": 1080,
+ "tag": "Nov. 18 · Fresno",
+ "poster": 10.4,
+ "event": {
+  "weekday": "Wednesday",
+  "month": "Nov.",
+  "day": "18",
+  "time": "6-8:30 p.m.",
+  "venue": "Fresno · location sent when you sign up",
+  "venueShort": "Fresno, California",
+  "hotel": "Fresno",
+  "city": "Fresno",
+  "cityLine": "Location sent when you sign up",
+  "address": "Location sent when you sign up",
+  "included": "An evening of candid conversation",
+  "name": "An evening of candid conversation",
+  "nameLines": [
+   "What’s working.",
+   "What’s changing.",
+   "What’s next."
+  ],
+  "hostLine": "with Josh Stech and Stratton Brown of Deal Champs",
+  "pill": "Sign up to attend →"
+ },
+ "scenes": [
+  {
+   "type": "photo",
+   "dur": 4.2,
+   "img": "fresno-2026-11-18-tower-theatre.jpg",
+   "pos": "50% 85%",
+   "kicker": "Fresno · Wednesday, Nov. 18",
+   "title": [
+    "Local investors,",
+    "one candid evening"
+   ]
+  },
+  {
+   "type": "title",
+   "dur": 4.6,
+   "kicker": "Sundae and Deal Champs",
+   "title": [
+    "What’s working.",
+    "What’s changing.",
+    "What’s next."
+   ],
+   "accent": 2,
+   "sub": "Josh Stech of Sundae is partnering with Stratton Brown of Deal Champs"
+  },
+  {
+   "type": "list",
+   "dur": 5.6,
+   "kicker": "The conversation",
+   "title": [
+    "What we’ll talk about"
+   ],
+   "items": [
+    [
+     "What’s working",
+     "For Fresno real estate investors today"
+    ],
+    [
+     "What’s changing",
+     "In the market and in how deals get done"
+    ],
+    [
+     "Where new opportunities may emerge",
+     "For local investors and operators"
+    ],
+    [
+     "The growing role of AI",
+     "In real estate"
+    ]
+   ],
+   "side": "fresno-2026-11-18-tower-theatre.jpg",
+   "sidePos": "50% 85%"
+  },
+  {
+   "type": "josh",
+   "dur": 4.6,
+   "facts": [
+    "Co-founder and CEO, Sundae",
+    "Founding partner, LendingHome",
+    "Angel investor in 107 companies"
+   ]
+  },
+  {
+   "type": "details",
+   "dur": 4.6,
+   "img": "fresno-2026-11-18-tower-theatre.jpg",
+   "pos": "50% 85%",
+   "title": [
+    "Sign up to attend"
+   ],
+   "rows": [
+    [
+     "When",
+     "Wednesday, Nov. 18, 2026 · 6-8:30 p.m. PT"
+    ],
+    [
+     "Where",
+     "Fresno · Location sent when you sign up"
+    ],
+    [
+     "With",
+     "Josh Stech of Sundae and Stratton Brown of Deal Champs"
+    ],
+    [
+     "Sign up",
+     "meet.sundae.com/fresno-nov-2026"
+    ]
+   ]
+  },
+  {
+   "type": "cta",
+   "dur": 4.4,
+   "when": "Wednesday, Nov. 18 · 6-8:30 p.m.<br>Fresno, California",
+   "foot": "Sign up at meet.sundae.com/fresno-nov-2026"
+  }
+ ]
+}

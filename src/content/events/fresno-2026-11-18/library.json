@@ -308,6 +308,18 @@
       "pair": "C09"
     },
     {
+      "id": "V1B",
+      "title": "Event trailer — Sign up to attend",
+      "file": "video-01b-sign-up-to-attend.mp4",
+      "poster": "video-01b-sign-up-to-attend-poster.jpg",
+      "spec": "1920×1080",
+      "dur": "28s",
+      "aspect": "16:9",
+      "use": "Variation of V1 · LinkedIn, YouTube, Facebook feed and email",
+      "pair": "C18",
+      "variantOf": "V1"
+    },
+    {
       "id": "V2",
       "title": "Meet your host",
       "file": "video-02-meet-your-host.mp4",
@@ -316,6 +328,18 @@
       "dur": "25s",
       "aspect": "16:9",
       "use": "LinkedIn, Facebook and YouTube"
+    },
+    {
+      "id": "V2B",
+      "title": "Meet your host — Sign up to attend",
+      "file": "video-02b-sign-up-to-attend.mp4",
+      "poster": "video-02b-sign-up-to-attend-poster.jpg",
+      "spec": "1920×1080",
+      "dur": "24s",
+      "aspect": "16:9",
+      "use": "Variation of V2 · LinkedIn, Facebook and YouTube",
+      "variantOf": "V2",
+      "pair": "C14"
     },
     {
       "id": "V3",
@@ -329,6 +353,18 @@
       "pair": "C08"
     },
     {
+      "id": "V3B",
+      "title": "The market has changed — Sign up to attend",
+      "file": "video-03b-sign-up-to-attend.mp4",
+      "poster": "video-03b-sign-up-to-attend-poster.jpg",
+      "spec": "1920×1080",
+      "dur": "24s",
+      "aspect": "16:9",
+      "use": "Variation of V3 · Josh’s LinkedIn and Meta prospecting",
+      "pair": "C15",
+      "variantOf": "V3"
+    },
+    {
       "id": "V4",
       "title": "Seats are limited",
       "file": "video-04-seats-limited-square.mp4",
@@ -338,6 +374,18 @@
       "aspect": "1:1",
       "use": "Feed and Meta retargeting",
       "pair": "C05"
+    },
+    {
+      "id": "V4B",
+      "title": "Seats are limited — Sign up to attend",
+      "file": "video-04b-sign-up-to-attend.mp4",
+      "poster": "video-04b-sign-up-to-attend-poster.jpg",
+      "spec": "1080×1080",
+      "dur": "14s",
+      "aspect": "1:1",
+      "use": "Variation of V4 · Feed and Meta retargeting",
+      "pair": "C13",
+      "variantOf": "V4"
     }
   ],
   "reels": [
@@ -353,6 +401,18 @@
       "pair": "C02"
     },
     {
+      "id": "R1B",
+      "title": "POV: you’re invited — Sign up to attend",
+      "file": "reel-01b-sign-up-to-attend.mp4",
+      "poster": "reel-01b-sign-up-to-attend-poster.jpg",
+      "spec": "1080×1920",
+      "dur": "18s",
+      "aspect": "9:16",
+      "use": "Variation of R1 · Instagram and Facebook Reels, Shorts, TikTok and Meta ads",
+      "pair": "C12",
+      "variantOf": "R1"
+    },
+    {
       "id": "R2",
       "title": "Three reasons to be there",
       "file": "reel-02-three-reasons.mp4",
@@ -362,6 +422,18 @@
       "aspect": "9:16",
       "use": "Reels and Stories",
       "pair": "C03"
+    },
+    {
+      "id": "R2B",
+      "title": "Three reasons to be there — Sign up to attend",
+      "file": "reel-02b-sign-up-to-attend.mp4",
+      "poster": "reel-02b-sign-up-to-attend-poster.jpg",
+      "spec": "1080×1920",
+      "dur": "18s",
+      "aspect": "9:16",
+      "use": "Variation of R2 · Reels and Stories",
+      "pair": "C17",
+      "variantOf": "R2"
     },
     {
       "id": "R3",
@@ -375,6 +447,18 @@
       "pair": "C08"
     },
     {
+      "id": "R3B",
+      "title": "Harder market? — Sign up to attend",
+      "file": "reel-03b-sign-up-to-attend.mp4",
+      "poster": "reel-03b-sign-up-to-attend-poster.jpg",
+      "spec": "1080×1920",
+      "dur": "17s",
+      "aspect": "9:16",
+      "use": "Variation of R3 · Meta prospecting ad",
+      "pair": "C15",
+      "variantOf": "R3"
+    },
+    {
       "id": "R4",
       "title": "Who it’s for",
       "file": "reel-04-who-its-for.mp4",
@@ -386,6 +470,18 @@
       "pair": "C06"
     },
     {
+      "id": "R4B",
+      "title": "Who it’s for — Sign up to attend",
+      "file": "reel-04b-sign-up-to-attend.mp4",
+      "poster": "reel-04b-sign-up-to-attend-poster.jpg",
+      "spec": "1080×1920",
+      "dur": "13s",
+      "aspect": "9:16",
+      "use": "Variation of R4 · Reels and Stories",
+      "pair": "C16",
+      "variantOf": "R4"
+    },
+    {
       "id": "R5",
       "title": "A few seats left",
       "file": "reel-05-seats-limited.mp4",
@@ -395,6 +491,18 @@
       "aspect": "9:16",
       "use": "The final week: Reels, Stories and retargeting",
       "pair": "C10"
+    },
+    {
+      "id": "R5B",
+      "title": "A few seats left — Sign up to attend",
+      "file": "reel-05b-sign-up-to-attend.mp4",
+      "poster": "reel-05b-sign-up-to-attend-poster.jpg",
+      "spec": "1080×1920",
+      "dur": "12s",
+      "aspect": "9:16",
+      "use": "Variation of R5 · The final week: Reels, Stories and retargeting",
+      "pair": "C20",
+      "variantOf": "R5"
     }
   ]
 }
