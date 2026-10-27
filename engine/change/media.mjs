@@ -21,7 +21,14 @@ export const AI_ASPECTS = ['9:16', '16:9', '4:3', '3:4', '1:1', '2:3', '3:2'];
 export const aiDailyUsd = () => Number(process.env.CHANGE_AI_DAILY_USD || 20);
 // the key ID and secret as pasted into GitHub, without stray spaces, line breaks or quotes around them
 const cred = (k) => String(process.env[k] || '').trim().replace(/^["']|["']$/g, '').trim();
-export const aiAvailable = () => !!(cred('HF_API_KEY_ID') && cred('HF_API_KEY_SECRET'));
+// Higgsfield's console can show one combined "KEY_ID:SECRET" credential; if that was saved as the secret (or as both),
+// its own key ID is used, so the pair always belongs together
+function hfKey() {
+  const id = cred('HF_API_KEY_ID'), sec = cred('HF_API_KEY_SECRET');
+  const both = /^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}):(.+)$/i.exec(sec) || /^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}):(.+)$/i.exec(id);
+  return both ? { id: both[1], secret: both[2], combined: true } : { id, secret: sec, combined: false };
+}
+export const aiAvailable = () => !!(hfKey().id && hfKey().secret);
 
 const toJpg = (from, to, max) => execFileSync('python3', ['-c', 'import sys;from PIL import Image;im=Image.open(sys.argv[1]).convert("RGB");m=int(sys.argv[3]);im.thumbnail((m,m));im.save(sys.argv[2],quality=88)', from, to, String(max)]);
 // Wikimedia asks for a user agent naming the client and a contact (its User-Agent policy)
@@ -130,7 +137,7 @@ export function aiSpentLast24h() {
   return Math.round(usd * 1000) / 1000;
 }
 
-const hfHeaders = () => ({ Authorization: `Key ${cred('HF_API_KEY_ID')}:${cred('HF_API_KEY_SECRET')}`, 'Content-Type': 'application/json' });
+const hfHeaders = () => { const k = hfKey(); return { Authorization: `Key ${k.id}:${k.secret}`, 'Content-Type': 'application/json' }; };
 // One AI image within the daily ceiling. Returns { name, meta, from, usd } or throws with a plain reason.
 export async function addAiImage(A, prompt, aspect, outDir) {
   if (!aiAvailable()) throw new Error('AI images aren\'t switched on (no Higgsfield API key)');
@@ -138,7 +145,7 @@ export async function addAiImage(A, prompt, aspect, outDir) {
   const est = await fetch(`${HF}/estimate/${HF_MODEL}`, { method: 'POST', headers: hfHeaders(), body: JSON.stringify(body), signal: AbortSignal.timeout(30e3) });
   if (!est.ok) {
     // never the values themselves: only their shape, so a pasting mistake can be told from a wrong key
-    if (est.status === 401) log(`Higgsfield refused the key: key ID ${cred('HF_API_KEY_ID').length} characters, secret ${cred('HF_API_KEY_SECRET').length} characters${/\s/.test(cred('HF_API_KEY_ID') + cred('HF_API_KEY_SECRET')) ? ', with a space inside' : ''}`);
+    if (est.status === 401) { const k = hfKey(); log(`Higgsfield refused the key: key ID ${k.id.length} characters, secret ${k.secret.length} characters${k.combined ? ' (split from a combined KEY_ID:SECRET value)' : ''}${/\s/.test(k.id + k.secret) ? ', with a space inside' : ''}`); }
     throw new Error(est.status === 401 ? 'Higgsfield didn\'t accept the API key (check HF_API_KEY_ID and HF_API_KEY_SECRET)' : `the AI image price couldn't be checked (Higgsfield ${est.status})`);
   }
   const usd = Number((await est.json()).usd);
