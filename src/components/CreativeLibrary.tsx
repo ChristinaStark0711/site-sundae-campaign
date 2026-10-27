@@ -70,8 +70,8 @@ export default function CreativeLibrary({ scope, lib, base, header, captions, re
       )}
       {/* the booth table's printed front (a 6 ft table throw), when an event has one */}
       {lib.tablecloths.length > 0 && (
-        <Section id="tablecloths" eyebrow="Table cloth" title={n(originals(lib.tablecloths).length, "table cloth option")} sub={`Front-panel art for a 6 ft table throw (72×30 in, the side guests see)${plusVars(lib.tablecloths)}. The Print PDF is full size and all vector; send it with the printer's table-throw template, which adds the top and sides.`}>
-          <Gallery items={lib.tablecloths} base={`${base}/tablecloths`} keyBase={`${kb}/tablecloths`} aspect="aspect-[12/5]" cols="sm:grid-cols-1 lg:grid-cols-2" />
+        <Section id="tablecloths" eyebrow="Table cloth" title={n(originals(lib.tablecloths).length, "table cloth option")} sub={`Each Print PDF is one flat, full-size, all-vector file for a 3-sided cover on a 6 ft folding table: 72×88 in, ready to upload to a table-cover printer${plusVars(lib.tablecloths)}. Top to bottom: the back drop (29 in, upside down on purpose so it reads the right way from behind the table), the table top (30 in) and the front drop (29 in). Order it as a "3-sided" or "open-back" throw for a 6 ft table.`}>
+          <Gallery items={lib.tablecloths} base={`${base}/tablecloths`} keyBase={`${kb}/tablecloths`} aspect="aspect-[9/11]" cols="sm:grid-cols-2 lg:grid-cols-4" />
         </Section>
       )}
       <Section id="changes" eyebrow="Change requests" title="What's been asked for" sub="Type a change in the box under any asset, or in Change all at the top for every asset at once. Updates replace the file; variations appear next to the original. Every change publishes automatically once it passes the brand checks; if it needs a new picture, an openly licensed photo is found (or, for a generic image, one is made with AI). One that can't be made says why.">
