@@ -51,7 +51,9 @@
       "file": "04-the-market-has-changed.jpg",
       "spec": "1080×1350 · 4:5",
       "use": "Josh’s LinkedIn and Meta ads",
-      "pair": "C08"
+      "pair": "C08",
+      "rev": 1,
+      "updated": "2026-10-27"
     },
     {
       "id": "05",
