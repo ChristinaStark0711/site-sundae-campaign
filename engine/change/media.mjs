@@ -19,7 +19,9 @@ const HF = 'https://api.higgsfield.ai';
 const HF_MODEL = 'higgsfield-ai/soul/v2/standard';
 export const AI_ASPECTS = ['9:16', '16:9', '4:3', '3:4', '1:1', '2:3', '3:2'];
 export const aiDailyUsd = () => Number(process.env.CHANGE_AI_DAILY_USD || 20);
-export const aiAvailable = () => !!(process.env.HF_API_KEY_ID && process.env.HF_API_KEY_SECRET);
+// the key ID and secret as pasted into GitHub, without stray spaces, line breaks or quotes around them
+const cred = (k) => String(process.env[k] || '').trim().replace(/^["']|["']$/g, '').trim();
+export const aiAvailable = () => !!(cred('HF_API_KEY_ID') && cred('HF_API_KEY_SECRET'));
 
 const toJpg = (from, to, max) => execFileSync('python3', ['-c', 'import sys;from PIL import Image;im=Image.open(sys.argv[1]).convert("RGB");m=int(sys.argv[3]);im.thumbnail((m,m));im.save(sys.argv[2],quality=88)', from, to, String(max)]);
 // Wikimedia asks for a user agent naming the client and a contact (its User-Agent policy)
@@ -128,13 +130,17 @@ export function aiSpentLast24h() {
   return Math.round(usd * 1000) / 1000;
 }
 
-const hfHeaders = () => ({ Authorization: `Key ${process.env.HF_API_KEY_ID}:${process.env.HF_API_KEY_SECRET}`, 'Content-Type': 'application/json' });
+const hfHeaders = () => ({ Authorization: `Key ${cred('HF_API_KEY_ID')}:${cred('HF_API_KEY_SECRET')}`, 'Content-Type': 'application/json' });
 // One AI image within the daily ceiling. Returns { name, meta, from, usd } or throws with a plain reason.
 export async function addAiImage(A, prompt, aspect, outDir) {
   if (!aiAvailable()) throw new Error('AI images aren\'t switched on (no Higgsfield API key)');
   const body = { prompt: `${prompt}. Photographic, natural light, bright and warm. No text, no words, no letters, no logos, no signs, no watermark.`, aspect_ratio: AI_ASPECTS.includes(aspect) ? aspect : '3:2', resolution: '1080p', enhance_prompt: false, batch_size: 1 };
   const est = await fetch(`${HF}/estimate/${HF_MODEL}`, { method: 'POST', headers: hfHeaders(), body: JSON.stringify(body), signal: AbortSignal.timeout(30e3) });
-  if (!est.ok) throw new Error(`the AI image price couldn't be checked (Higgsfield ${est.status})`);
+  if (!est.ok) {
+    // never the values themselves: only their shape, so a pasting mistake can be told from a wrong key
+    if (est.status === 401) log(`Higgsfield refused the key: key ID ${cred('HF_API_KEY_ID').length} characters, secret ${cred('HF_API_KEY_SECRET').length} characters${/\s/.test(cred('HF_API_KEY_ID') + cred('HF_API_KEY_SECRET')) ? ', with a space inside' : ''}`);
+    throw new Error(est.status === 401 ? 'Higgsfield didn\'t accept the API key (check HF_API_KEY_ID and HF_API_KEY_SECRET)' : `the AI image price couldn't be checked (Higgsfield ${est.status})`);
+  }
   const usd = Number((await est.json()).usd);
   if (!(usd >= 0)) throw new Error('the AI image price couldn\'t be checked');
   const spent = aiSpentLast24h(), cap = aiDailyUsd();
