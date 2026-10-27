@@ -8,7 +8,7 @@ import { ver } from "@/lib/ver";
 export default function CreativeBand({ e, lib, captions }: { e: EventRec; lib: Library; captions: number }) {
   const previews = originals(lib.images).slice(0, 5);
   if (!previews.length) return null;
-  const counts = [[originals(lib.images).length, "images"], [originals(lib.flyers).length, "flyers"], [originals(lib.videos).length, "videos"], [originals(lib.reels).length, "Reels"], [originals(lib.backdrops).length, "backdrops"], [captions, "captions"]] as const;
+  const counts = [[originals(lib.images).length, "images"], [originals(lib.flyers).length, "flyers"], [originals(lib.videos).length, "videos"], [originals(lib.reels).length, "Reels"], [originals(lib.backdrops).length, "backdrops"], [originals(lib.tablecloths).length, "table cloths"], [captions, "captions"]] as const;
   return (
     <section className="relative left-1/2 mt-16 w-screen -translate-x-1/2 overflow-hidden bg-blue py-24 text-white" aria-labelledby="creative">
       <div aria-hidden className="dots-white pointer-events-none absolute right-8 top-10 hidden h-16 w-16 opacity-60 md:block" />

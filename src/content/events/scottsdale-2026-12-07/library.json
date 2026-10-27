@@ -147,5 +147,39 @@
       "spec": "10×10 ft (120×120 in) · vector PDF",
       "use": "Booth backdrop (step and repeat). Everything sits in the top 7.5 ft, so a 30 in table in front hides nothing"
     }
+  ],
+  "tablecloths": [
+    {
+      "id": "01",
+      "title": "Your guideline — Stop building. Start scaling.",
+      "file": "01-guideline.jpg",
+      "pdf": "01-guideline.pdf",
+      "spec": "6 ft table throw front, 72×30 in · vector PDF",
+      "use": "Booth table front. Nothing sits within 2 in of an edge, so the fold over the table top and the hem cut nothing"
+    },
+    {
+      "id": "02",
+      "title": "Logo and web address",
+      "file": "02-logo-and-address.jpg",
+      "pdf": "02-logo-and-address.pdf",
+      "spec": "6 ft table throw front, 72×30 in · vector PDF",
+      "use": "Booth table front. Nothing sits within 2 in of an edge, so the fold over the table top and the hem cut nothing"
+    },
+    {
+      "id": "03",
+      "title": "Guideline with the three reasons",
+      "file": "03-three-reasons.jpg",
+      "pdf": "03-three-reasons.pdf",
+      "spec": "6 ft table throw front, 72×30 in · vector PDF",
+      "use": "Booth table front. Nothing sits within 2 in of an edge, so the fold over the table top and the hem cut nothing"
+    },
+    {
+      "id": "04",
+      "title": "Logo left, message right, white address band",
+      "file": "04-split-white-band.jpg",
+      "pdf": "04-split-white-band.pdf",
+      "spec": "6 ft table throw front, 72×30 in · vector PDF",
+      "use": "Booth table front. Nothing sits within 2 in of an edge, so the fold over the table top and the hem cut nothing"
+    }
   ]
 }

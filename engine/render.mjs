@@ -30,7 +30,7 @@ import { start, ENGINE_DIR, fileFor } from './serve.mjs';
 import { renderRecordFile, sha256 } from './tools/ap.mjs';
 
 export { ENGINE_DIR };
-export const KINDS = ['images', 'flyers', 'videos', 'reels', 'backdrops'];
+export const KINDS = ['images', 'flyers', 'videos', 'reels', 'backdrops', 'tablecloths'];
 export const FPS = 30;
 export const PREVIEW_MAX = 1600;
 const PY = process.env.PYTHON || 'python3';
@@ -288,7 +288,7 @@ export async function renderAsset({ source, outDir, name, preview = false, timeo
       const dims = py(SHRINK, path.join(tmp, 'p.png'), path.join(tmp, 'out.png'), String(PREVIEW_MAX));
       files.push([path.join(tmp, 'out.png'), `${name}.preview.png`]); summary.previewSize = dims.replace(' ', 'x');
     } else if (!video) {
-      const print = src.kind === 'flyers' || src.kind === 'backdrops';
+      const print = src.kind === 'flyers' || src.kind === 'backdrops' || src.kind === 'tablecloths';
       const scale = print ? 2 : 1;
       stage = `screenshot at ${scale}x`;
       await run({ width: canvas.w, height: canvas.h, scale }, async page => { await loadStill(page, pageUrl); await page.screenshot({ path: path.join(tmp, 's.png') }); });

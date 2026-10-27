@@ -28,6 +28,7 @@ export default function CreativeLibrary({ scope, lib, base, header, captions, re
   if (lib.videos.length) nav.push(["#videos", `Videos · ${originals(lib.videos).length}`]);
   if (lib.reels.length) nav.push(["#reels", `Reels · ${originals(lib.reels).length}`]);
   if (lib.backdrops.length) nav.push(["#backdrops", `Backdrops · ${originals(lib.backdrops).length}`]);
+  if (lib.tablecloths.length) nav.push(["#tablecloths", `Table cloth · ${originals(lib.tablecloths).length}`]);
   if (captions?.count) nav.push([captions.href, `Captions · ${captions.count}`]);
   nav.push(["#changes", "Change requests"]);
   const plusVars = (a: Asset[]) => { const v = a.length - originals(a).length; return v ? ` (plus ${n(v, "variation")})` : ""; };
@@ -39,7 +40,7 @@ export default function CreativeLibrary({ scope, lib, base, header, captions, re
           {nav.map(([h, l]) => <a key={h} href={h} className="btn btn-outline btn-sm">{l}</a>)}
         </nav>
         {/* every library gets "Change all" (owner's request, 2026-10-27): the originals of each kind, by their change-box keys */}
-        <ChangeAll keys={{ images: originals(lib.images).map((a) => `${kb}/images/${a.id}`), flyers: originals(lib.flyers).map((a) => `${kb}/flyers/${a.id}`), videos: originals(lib.videos).map((a) => `${kb}/videos/${a.id}`), reels: originals(lib.reels).map((a) => `${kb}/reels/${a.id}`), backdrops: originals(lib.backdrops).map((a) => `${kb}/backdrops/${a.id}`) }} />
+        <ChangeAll keys={{ images: originals(lib.images).map((a) => `${kb}/images/${a.id}`), flyers: originals(lib.flyers).map((a) => `${kb}/flyers/${a.id}`), videos: originals(lib.videos).map((a) => `${kb}/videos/${a.id}`), reels: originals(lib.reels).map((a) => `${kb}/reels/${a.id}`), backdrops: originals(lib.backdrops).map((a) => `${kb}/backdrops/${a.id}`), tablecloths: originals(lib.tablecloths).map((a) => `${kb}/tablecloths/${a.id}`) }} />
       </header>
       {lib.images.length > 0 && (
         <Section id="images" eyebrow="Social images" title={n(originals(lib.images).length, "image")} sub={`Feed (4:5), square, LinkedIn (1.91:1) and Stories (9:16)${plusVars(lib.images)}. Each lists where it runs and which caption it pairs with.`}>
@@ -65,6 +66,12 @@ export default function CreativeLibrary({ scope, lib, base, header, captions, re
       {lib.backdrops.length > 0 && (
         <Section id="backdrops" eyebrow="Backdrops" title={n(originals(lib.backdrops).length, "backdrop option")} sub={`10×10 ft step-and-repeat backdrops for the booth${plusVars(lib.backdrops)}. The Print PDF is full size (120×120 in), all vector, ready for a large-format printer; ask the printer for their bleed and pole-pocket allowance.`}>
           <Gallery items={lib.backdrops} base={`${base}/backdrops`} keyBase={`${kb}/backdrops`} aspect="aspect-square" />
+        </Section>
+      )}
+      {/* the booth table's printed front (a 6 ft table throw), when an event has one */}
+      {lib.tablecloths.length > 0 && (
+        <Section id="tablecloths" eyebrow="Table cloth" title={n(originals(lib.tablecloths).length, "table cloth option")} sub={`Front-panel art for a 6 ft table throw (72×30 in, the side guests see)${plusVars(lib.tablecloths)}. The Print PDF is full size and all vector; send it with the printer's table-throw template, which adds the top and sides.`}>
+          <Gallery items={lib.tablecloths} base={`${base}/tablecloths`} keyBase={`${kb}/tablecloths`} aspect="aspect-[12/5]" cols="sm:grid-cols-1 lg:grid-cols-2" />
         </Section>
       )}
       <Section id="changes" eyebrow="Change requests" title="What's been asked for" sub="Type a change in the box under any asset, or in Change all at the top for every asset at once. Updates replace the file; variations appear next to the original. Every change publishes automatically once it passes the brand checks; if it needs a new picture, an openly licensed photo is found (or, for a generic image, one is made with AI). One that can't be made says why.">

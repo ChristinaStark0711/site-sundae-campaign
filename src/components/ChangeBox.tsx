@@ -7,7 +7,7 @@ import { Icon } from "./Icon";
 // pushes, and the site redeploys with the new file (an update) or a new card beside this one (a variation).
 type Mode = "update" | "variant";
 // The form's name carries the asset's kind and id ("Meet your host, image 02"), since an image and a video can share a title
-const KIND: Record<string, string> = { images: "image", flyers: "flyer", videos: "video", reels: "Reel", backdrops: "backdrop" };
+const KIND: Record<string, string> = { images: "image", flyers: "flyer", videos: "video", reels: "Reel", backdrops: "backdrop", tablecloths: "table cloth" };
 // "sent" keeps the mode the request went out with, so the confirmation stays right if the radio is changed afterwards
 type State = { kind: "idle" | "sending" } | { kind: "sent"; id: string; mode: Mode } | { kind: "error"; msg: string; offline?: boolean };
 
