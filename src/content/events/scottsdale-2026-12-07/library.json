@@ -1,0 +1,151 @@
+{
+  "images": [
+    {
+      "id": "01",
+      "title": "Visit us at SFR West",
+      "file": "01-visit-us-at-sfr-west.jpg",
+      "spec": "1080×1350 · 4:5",
+      "use": "Instagram, Facebook and LinkedIn feed before and during the conference",
+      "pair": "C01"
+    },
+    {
+      "id": "02",
+      "title": "Stop building. Start scaling.",
+      "file": "02-stop-building-start-scaling.jpg",
+      "spec": "1080×1350 · 4:5",
+      "use": "Feed and Meta ads to attendees",
+      "pair": "C02"
+    },
+    {
+      "id": "03",
+      "title": "The Sundae Engine",
+      "file": "03-the-sundae-engine.jpg",
+      "spec": "1080×1350 · 4:5",
+      "use": "LinkedIn and an Instagram carousel",
+      "pair": "C03"
+    },
+    {
+      "id": "04",
+      "title": "Better together",
+      "file": "04-better-together.jpg",
+      "spec": "1080×1350 · 4:5",
+      "use": "LinkedIn and Instagram feed",
+      "pair": "C04"
+    },
+    {
+      "id": "05",
+      "title": "LinkedIn banner",
+      "file": "05-linkedin-banner.jpg",
+      "spec": "1200×627 · 1.91:1",
+      "use": "LinkedIn post and ad image, email header"
+    },
+    {
+      "id": "06",
+      "title": "Story — Visit us",
+      "file": "06-story-visit-us.jpg",
+      "spec": "1080×1920 · 9:16",
+      "use": "Instagram and Facebook Stories during the conference; add the link sticker"
+    }
+  ],
+  "flyers": [
+    {
+      "id": "01",
+      "title": "Booth handout",
+      "file": "01-booth-handout.jpg",
+      "pdf": "01-booth-handout.pdf",
+      "spec": "8.5×11 in · print and PDF",
+      "use": "Handed out at the booth (QR code to sundae.com/membership)"
+    },
+    {
+      "id": "02",
+      "title": "Square digital flyer",
+      "file": "02-square-digital.jpg",
+      "pdf": "02-square-digital.pdf",
+      "spec": "1080×1080 · digital and PDF",
+      "use": "Texts, email and LinkedIn posts (QR code to sundae.com/membership)",
+      "pair": "C05"
+    }
+  ],
+  "videos": [
+    {
+      "id": "V1",
+      "title": "Sundae Membership",
+      "file": "video-01-sundae-membership.mp4",
+      "poster": "video-01-sundae-membership-poster.jpg",
+      "spec": "1920×1080",
+      "dur": "27s",
+      "aspect": "16:9",
+      "use": "LinkedIn, YouTube and the booth screen, if there is one",
+      "pair": "C06"
+    },
+    {
+      "id": "V2",
+      "title": "Visit the Sundae booth",
+      "file": "video-02-visit-the-booth.mp4",
+      "poster": "video-02-visit-the-booth-poster.jpg",
+      "spec": "1080×1080",
+      "dur": "13s",
+      "aspect": "1:1",
+      "use": "Feed during the conference",
+      "pair": "C01"
+    }
+  ],
+  "reels": [
+    {
+      "id": "R1",
+      "title": "Heading to SFR West?",
+      "file": "reel-01-heading-to-sfr-west.mp4",
+      "poster": "reel-01-heading-to-sfr-west-poster.jpg",
+      "spec": "1080×1920",
+      "dur": "15s",
+      "aspect": "9:16",
+      "use": "Reels and Stories the week before and during the conference",
+      "pair": "C07"
+    },
+    {
+      "id": "R2",
+      "title": "Better together",
+      "file": "reel-02-better-together.mp4",
+      "poster": "reel-02-better-together-poster.jpg",
+      "spec": "1080×1920",
+      "dur": "16s",
+      "aspect": "9:16",
+      "use": "Reels and Meta ads",
+      "pair": "C04"
+    }
+  ],
+  "backdrops": [
+    {
+      "id": "01",
+      "title": "Stop building. Start scaling. — red",
+      "file": "01-stop-building-red.jpg",
+      "pdf": "01-stop-building-red.pdf",
+      "spec": "10×10 ft (120×120 in) · vector PDF",
+      "use": "Booth backdrop (step and repeat). Everything sits in the top 7.5 ft, so a 30 in table in front hides nothing"
+    },
+    {
+      "id": "02",
+      "title": "Classic step and repeat",
+      "file": "02-step-and-repeat.jpg",
+      "pdf": "02-step-and-repeat.pdf",
+      "spec": "10×10 ft (120×120 in) · vector PDF",
+      "use": "Booth backdrop (step and repeat). Everything sits in the top 7.5 ft, so a 30 in table in front hides nothing"
+    },
+    {
+      "id": "03",
+      "title": "White over red",
+      "file": "03-white-over-red.jpg",
+      "pdf": "03-white-over-red.pdf",
+      "spec": "10×10 ft (120×120 in) · vector PDF",
+      "use": "Booth backdrop (step and repeat). Everything sits in the top 7.5 ft, so a 30 in table in front hides nothing"
+    },
+    {
+      "id": "04",
+      "title": "Why Sundae Membership",
+      "file": "04-why-sundae-membership.jpg",
+      "pdf": "04-why-sundae-membership.pdf",
+      "spec": "10×10 ft (120×120 in) · vector PDF",
+      "use": "Booth backdrop (step and repeat). Everything sits in the top 7.5 ft, so a 30 in table in front hides nothing"
+    }
+  ]
+}

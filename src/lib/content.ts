@@ -17,7 +17,7 @@ const read = <T,>(p: string, fallback?: T): T => {
 };
 
 export type Asset = { id: string; title: string; file: string; spec: string; use: string; pair?: string; pdf?: string; poster?: string; dur?: string; aspect?: string; variantOf?: string; rev?: number; updated?: string };
-export const KINDS = ["images", "flyers", "videos", "reels"] as const;
+export const KINDS = ["images", "flyers", "videos", "reels", "backdrops"] as const;
 export type Kind = (typeof KINDS)[number];
 export type Library = Record<Kind, Asset[]>;
 export type Caption = { id: string; platform: string; pair: string; title: string; text: string; hashtags?: string };
@@ -26,7 +26,7 @@ export type Credit = { title: string; creator: string; creatorUrl: string | null
 export type City = { name: string; state: string; file: string; width: number; height: number; alt: string; focus?: string; credit: Credit };
 export type EventRec = {
   slug: string; kind: "campaign" | "record"; name: string; audience: string;
-  city: string; state: string; citySlug: string; date: string; time?: string; timeEnd?: string; venueNote?: string;
+  city: string; state: string; citySlug: string; date: string; dateEnd?: string; time?: string; timeEnd?: string; venueNote?: string;
   venue: string; space?: string; address?: string; host: string; hostTitle?: string; rsvp?: string; media: string;
   prepared?: string; headline?: string; summary: string; strategy?: string; creativeNote?: string; sources?: string;
   moves?: [string, string][]; movesLabel?: string; plans: PlanMeta[]; photo?: { file: string; alt: string; credit: string };
@@ -57,7 +57,7 @@ export const splitEvents = (events: EventRec[], now = Date.now()) => ({
   past: events.filter((e) => !isUpcoming(e.date, now)), // most recent first
 });
 
-const EMPTY: Library = { images: [], flyers: [], videos: [], reels: [] };
+const EMPTY: Library = { images: [], flyers: [], videos: [], reels: [], backdrops: [] };
 export const getLibrary = (scope: string): Library => ({ ...EMPTY, ...read<Partial<Library>>(`${scopePath(scope)}/library.json`, {}) });
 export const mediaBase = (scope: string) => (scope === "brand" ? "/media" : getEvent(scope)?.media ?? `/media/events/${scope}`);
 export const getCaptions = (scope: string) => read<Caption[]>(`${scopePath(scope)}/captions.json`, []);
@@ -68,7 +68,7 @@ export const getCities = () => read<Record<string, City>>("cities.json", {});
 
 // Counts for headings: variations are listed beside their original and do not add to the count.
 export const originals = (a: Asset[]) => a.filter((x) => !x.variantOf);
-export const libraryCount = (lib: Library) => originals(lib.images).length + originals(lib.flyers).length + originals(lib.videos).length + originals(lib.reels).length;
+export const libraryCount = (lib: Library) => originals(lib.images).length + originals(lib.flyers).length + originals(lib.videos).length + originals(lib.reels).length + originals(lib.backdrops).length;
 
 export function getRequests(scope?: string): ChangeRequest[] {
   const dir = path.join(ROOT, "requests");

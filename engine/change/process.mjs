@@ -67,7 +67,7 @@ const sh = (args, timeout) => execFileSync(process.execPath, args, { cwd: REPO, 
 function render(src, outDir, name, preview) {
   fs.mkdirSync(outDir, { recursive: true });
   sh([path.join(ENGINE, 'render.mjs'), src, outDir, '--name', name, ...(preview ? ['--preview'] : [])], A.isVideo && !preview ? 1800e3 : 400e3);
-  const want = preview ? [A.isVideo ? `${name}.preview.jpg` : `${name}.preview.png`] : A.isVideo ? [`${name}.mp4`, `${name}-poster.jpg`] : A.kind === 'flyers' ? [`${name}.jpg`, `${name}.pdf`] : [`${name}.jpg`];
+  const want = preview ? [A.isVideo ? `${name}.preview.jpg` : `${name}.preview.png`] : A.isVideo ? [`${name}.mp4`, `${name}-poster.jpg`] : A.kind === 'flyers' || A.kind === 'backdrops' ? [`${name}.jpg`, `${name}.pdf`] : [`${name}.jpg`];
   for (const f of want) if (!fs.existsSync(path.join(outDir, f))) throw new Error(`render did not produce ${f}`);
   return want.map((f) => path.join(outDir, f));
 }
@@ -407,7 +407,7 @@ try {
   if (req.mode === 'variant') {
     const { rev, updated, ...b } = base;
     entry = { ...b, id, title: `${base.title} — ${variantTitle || 'variation'}`, file: path.basename(outs[0]), use: `Variation of ${base.id} · ${base.use}`, variantOf: base.id, updated: today };
-    if (A.kind === 'flyers') entry.pdf = `${name}.pdf`;
+    if (A.kind === 'flyers' || A.kind === 'backdrops') entry.pdf = `${name}.pdf`;
     if (A.isVideo) { entry.poster = `${name}-poster.jpg`; entry.dur = `${Math.round(total)}s`; }
   } else {
     entry = { ...A.entry, rev: (A.entry.rev || 0) + 1, updated: today, ...(A.isVideo ? { dur: `${Math.round(total)}s` } : {}) };

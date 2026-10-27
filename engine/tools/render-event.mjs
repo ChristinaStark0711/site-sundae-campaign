@@ -13,7 +13,7 @@ import { KINDS, flags, unknownFlags } from './ap.mjs';
 
 const ENGINE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const REPO = path.resolve(ENGINE, '..');
-const USAGE = 'usage: render-event.mjs <slug|brand> [--kinds images,flyers,videos,reels] [--ids 01,02,V1]';
+const USAGE = 'usage: render-event.mjs <slug|brand> [--kinds images,flyers,videos,reels,backdrops] [--ids 01,02,V1]';
 const f = flags(process.argv.slice(2));
 const scope = f._[0];
 const usage = (msg) => { console.error(`render-event: ${msg}\n${USAGE}`); process.exit(2); };

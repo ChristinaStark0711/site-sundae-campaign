@@ -55,5 +55,24 @@
       "provider": "flickr"
     },
     "openverseId": "cf8f3ca3-c167-479c-926a-455cadddde73"
+  },
+  "scottsdale-az": {
+    "name": "Scottsdale",
+    "state": "AZ",
+    "file": "/media/cities/scottsdale-az.jpg",
+    "width": 600,
+    "height": 449,
+    "alt": "Camelback Mountain behind palm trees in Scottsdale",
+    "focus": "50% 45%",
+    "credit": {
+      "title": "Camelback Mountain",
+      "creator": "Dru Bloomfield - At Home in Scottsdale",
+      "creatorUrl": "https://www.flickr.com/photos/14544437@N07",
+      "license": "CC BY 2.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+      "sourceUrl": "https://www.flickr.com/photos/14544437@N07/3395024045",
+      "provider": "flickr"
+    },
+    "openverseId": "0d5bcb29-eb28-49f0-a43f-34a02eea742d"
   }
 }

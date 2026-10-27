@@ -191,6 +191,12 @@
       "source": "https://commons.wikimedia.org/wiki/File:Tower_Theater,_Fresno,_California_LCCN2017707872.tif",
       "license": "public domain",
       "added": "2026-10-27"
+    },
+    "scottsdale-2026-12-07-qr-membership.svg": {
+      "use": "event",
+      "event": "scottsdale-2026-12-07",
+      "what": "QR code to https://sundae.com/membership/ (Sundae Membership, Sundae's own page)",
+      "text": true
     }
   },
   "clips": {

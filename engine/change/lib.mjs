@@ -7,7 +7,7 @@ export const ENGINE = path.resolve(path.dirname(fileURLToPath(import.meta.url)),
 export const REPO = path.resolve(ENGINE, '..');
 export const REQ = path.join(REPO, '.request');
 export const OUT = path.join(REQ, 'out');
-export const KEY_RE = /^(brand|events\/[a-z0-9]+(?:-[a-z0-9]+)*)\/(images|flyers|videos|reels)\/([A-Z0-9]{1,6})$/;
+export const KEY_RE = /^(brand|events\/[a-z0-9]+(?:-[a-z0-9]+)*)\/(images|flyers|videos|reels|backdrops)\/([A-Z0-9]{1,6})$/;
 
 export const readJSON = (p, fb) => { try { return JSON.parse(fs.readFileSync(p, 'utf8')); } catch (e) { if (fb !== undefined) return fb; throw e; } };
 export const writeJSON = (p, o) => { fs.mkdirSync(path.dirname(p), { recursive: true }); fs.writeFileSync(p, JSON.stringify(o, null, 2) + '\n'); };

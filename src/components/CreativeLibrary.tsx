@@ -27,6 +27,7 @@ export default function CreativeLibrary({ scope, lib, base, header, captions, re
   if (lib.flyers.length) nav.push(["#flyers", `Flyers · ${originals(lib.flyers).length}`]);
   if (lib.videos.length) nav.push(["#videos", `Videos · ${originals(lib.videos).length}`]);
   if (lib.reels.length) nav.push(["#reels", `Reels · ${originals(lib.reels).length}`]);
+  if (lib.backdrops.length) nav.push(["#backdrops", `Backdrops · ${originals(lib.backdrops).length}`]);
   if (captions?.count) nav.push([captions.href, `Captions · ${captions.count}`]);
   nav.push(["#changes", "Change requests"]);
   const plusVars = (a: Asset[]) => { const v = a.length - originals(a).length; return v ? ` (plus ${n(v, "variation")})` : ""; };
@@ -38,7 +39,7 @@ export default function CreativeLibrary({ scope, lib, base, header, captions, re
           {nav.map(([h, l]) => <a key={h} href={h} className="btn btn-outline btn-sm">{l}</a>)}
         </nav>
         {/* every library gets "Change all" (owner's request, 2026-10-27): the originals of each kind, by their change-box keys */}
-        <ChangeAll keys={{ images: originals(lib.images).map((a) => `${kb}/images/${a.id}`), flyers: originals(lib.flyers).map((a) => `${kb}/flyers/${a.id}`), videos: originals(lib.videos).map((a) => `${kb}/videos/${a.id}`), reels: originals(lib.reels).map((a) => `${kb}/reels/${a.id}`) }} />
+        <ChangeAll keys={{ images: originals(lib.images).map((a) => `${kb}/images/${a.id}`), flyers: originals(lib.flyers).map((a) => `${kb}/flyers/${a.id}`), videos: originals(lib.videos).map((a) => `${kb}/videos/${a.id}`), reels: originals(lib.reels).map((a) => `${kb}/reels/${a.id}`), backdrops: originals(lib.backdrops).map((a) => `${kb}/backdrops/${a.id}`) }} />
       </header>
       {lib.images.length > 0 && (
         <Section id="images" eyebrow="Social images" title={n(originals(lib.images).length, "image")} sub={`Feed (4:5), square, LinkedIn (1.91:1) and Stories (9:16)${plusVars(lib.images)}. Each lists where it runs and which caption it pairs with.`}>
@@ -58,6 +59,12 @@ export default function CreativeLibrary({ scope, lib, base, header, captions, re
       {lib.reels.length > 0 && (
         <Section id="reels" eyebrow="Instagram Reels" title={n(originals(lib.reels).length, "Reel")} sub={`1080×1920 with captions kept inside the Reels safe zone (clear of the top bar, the right-side buttons and the bottom caption area)${plusVars(lib.reels)}.`}>
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" data-stagger>{lib.reels.map((a) => <VideoCard key={a.file} a={a} base={`${base}/reels`} keyBase={`${kb}/reels`} />)}</div>
+        </Section>
+      )}
+      {/* trade-show backdrops (step and repeat), when an event has them: a preview JPG and a full-size vector print PDF */}
+      {lib.backdrops.length > 0 && (
+        <Section id="backdrops" eyebrow="Backdrops" title={n(originals(lib.backdrops).length, "backdrop option")} sub={`10×10 ft step-and-repeat backdrops for the booth${plusVars(lib.backdrops)}. The Print PDF is full size (120×120 in), all vector, ready for a large-format printer; ask the printer for their bleed and pole-pocket allowance.`}>
+          <Gallery items={lib.backdrops} base={`${base}/backdrops`} keyBase={`${kb}/backdrops`} aspect="aspect-square" />
         </Section>
       )}
       <Section id="changes" eyebrow="Change requests" title="What's been asked for" sub="Type a change in the box under any asset, or in Change all at the top for every asset at once. Updates replace the file; variations appear next to the original. Every change publishes automatically once it passes the brand checks; if it needs a new picture, an openly licensed photo is found (or, for a generic image, one is made with AI). One that can't be made says why.">

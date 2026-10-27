@@ -30,7 +30,7 @@ import { start, ENGINE_DIR, fileFor } from './serve.mjs';
 import { renderRecordFile, sha256 } from './tools/ap.mjs';
 
 export { ENGINE_DIR };
-export const KINDS = ['images', 'flyers', 'videos', 'reels'];
+export const KINDS = ['images', 'flyers', 'videos', 'reels', 'backdrops'];
 export const FPS = 30;
 export const PREVIEW_MAX = 1600;
 const PY = process.env.PYTHON || 'python3';
@@ -50,7 +50,7 @@ export function resolveSource(p) {
   const kind = path.basename(path.dirname(abs));
   if (!KINDS.includes(kind)) fail(`cannot tell the asset kind of ${rel}: its parent folder is "${kind}", expected one of ${KINDS.join('|')}`);
   const ext = path.extname(abs).toLowerCase();
-  const want = kind === 'images' || kind === 'flyers' ? '.html' : '.json';
+  const want = kind === 'videos' || kind === 'reels' ? '.json' : '.html';
   if (ext !== want) fail(`${rel}: a ${kind} source must be a ${want} file`);
   return { abs, rel: rel.split(path.sep).join('/'), kind, stem: path.basename(abs, ext) };
 }
@@ -194,6 +194,7 @@ const py = (code, ...args) => {
   catch (e) { fail(`${PY} failed: ${String(e.stderr || e.message).trim()}`); }
 };
 // exactly how every delivered JPG was saved (render-kit/README.md)
+const PDFSCALE = 'import sys\nfrom pypdf import PdfReader, PdfWriter\nr = PdfReader(sys.argv[1]); w = PdfWriter(); p = r.pages[0]; p.scale_by(float(sys.argv[3])); w.add_page(p); w.add_metadata(r.metadata or {}); w.write(sys.argv[2])\nprint("ok")';
 const PNG2JPG = "import sys\nfrom PIL import Image\nImage.open(sys.argv[1]).convert('RGB').save(sys.argv[2], quality=90, optimize=True)";
 const SHRINK = "import sys\nfrom PIL import Image\nim=Image.open(sys.argv[1]); L=int(sys.argv[3]); s=min(1.0, L/max(im.size))\nif s<1: im=im.resize((max(1,round(im.width*s)),max(1,round(im.height*s))), Image.LANCZOS)\nim.save(sys.argv[2], optimize=True); print(im.width, im.height)";
 const SHEET = `import sys, json, math
@@ -287,18 +288,27 @@ export async function renderAsset({ source, outDir, name, preview = false, timeo
       const dims = py(SHRINK, path.join(tmp, 'p.png'), path.join(tmp, 'out.png'), String(PREVIEW_MAX));
       files.push([path.join(tmp, 'out.png'), `${name}.preview.png`]); summary.previewSize = dims.replace(' ', 'x');
     } else if (!video) {
-      const scale = src.kind === 'flyers' ? 2 : 1;
+      const print = src.kind === 'flyers' || src.kind === 'backdrops';
+      const scale = print ? 2 : 1;
       stage = `screenshot at ${scale}x`;
       await run({ width: canvas.w, height: canvas.h, scale }, async page => { await loadStill(page, pageUrl); await page.screenshot({ path: path.join(tmp, 's.png') }); });
       py(PNG2JPG, path.join(tmp, 's.png'), path.join(tmp, 'out.jpg'));
       files.push([path.join(tmp, 'out.jpg'), `${name}.jpg`]);
-      if (src.kind === 'flyers') {
+      if (print) {
         stage = 'printing PDF';
+        // a backdrop (or any source) may declare its real print width, e.g. <meta name="print-width" content="120in">.
+        // Chromium drops text and images from PDF pages much larger than about 2400 px, so the PDF is printed at the
+        // canvas size and then enlarged as vectors (pypdf), for large-format print at full size
+        const pw = /<meta name="print-width" content="(\d+(?:\.\d+)?)in">/.exec(fs.readFileSync(src.abs, 'utf8'));
         await run({ width: canvas.w, height: canvas.h, scale: 1 }, async page => {
           await loadStill(page, pageUrl);
           await page.evaluate(t => { document.title = t; }, name); // PDF /Title (else Chromium uses the server URL); not rendered
-          await page.pdf({ path: path.join(tmp, 'out.pdf'), width: canvas.w + 'px', height: canvas.h + 'px', printBackground: true, pageRanges: '1' });
+          await page.pdf({ path: path.join(tmp, pw ? 'small.pdf' : 'out.pdf'), width: canvas.w + 'px', height: canvas.h + 'px', printBackground: true, pageRanges: '1' });
         });
+        if (pw) {
+          stage = 'scaling PDF to print size';
+          py(PDFSCALE, path.join(tmp, 'small.pdf'), path.join(tmp, 'out.pdf'), String((Number(pw[1]) * 96) / canvas.w));
+        }
         files.push([path.join(tmp, 'out.pdf'), `${name}.pdf`]);
       }
     } else if (preview) {

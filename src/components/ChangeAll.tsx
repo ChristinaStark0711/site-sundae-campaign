@@ -6,8 +6,8 @@ import { Icon } from "./Icon";
 // /api/requests, which starts one creative-change run per asset, so each asset is edited, checked against the brand
 // rules and published on its own, exactly as if its own box had been used. Variations aren't included.
 type Mode = "update" | "variant";
-type Kind = "all" | "images" | "flyers" | "videos" | "reels";
-const LABEL: Record<Kind, string> = { all: "Everything", images: "Images", flyers: "Flyers", videos: "Videos", reels: "Reels" };
+type Kind = "all" | "images" | "flyers" | "videos" | "reels" | "backdrops";
+const LABEL: Record<Kind, string> = { all: "Everything", images: "Images", flyers: "Flyers", videos: "Videos", reels: "Reels", backdrops: "Backdrops" };
 type State = { kind: "idle" | "sending" } | { kind: "sent"; sent: number; skipped: number; mode: Mode } | { kind: "error"; msg: string };
 
 export default function ChangeAll({ keys }: { keys: Record<Exclude<Kind, "all">, string[]> }) {
@@ -17,9 +17,9 @@ export default function ChangeAll({ keys }: { keys: Record<Exclude<Kind, "all">,
   const [kind, setKind] = useState<Kind>("all");
   const [hp, setHp] = useState("");
   const [st, setSt] = useState<State>({ kind: "idle" });
-  const all = [...keys.images, ...keys.flyers, ...keys.videos, ...keys.reels];
+  const all = [...keys.images, ...keys.flyers, ...keys.videos, ...keys.reels, ...keys.backdrops];
   const pick = kind === "all" ? all : keys[kind];
-  const kinds = (["all", "images", "flyers", "videos", "reels"] as Kind[]).filter((k) => (k === "all" ? all : keys[k]).length);
+  const kinds = (["all", "images", "flyers", "videos", "reels", "backdrops"] as Kind[]).filter((k) => (k === "all" ? all : keys[k]).length);
   const busy = st.kind === "sending";
   const hasVideo = pick.some((k) => /\/(videos|reels)\//.test(k));
 

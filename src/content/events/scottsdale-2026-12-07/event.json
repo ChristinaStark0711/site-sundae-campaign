@@ -1,0 +1,78 @@
+{
+  "slug": "scottsdale-2026-12-07",
+  "kind": "campaign",
+  "name": "Single Family Rental West",
+  "audience": "single-family rental owners, operators and investors",
+  "city": "Scottsdale",
+  "state": "AZ",
+  "citySlug": "scottsdale-az",
+  "date": "2026-12-07",
+  "venue": "Fairmont Scottsdale Princess",
+  "address": "7575 E. Princess Drive, Scottsdale, AZ 85255",
+  "phone": "480-585-4848",
+  "host": "Sundae Membership team",
+  "hostTitle": "",
+  "media": "/media/events/scottsdale-2026-12-07",
+  "prepared": "2026-10-27",
+  "headline": "Stop building. Start scaling.",
+  "summary": "Sundae exhibits at Single Family Rental West (IMN), Dec. 7-9, 2026, at the Fairmont Scottsdale Princess in Scottsdale, Arizona, with a 10×10 booth. The booth and its creative introduce Sundae Membership to the conference's single-family rental owners, operators and investors: the Sundae Engine (generate more leads, close more deals, maximize profit) and an intro call at sundae.com/membership.",
+  "strategy": "Before the conference, tell Sundae's network and the conference's audience where to find the booth; at the booth, a simple red backdrop, a handout and a QR code to sundae.com/membership; after it, follow up within 48 hours and book intro calls with experienced operators.",
+  "creativeNote": "Designed in Sundae's brand: Sundae red, the Sundae wordmark and copy from sundae.com/membership (read Oct. 27, 2026), with no pricing. No photos of people, so the creative fits whoever staffs the booth. QR codes go to sundae.com/membership. The backdrops are 10×10 ft step-and-repeat options with full-size vector PDFs; everything that matters sits above table height. Videos and Reels are silent by design.",
+  "sources": "Conference facts from informaconnect.com/imn-sfr-west (read Oct. 27, 2026): Single Family Rental West, Dec. 7-9, 2026, Fairmont Scottsdale Princess, Scottsdale, Arizona; 1,800+ SFR decision-makers. Booth (10×10) from the Sundae team; booth number not known yet. Membership copy from sundae.com/membership and the Sundae Membership Agreement (no pricing used). Projections are the dinner model's placeholders, labeled assumptions; they don't apply to a booth.",
+  "moves": [
+    [
+      "Confirm the booth number and exhibitor kit",
+      "Booth number, setup times and the hotel's shipping instructions from IMN, so the backdrop and handouts arrive on time."
+    ],
+    [
+      "Order the 10×10 backdrop",
+      "Pick one of the four options; send the full-size PDF to a large-format printer by Friday, Nov. 13."
+    ],
+    [
+      "Tell Sundae's network",
+      "LinkedIn and Instagram posts (Images 01-04) and a note to marketplace investors attending SFR West."
+    ],
+    [
+      "Bring the handout and QR code",
+      "Print 250 booth handouts (Flyer 01); every QR code goes to sundae.com/membership."
+    ],
+    [
+      "Follow up within 48 hours",
+      "Every conversation gets a follow-up and an intro-call link by Wednesday night, Dec. 9."
+    ]
+  ],
+  "plans": [
+    {
+      "slug": "organic",
+      "file": "01-event-organic-plan.md",
+      "title": "Organic plan — before, during and after SFR West",
+      "blurb": "Where to post, who to message, how the booth captures conversations and the 48-hour follow-up."
+    },
+    {
+      "slug": "paid",
+      "file": "02-event-paid-plan.md",
+      "title": "Paid plan — a small conference push",
+      "blurb": "An optional $1,500 test (an assumption) on LinkedIn and Meta around the conference dates, all to sundae.com/membership."
+    },
+    {
+      "slug": "filming",
+      "file": "06-filming-gameplan.md",
+      "title": "Filming gameplan — the booth",
+      "blurb": "A one-person phone kit for booth clips, short interviews with consent, and photos for the follow-up."
+    },
+    {
+      "slug": "action-plan",
+      "file": "07-action-plan.md",
+      "title": "What needs to be done",
+      "blurb": "Owners and dates from today to the follow-up, and what Sundae needs to supply."
+    }
+  ],
+  "actuals": null,
+  "_from": "manhattan-beach-2026-10-08",
+  "_todo": [],
+  "dateEnd": "2026-12-09",
+  "movesLabel": "Before the conference",
+  "_allow": [
+    "Led by co-founder and CEO Josh Stech, Sundae Membership helps"
+  ]
+}

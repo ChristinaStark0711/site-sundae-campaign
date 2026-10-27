@@ -1,0 +1,81 @@
+{
+ "w": 1080,
+ "h": 1920,
+ "tag": "Dec. 7-9 · Scottsdale",
+ "poster": 6,
+ "event": {
+  "weekday": "Monday",
+  "month": "Dec.",
+  "day": "7-9",
+  "time": "",
+  "venue": "Fairmont Scottsdale Princess",
+  "venueShort": "Fairmont Scottsdale Princess",
+  "hotel": "Fairmont Scottsdale Princess",
+  "city": "Scottsdale",
+  "cityLine": "Scottsdale, Arizona",
+  "address": "7575 E. Princess Drive, Scottsdale, AZ 85255",
+  "included": "Visit the Sundae booth",
+  "name": "Sundae Membership",
+  "nameLines": [
+   "Stop building.",
+   "Start scaling."
+  ],
+  "hostLine": "Sundae Membership · Visit us at Single Family Rental West",
+  "pill": "Learn more →"
+ },
+ "scenes": [
+  {
+   "type": "title",
+   "dur": 2.8,
+   "title": [
+    "You know",
+    "your market."
+   ]
+  },
+  {
+   "type": "title",
+   "dur": 2.8,
+   "title": [
+    "We bring",
+    "the systems."
+   ],
+   "accent": 1
+  },
+  {
+   "type": "list",
+   "dur": 6.0,
+   "kicker": "Better together",
+   "title": [
+    "Sundae brings"
+   ],
+   "items": [
+    [
+     "Marketing",
+     ""
+    ],
+    [
+     "Technology",
+     ""
+    ],
+    [
+     "Automation",
+     ""
+    ],
+    [
+     "Capital",
+     ""
+    ],
+    [
+     "Buyer reach",
+     ""
+    ]
+   ]
+  },
+  {
+   "type": "cta",
+   "dur": 4.0,
+   "when": "Single Family Rental West<br>Dec. 7-9, 2026 · Scottsdale",
+   "foot": "sundae.com/membership"
+  }
+ ]
+}

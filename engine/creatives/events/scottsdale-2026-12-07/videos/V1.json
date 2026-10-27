@@ -1,0 +1,112 @@
+{
+ "w": 1920,
+ "h": 1080,
+ "tag": "Dec. 7-9 · Scottsdale",
+ "poster": 4,
+ "event": {
+  "weekday": "Monday",
+  "month": "Dec.",
+  "day": "7-9",
+  "time": "",
+  "venue": "Fairmont Scottsdale Princess",
+  "venueShort": "Fairmont Scottsdale Princess",
+  "hotel": "Fairmont Scottsdale Princess",
+  "city": "Scottsdale",
+  "cityLine": "Scottsdale, Arizona",
+  "address": "7575 E. Princess Drive, Scottsdale, AZ 85255",
+  "included": "Visit the Sundae booth",
+  "name": "Sundae Membership",
+  "nameLines": [
+   "Stop building.",
+   "Start scaling."
+  ],
+  "hostLine": "Sundae Membership · Visit us at Single Family Rental West",
+  "pill": "Learn more →"
+ },
+ "scenes": [
+  {
+   "type": "title",
+   "dur": 4.0,
+   "kicker": "Sundae Membership",
+   "title": [
+    "Stop building.",
+    "Start scaling."
+   ],
+   "accent": 1
+  },
+  {
+   "type": "title",
+   "dur": 3.8,
+   "kicker": "The market has changed",
+   "title": [
+    "The opportunity",
+    "has not."
+   ],
+   "accent": 1,
+   "center": true
+  },
+  {
+   "type": "list",
+   "dur": 5.6,
+   "kicker": "The Sundae Engine",
+   "title": [
+    "A proven system"
+   ],
+   "items": [
+    [
+     "Generate more leads",
+     "Proven marketing, smarter targeting and data-driven optimization"
+    ],
+    [
+     "Close more deals",
+     "Faster response, automated follow-up and proven sales workflows"
+    ],
+    [
+     "Maximize profit",
+     "Buyer reach, capital solutions and shared operating expertise"
+    ]
+   ]
+  },
+  {
+   "type": "title",
+   "dur": 4.6,
+   "kicker": "Better together",
+   "title": [
+    "You know your market.",
+    "We bring the systems."
+   ],
+   "accent": 1
+  },
+  {
+   "type": "details",
+   "dur": 4.6,
+   "title": [
+    "Visit us"
+   ],
+   "rows": [
+    [
+     "When",
+     "Dec. 7-9, 2026"
+    ],
+    [
+     "Where",
+     "Fairmont Scottsdale Princess, Scottsdale, Arizona"
+    ],
+    [
+     "Find us",
+     "The Sundae booth"
+    ],
+    [
+     "Learn more",
+     "sundae.com/membership"
+    ]
+   ]
+  },
+  {
+   "type": "cta",
+   "dur": 4.4,
+   "when": "Single Family Rental West<br>Dec. 7-9, 2026 · Scottsdale",
+   "foot": "sundae.com/membership"
+  }
+ ]
+}

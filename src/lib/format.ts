@@ -41,12 +41,14 @@ export const nbsp = (s: string) => s.replace(/ (\d)/g, " $1");
 // announced") and no start time is on record, the place line reads "Time and venue to be announced".
 // An optional end time shows as an AP range ("6-8:30 p.m."), and a venue note replaces "Venue to be announced" when the
 // venue is shared another way (e.g. "Location sent to registered guests").
-type WhenWhere = { date: string; time?: string; timeEnd?: string; venue: string; venueNote?: string; space?: string };
+type WhenWhere = { date: string; dateEnd?: string; time?: string; timeEnd?: string; venue: string; venueNote?: string; space?: string };
 export const VENUE_TBA = "Venue to be announced";
 const timeRange = (a: string, b?: string) => {
   if (!b) return a;
   const sa = a.match(/ ([ap]\.m\.)$/)?.[1], sb = b.match(/ ([ap]\.m\.)$/)?.[1];
   return `${sa && sa === sb ? a.slice(0, -sa.length - 1) : a}-${b}`;
 };
-export const whenLine = (e: WhenWhere) => `${apDate(e.date, { weekday: e.date.length > 7 })}${e.time ? `, ${timeRange(e.time, e.timeEnd)}` : ""}`;
+// a multi-day event (a conference) reads "Dec. 7-9, 2026", or "Nov. 30-Dec. 2, 2026" across a month
+const dateRange = (a: string, b: string) => { const s = apDate(a, { year: false }), e = apDate(b); return a.slice(0, 7) === b.slice(0, 7) ? `${s}-${e.split(" ").slice(1).join(" ")}` : `${s}-${e}`; };
+export const whenLine = (e: WhenWhere) => `${e.dateEnd ? dateRange(e.date, e.dateEnd) : apDate(e.date, { weekday: e.date.length > 7 })}${e.time ? `, ${timeRange(e.time, e.timeEnd)}` : ""}`;
 export const whereLine = (e: WhenWhere) => (e.venue === VENUE_TBA ? (e.venueNote ?? (e.time ? VENUE_TBA : "Time and venue to be announced")) : `${e.space ? `${e.space} at ` : ""}${e.venue}`);

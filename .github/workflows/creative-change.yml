@@ -64,7 +64,7 @@ jobs:
       - name: Install the render engine
         if: hashFiles('.request/request.json') != ''
         run: |
-          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg python3-pil > /dev/null
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg python3-pil python3-pypdf > /dev/null
           cd engine && npm ci --no-audit --no-fund && npx playwright install --with-deps chromium
 
       - name: Make the change
