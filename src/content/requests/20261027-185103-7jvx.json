@@ -1,0 +1,18 @@
+{
+  "id": "20261027-185103-7jvx",
+  "at": "2026-10-27T18:51:03.690Z",
+  "asset": "events/scottsdale-2026-12-07/tablecloths/04",
+  "assetTitle": "Logo left, message right, white address band",
+  "mode": "update",
+  "text": "The table cloth needs to be simple, please use the example i gave to clause as a starting point.",
+  "status": "failed",
+  "summary": "No change made: the request asks to rebuild tablecloth 04 from an example that isn't attached to this asset.",
+  "reason": "This request couldn't be made automatically. Try rewording it.",
+  "finishedAt": "2026-10-27T18:56:21.929Z",
+  "model": "claude-opus-5-5",
+  "usage": {
+    "input_tokens": 9611,
+    "output_tokens": 309,
+    "calls": 1
+  }
+}
