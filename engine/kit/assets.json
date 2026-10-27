@@ -183,6 +183,14 @@
       "license": "AI-generated (Sundae's Higgsfield account)",
       "ai": true,
       "added": "2026-10-27"
+    },
+    "fresno-2026-11-18-tower-theatre.jpg": {
+      "use": "event",
+      "event": "fresno-2026-11-18",
+      "what": "The Tower Theatre, a Fresno landmark (city photo, not the venue), cropped from \"Tower Theater, Fresno, California\" by John Margolies (Library of Congress), public domain, from https://commons.wikimedia.org/wiki/File:Tower_Theater,_Fresno,_California_LCCN2017707872.tif; no credit line required",
+      "source": "https://commons.wikimedia.org/wiki/File:Tower_Theater,_Fresno,_California_LCCN2017707872.tif",
+      "license": "public domain",
+      "added": "2026-10-27"
     }
   },
   "clips": {

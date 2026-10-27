@@ -20,12 +20,30 @@
       "variantOf": "01"
     },
     {
+      "id": "01C",
+      "title": "Save your seat — Sign up to attend",
+      "file": "01c-sign-up-to-attend.jpg",
+      "spec": "1080×1350 · 4:5",
+      "use": "Variation of 01 · Instagram and Facebook feed, Meta ads and the pinned post",
+      "pair": "C11 · C12",
+      "variantOf": "01"
+    },
+    {
       "id": "02",
       "title": "Meet your host",
       "file": "02-meet-your-host.jpg",
       "spec": "1080×1350 · 4:5",
       "use": "Instagram, Facebook and LinkedIn feed; Meta ads",
       "pair": "C04"
+    },
+    {
+      "id": "02B",
+      "title": "Meet your host — Sign up to attend",
+      "file": "02b-sign-up-to-attend.jpg",
+      "spec": "1080×1350 · 4:5",
+      "use": "Variation of 02 · Instagram, Facebook and LinkedIn feed; Meta ads",
+      "pair": "C14",
+      "variantOf": "02"
     },
     {
       "id": "03",
@@ -46,6 +64,15 @@
       "updated": "2026-10-27"
     },
     {
+      "id": "03C",
+      "title": "Seats are limited — Sign up to attend",
+      "file": "03c-sign-up-to-attend.jpg",
+      "spec": "1080×1350 · 4:5",
+      "use": "Variation of 03 · Feed and Meta retargeting",
+      "pair": "C13",
+      "variantOf": "03"
+    },
+    {
       "id": "04",
       "title": "The market has changed",
       "file": "04-the-market-has-changed.jpg",
@@ -54,6 +81,15 @@
       "pair": "C08",
       "rev": 1,
       "updated": "2026-10-27"
+    },
+    {
+      "id": "04B",
+      "title": "The market has changed — Sign up to attend",
+      "file": "04b-sign-up-to-attend.jpg",
+      "spec": "1080×1350 · 4:5",
+      "use": "Variation of 04 · Josh’s LinkedIn and Meta ads",
+      "pair": "C13",
+      "variantOf": "04"
     },
     {
       "id": "05",
@@ -74,6 +110,15 @@
       "updated": "2026-10-27"
     },
     {
+      "id": "05C",
+      "title": "What we’ll cover — Sign up to attend",
+      "file": "05c-sign-up-to-attend.jpg",
+      "spec": "1080×1350 · 4:5",
+      "use": "Variation of 05 · Josh’s LinkedIn and an Instagram carousel",
+      "pair": "C17",
+      "variantOf": "05"
+    },
+    {
       "id": "06",
       "title": "Sacramento to Fresno",
       "file": "06-sacramento-to-fresno.jpg",
@@ -84,11 +129,28 @@
       "updated": "2026-10-22"
     },
     {
+      "id": "06B",
+      "title": "Sacramento to Fresno — Sign up to attend",
+      "file": "06b-sign-up-to-attend.jpg",
+      "spec": "1080×1350 · 4:5",
+      "use": "Variation of 06 · Instagram, Facebook and LinkedIn feed",
+      "pair": "C11",
+      "variantOf": "06"
+    },
+    {
       "id": "07",
       "title": "LinkedIn event banner",
       "file": "07-linkedin-event-banner.jpg",
       "spec": "1200×627 · 1.91:1",
       "use": "LinkedIn event cover, post and ad image, email header"
+    },
+    {
+      "id": "07B",
+      "title": "LinkedIn event banner — Sign up to attend",
+      "file": "07b-sign-up-to-attend.jpg",
+      "spec": "1200×627 · 1.91:1",
+      "use": "Variation of 07 · LinkedIn event cover, post and ad image, email header",
+      "variantOf": "07"
     },
     {
       "id": "08",
@@ -99,11 +161,29 @@
       "pair": "C06"
     },
     {
+      "id": "08B",
+      "title": "Who it’s for — Sign up to attend",
+      "file": "08b-sign-up-to-attend.jpg",
+      "spec": "1080×1350 · 4:5",
+      "use": "Variation of 08 · Instagram, Facebook and LinkedIn feed",
+      "pair": "C16",
+      "variantOf": "08"
+    },
+    {
       "id": "09",
       "title": "Story — You’re invited",
       "file": "09-story-you-are-invited.jpg",
       "spec": "1080×1920 · 9:16",
       "use": "Instagram and Facebook Stories; add the registration link sticker"
+    },
+    {
+      "id": "09B",
+      "title": "Story — You’re invited — Sign up to attend",
+      "file": "09b-sign-up-to-attend.jpg",
+      "spec": "1080×1920 · 9:16",
+      "use": "Variation of 09 · Instagram and Facebook Stories; add the registration link sticker",
+      "variantOf": "09",
+      "pair": "C12"
     }
   ],
   "flyers": [
@@ -116,12 +196,32 @@
       "pdf": "01-classic-invite.pdf"
     },
     {
+      "id": "01B",
+      "title": "Classic invitation — Sign up to attend",
+      "file": "01b-sign-up-to-attend.jpg",
+      "spec": "8.5×11 in · print and PDF",
+      "use": "Variation of 01 · Email attachment, partner groups and handouts (QR code to the registration page)",
+      "pdf": "01b-sign-up-to-attend.pdf",
+      "variantOf": "01",
+      "pair": "C19"
+    },
+    {
       "id": "02",
       "title": "Formal invitation card",
       "file": "02-invitation-card.jpg",
       "spec": "5×7 in · print",
       "use": "Personal invitations from Josh, email and print",
       "pdf": "02-invitation-card.pdf"
+    },
+    {
+      "id": "02B",
+      "title": "Formal invitation card — Sign up to attend",
+      "file": "02b-sign-up-to-attend.jpg",
+      "spec": "5×7 in · print",
+      "use": "Variation of 02 · Personal invitations from Josh, email and print",
+      "pdf": "02b-sign-up-to-attend.pdf",
+      "variantOf": "02",
+      "pair": "C19"
     },
     {
       "id": "03",
@@ -132,12 +232,30 @@
       "pdf": "03-speaker-flyer.pdf"
     },
     {
+      "id": "03B",
+      "title": "Speaker feature — Sign up to attend",
+      "file": "03b-sign-up-to-attend.jpg",
+      "spec": "8.5×11 in · print and PDF",
+      "use": "Variation of 03 · LinkedIn document post and partner groups (QR code to the registration page)",
+      "pdf": "03b-sign-up-to-attend.pdf",
+      "variantOf": "03"
+    },
+    {
       "id": "04",
       "title": "Why attend",
       "file": "04-why-attend.jpg",
       "spec": "8.5×11 in · print and PDF",
       "use": "Email attachment and partner groups (QR code to the registration page)",
       "pdf": "04-why-attend.pdf"
+    },
+    {
+      "id": "04B",
+      "title": "Why attend — Sign up to attend",
+      "file": "04b-sign-up-to-attend.jpg",
+      "spec": "8.5×11 in · print and PDF",
+      "use": "Variation of 04 · Email attachment and partner groups (QR code to the registration page)",
+      "pdf": "04b-sign-up-to-attend.pdf",
+      "variantOf": "04"
     },
     {
       "id": "05",
@@ -149,12 +267,32 @@
       "pdf": "05-square-digital.pdf"
     },
     {
+      "id": "05B",
+      "title": "Square digital flyer — Sign up to attend",
+      "file": "05b-sign-up-to-attend.jpg",
+      "spec": "1080×1080 · digital and PDF",
+      "use": "Variation of 05 · SMS and MMS, WhatsApp, Deal Champs and partner group posts (QR code to the registration page)",
+      "pair": "C20",
+      "pdf": "05b-sign-up-to-attend.pdf",
+      "variantOf": "05"
+    },
+    {
       "id": "06",
       "title": "Last roll call — square",
       "file": "06-last-roll-call-square.jpg",
       "spec": "1080×1080 · digital and PDF",
       "use": "The final week: feed, groups and texts (QR code to the registration page)",
       "pdf": "06-last-roll-call-square.pdf"
+    },
+    {
+      "id": "06B",
+      "title": "Last roll call — square — Sign up to attend",
+      "file": "06b-sign-up-to-attend.jpg",
+      "spec": "1080×1080 · digital and PDF",
+      "use": "Variation of 06 · The final week: feed, groups and texts (QR code to the registration page)",
+      "pdf": "06b-sign-up-to-attend.pdf",
+      "variantOf": "06",
+      "pair": "C20"
     }
   ],
   "videos": [
