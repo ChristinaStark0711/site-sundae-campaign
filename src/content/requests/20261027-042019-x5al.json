@@ -1,0 +1,21 @@
+{
+  "id": "20261027-042019-x5al",
+  "at": "2026-10-27T04:20:19.939Z",
+  "asset": "events/fresno-2026-11-18/images/05",
+  "assetTitle": "What we’ll cover",
+  "mode": "variant",
+  "text": "Replace the photo with an AI-generated image of an elegant dinner table with white linens, candles and wine glasses, no people",
+  "status": "done",
+  "summary": "Changed as asked.",
+  "result": {
+    "id": "05B",
+    "file": "05b-white-linen-table-photo.jpg"
+  },
+  "finishedAt": "2026-10-27T04:21:38.694Z",
+  "model": "claude-opus-5-5",
+  "usage": {
+    "input_tokens": 25342,
+    "output_tokens": 2267,
+    "calls": 2
+  }
+}
