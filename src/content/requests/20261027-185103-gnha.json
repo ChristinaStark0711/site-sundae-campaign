@@ -1,0 +1,18 @@
+{
+  "id": "20261027-185103-gnha",
+  "at": "2026-10-27T18:51:03.690Z",
+  "asset": "events/scottsdale-2026-12-07/tablecloths/02",
+  "assetTitle": "Logo and web address",
+  "mode": "update",
+  "text": "The table cloth needs to be simple, please use the example i gave to clause as a starting point.",
+  "status": "failed",
+  "summary": "Nothing changed. The request asks to simplify the tablecloth based on an example that isn't attached to this asset.",
+  "reason": "This request couldn't be made automatically. Try rewording it.",
+  "finishedAt": "2026-10-27T18:52:44.446Z",
+  "model": "claude-opus-5-5",
+  "usage": {
+    "input_tokens": 9378,
+    "output_tokens": 375,
+    "calls": 1
+  }
+}
