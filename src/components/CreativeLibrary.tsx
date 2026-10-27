@@ -1,6 +1,7 @@
 import Gallery from "@/components/Gallery";
 import VideoCard from "@/components/VideoCard";
 import RequestLog from "@/components/RequestLog";
+import ChangeAll from "@/components/ChangeAll";
 import { originals, scopePath, type Asset, type ChangeRequest, type Library } from "@/lib/content";
 
 export const Section = ({ id, eyebrow, title, sub, children }: { id: string; eyebrow: string; title: string; sub: string; children: React.ReactNode }) => (
@@ -36,6 +37,8 @@ export default function CreativeLibrary({ scope, lib, base, header, captions, re
         <nav className="mt-10 flex flex-wrap gap-2.5" aria-label="Library sections">
           {nav.map(([h, l]) => <a key={h} href={h} className="btn btn-outline btn-sm">{l}</a>)}
         </nav>
+        {/* every library gets "Change all" (owner's request, 2026-10-27): the originals of each kind, by their change-box keys */}
+        <ChangeAll keys={{ images: originals(lib.images).map((a) => `${kb}/images/${a.id}`), flyers: originals(lib.flyers).map((a) => `${kb}/flyers/${a.id}`), videos: originals(lib.videos).map((a) => `${kb}/videos/${a.id}`), reels: originals(lib.reels).map((a) => `${kb}/reels/${a.id}`) }} />
       </header>
       {lib.images.length > 0 && (
         <Section id="images" eyebrow="Social images" title={n(originals(lib.images).length, "image")} sub={`Feed (4:5), square, LinkedIn (1.91:1) and Stories (9:16)${plusVars(lib.images)}. Each lists where it runs and which caption it pairs with.`}>
@@ -57,7 +60,7 @@ export default function CreativeLibrary({ scope, lib, base, header, captions, re
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" data-stagger>{lib.reels.map((a) => <VideoCard key={a.file} a={a} base={`${base}/reels`} keyBase={`${kb}/reels`} />)}</div>
         </Section>
       )}
-      <Section id="changes" eyebrow="Change requests" title="What's been asked for" sub="Type a change in the box under any asset. Updates replace the file; variations appear next to the original. Every change publishes automatically once it passes the brand checks; if it needs a new picture, an openly licensed photo is found (or, for a generic image, one is made with AI). One that can't be made says why.">
+      <Section id="changes" eyebrow="Change requests" title="What's been asked for" sub="Type a change in the box under any asset, or in Change all at the top for every asset at once. Updates replace the file; variations appear next to the original. Every change publishes automatically once it passes the brand checks; if it needs a new picture, an openly licensed photo is found (or, for a generic image, one is made with AI). One that can't be made says why.">
         <RequestLog requests={requests} />
       </Section>
     </>

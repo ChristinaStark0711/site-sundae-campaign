@@ -14,7 +14,8 @@ fallback=0
 if [ "${CHANGE_REQUIRE_CHECK:-}" = 1 ] && [ "$(node -p "require('./$R').status")" = done ] && [ ! -f .request/out/checked ]; then
   node engine/change/fail.mjs "The build check didn't finish, so the change was not published. It can be sent again." || exit 1
 fi
-for i in 1 2 3 4 5 6; do
+# up to 15 tries: "Change all" starts many runs that finish close together and push onto the same main
+for i in $(seq 1 15); do
   git fetch -q origin main && git reset -q --hard origin/main && git clean -fdq || { sleep 3; continue; }
   if ! { node engine/change/apply.mjs && node engine/change/guard.mjs; }; then
     if [ "$fallback" = 1 ]; then echo "could not record even a failure log"; exit 1; fi
@@ -27,6 +28,6 @@ for i in 1 2 3 4 5 6; do
   git add -A
   git commit -q -m "Creative change ${ID}: ${ASSET} (${ST})" || { echo "nothing to commit"; exit 0; }
   if git push -q "$URL" HEAD:main; then echo "pushed ${ID} (${ST})"; exit 0; fi
-  sleep $((i * 4))
+  sleep $(( (i < 6 ? i : 6) * 4 + RANDOM % 7 ))
 done
-echo "could not push after 6 tries"; exit 1
+echo "could not push after 15 tries"; exit 1

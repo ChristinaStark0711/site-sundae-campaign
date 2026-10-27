@@ -8,7 +8,7 @@
 #                       at most CHANGE_AI_DAILY_USD (default 20) dollars in any 24 hours
 #   VERCEL_DEPLOY_HOOK  optional: a Vercel deploy hook URL, called after the push in case the push alone doesn't deploy
 # Variables (same page, Variables tab, all optional): CHANGE_MODEL (default claude-opus-5-5), CHANGE_DAILY_CAP
-# (default 30 a day), CHANGE_UPDATES ("auto", the default: every change that passes the checks publishes straight
+# (default 100 a day), CHANGE_UPDATES ("auto", the default: every change that passes the checks publishes straight
 # away, fact changes included; "review": fact changes and new layout parts wait for the owner; "approve": everything waits).
 #
 # Safety (details in engine/change/README.md): the AI never runs a tool or a command; it returns one new source file.

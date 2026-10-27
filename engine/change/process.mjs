@@ -18,7 +18,7 @@ import { AI_ASPECTS, addAiImage, addSearchedPhoto, aiAvailable, aiDailyUsd, inst
 import { ENGINE, OUT, REPO, REQ, checkSource, kitAssetNotes, kitAssets, kitClips, kitImageNotes, log, lostWording, missingFacts, newClaims, newFacts, newNames, newScripts, newSpecNumbers, nextVariantId, readJSON, redact, redactDeep, resolveAsset, slugify, writeJSON } from './lib.mjs';
 
 const MODEL = process.env.CHANGE_MODEL || 'claude-opus-5-5';
-const DAILY_CAP = Number(process.env.CHANGE_DAILY_CAP || 30);
+const DAILY_CAP = Number(process.env.CHANGE_DAILY_CAP || 100); // keep in step with src/app/api/requests/route.ts
 const UPDATES = (process.env.CHANGE_UPDATES || 'auto').toLowerCase(); // "auto" (as asked for) or "approve"
 // "auto" (the owner's choice, 2026-10-21: the hub is a private link, so nothing waits for approval): every change that
 // passes the safety and brand checks publishes straight away, fact changes and new layout parts included; what can't be

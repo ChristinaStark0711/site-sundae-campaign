@@ -11,7 +11,8 @@ export const dynamic = "force-dynamic";
 
 const REPO = process.env.GITHUB_REPO || "GabrealMDHindley/site-sundae-campaign";
 const WORKFLOW = "creative-change.yml";
-const DAILY_CAP = Number(process.env.CHANGE_DAILY_CAP || 30);
+const DAILY_CAP = Number(process.env.CHANGE_DAILY_CAP || 100); // raised from 30 for "Change all" (2026-10-27); keep in step with engine/change/process.mjs
+const MAX_BATCH = 60;
 const KEYS = new Set<string>(index.keys);
 const LIMIT = 6, WINDOW = 10 * 60 * 1000; // per IP: 6 requests every 10 minutes (best effort, per server instance)
 const hits = new Map<string, number[]>();
@@ -35,9 +36,15 @@ export async function POST(req: Request) {
   if (!body || typeof body !== "object" || Array.isArray(body)) return bad("Send the request as JSON.");
   const b = body as Record<string, unknown>;
   if (b.website) return NextResponse.json({ id: "ok" }); // honeypot: quietly drop bots
-  const asset = String(b.asset ?? ""), mode = String(b.mode ?? "");
+  // one asset (its own box), or "Change all": a list of assets from one library, each sent as its own run
+  const batch = Array.isArray(b.assets);
+  const assets = batch ? [...new Set((b.assets as unknown[]).map((x) => String(x)))] : [String(b.asset ?? "")];
+  const mode = String(b.mode ?? "");
   const text = String(b.text ?? "").toWellFormed().replace(/[\u0000-\u001f\u007f]/g, " ").replace(/\s+/g, " ").trim(); // no control characters
-  if (!KEYS.has(asset)) return bad("Unknown asset. Refresh the page and try again.");
+  if (!assets.length || assets.length > MAX_BATCH) return bad("Choose between 1 and 60 assets.");
+  if (assets.some((a) => !KEYS.has(a))) return bad("Unknown asset. Refresh the page and try again.");
+  const scopeOf = (a: string) => a.split("/").slice(0, -2).join("/");
+  if (new Set(assets.map(scopeOf)).size > 1) return bad("Change all works on one library at a time. Refresh the page and try again.");
   if (mode !== "update" && mode !== "variant") return bad("Choose Update or New variation.");
   if (text.length < 3) return bad("Describe the change in a few words.");
   if (text.length > 500) return bad("Keep the change under 500 characters.");
@@ -55,24 +62,35 @@ export async function POST(req: Request) {
   const day = new Date(now).toISOString().slice(0, 10);
   const runs = await gh(token, `/actions/workflows/${WORKFLOW}/runs?created=%3E%3D${day}&per_page=100`).then((r) => (r.ok ? r.json() : null)).catch(() => null);
   if (!runs) return bad("The build service didn't answer. Try again in a minute.", 502);
-  if ((runs.total_count ?? 0) >= DAILY_CAP) return bad(`Today's limit of ${DAILY_CAP} changes is reached. Try again tomorrow.`, 429);
+  const left = DAILY_CAP - (runs.total_count ?? 0);
+  if (left <= 0) return bad(`Today's limit of ${DAILY_CAP} changes is reached. Try again tomorrow.`, 429);
   // busy: a run for this asset, or an owner's approval (its asset isn't in its name), is waiting or running, whatever
   // day it started (a run from before midnight UTC is not in today's list)
   type Run = { status: string; display_title: string };
   const open = await Promise.all(["queued", "in_progress", "waiting", "pending", "requested"].map((st) => gh(token, `/actions/workflows/${WORKFLOW}/runs?status=${st}&per_page=100`).then((r) => (r.ok ? r.json() : null)).catch(() => null)));
   if (open.some((o) => !o)) return bad("The build service didn't answer. Try again in a minute.", 502);
-  const busy = [...(runs.workflow_runs ?? []), ...open.flatMap((o) => o.workflow_runs ?? [])].some((w: Run) => w.status !== "completed" && (w.display_title === `Creative change: ${asset}` || w.display_title.startsWith("Creative change: approve")));
-  if (busy) return bad("A change to this asset (or an approval) is already being made. Try again once it shows up (about 10 minutes).", 409);
+  const active = [...(runs.workflow_runs ?? []), ...open.flatMap((o) => o.workflow_runs ?? [])].filter((w: Run) => w.status !== "completed");
+  if (active.some((w: Run) => w.display_title.startsWith("Creative change: approve"))) return bad("An approval is being applied. Try again in a few minutes.", 409);
+  const isBusy = (a: string) => active.some((w: Run) => w.display_title === `Creative change: ${a}`);
+  const todo = assets.filter((a) => !isBusy(a)), skipped = assets.filter(isBusy);
+  if (!todo.length) return bad(batch ? "Every asset you picked already has a change being made. Try again once those show up (about 10 minutes)." : "A change to this asset (or an approval) is already being made. Try again once it shows up (about 10 minutes).", 409);
+  if (todo.length > left) return bad(`That's ${todo.length} changes, but only ${left} of today's ${DAILY_CAP} are left. Pick fewer assets or try again tomorrow.`, 429);
 
-  const id = new Date(now).toISOString().slice(0, 19).replace(/[-:]/g, "").replace("T", "-") + "-" + Math.random().toString(36).slice(2, 6).padEnd(4, "0");
-  const r = await gh(token, `/actions/workflows/${WORKFLOW}/dispatches`, {
-    method: "POST",
-    body: JSON.stringify({ ref: "main", inputs: { asset, request: JSON.stringify({ id, mode, text, at: new Date(now).toISOString() }) } }),
-  }).catch(() => null);
-  if (!r || r.status !== 204) {
-    console.error("dispatch failed", r?.status, r ? (await r.text().catch(() => "")).slice(0, 300) : "network");
-    return bad("The request couldn't be sent to the build service. Try again in a minute.", 502);
+  const ids: string[] = [];
+  for (const asset of todo) {
+    const id = new Date(now).toISOString().slice(0, 19).replace(/[-:]/g, "").replace("T", "-") + "-" + Math.random().toString(36).slice(2, 6).padEnd(4, "0");
+    const r = await gh(token, `/actions/workflows/${WORKFLOW}/dispatches`, {
+      method: "POST",
+      body: JSON.stringify({ ref: "main", inputs: { asset, request: JSON.stringify({ id, mode, text, at: new Date(now).toISOString() }) } }),
+    }).catch(() => null);
+    if (!r || r.status !== 204) {
+      console.error("dispatch failed", r?.status, r ? (await r.text().catch(() => "")).slice(0, 300) : "network");
+      if (!ids.length) return bad("The request couldn't be sent to the build service. Try again in a minute.", 502);
+      skipped.push(...todo.slice(todo.indexOf(asset))); // the rest weren't sent; the ones already sent still run
+      break;
+    }
+    ids.push(id);
   }
   recent.push(now); hits.set(ip, recent);
-  return NextResponse.json({ id });
+  return NextResponse.json(batch ? { ids, skipped } : { id: ids[0] });
 }

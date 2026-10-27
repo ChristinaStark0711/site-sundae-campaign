@@ -57,6 +57,15 @@ in the change log on the hub, and the box says so.
      refuses it commits a "failed" log entry instead, so every request ends in the log. Vercel redeploys.
 3. Results: **Done** (published), **Waiting for approval** (held) or **Couldn't apply** (failed; nothing changed).
 
+## Change all
+
+Every creative library has a **Change all** panel under its section buttons (`src/components/ChangeAll.tsx`): one
+change, applied to every original asset on the page or to one kind (images, flyers, videos, Reels), as an update or a
+new variation of each. Variations aren't included. The site sends the list to `/api/requests` (`assets: [...]`, one
+library, at most 60); the route checks it once, skips assets that already have a change running, refuses if the
+batch would pass the daily cap, and starts one run per asset, so each is edited, brand-checked and published on its
+own and logged as its own request. `push.sh` retries up to 15 times, since the runs finish close together.
+
 ## New pictures (photo search and AI images)
 
 When a request needs a picture the kit doesn't have, the model asks for one (`need_image`; `media.mjs`):
@@ -110,7 +119,7 @@ first.
    project → Settings → Environment Variables → `GITHUB_DISPATCH_TOKEN` (Production) → redeploy. Treat it like an
    owner credential: whoever holds it can also start an approval run, which publishes a held proposal.
 3. Optional: `VERCEL_DEPLOY_HOOK` secret (a Vercel deploy hook URL) if bot pushes ever stop triggering deploys;
-   repository variables `CHANGE_MODEL` (default `claude-opus-5-5`), `CHANGE_DAILY_CAP` (default 30; set the same
+   repository variables `CHANGE_MODEL` (default `claude-opus-5-5`), `CHANGE_DAILY_CAP` (default 100, raised for "Change all"; set the same
    number as a Vercel env var `CHANGE_DAILY_CAP` so the site refuses early) and `CHANGE_UPDATES` (`auto`, `review` or `approve`;
    `approve` holds updates and new variations alike).
 Never paste a key or token into a chat.
