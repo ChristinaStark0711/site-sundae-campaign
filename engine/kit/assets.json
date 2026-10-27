@@ -174,6 +174,15 @@
       "source": "https://www.flickr.com/photos/65131746@N00/16650014096",
       "license": "CC BY 2.0",
       "added": "2026-10-22"
+    },
+    "fresno-2026-11-18-ai-close-up-of-an-elegantly-plated.jpg": {
+      "use": "event",
+      "event": "fresno-2026-11-18",
+      "what": "AI-generated image (Higgsfield SOUL V2) of: Close-up of an elegantly plated dinner beside a glass of red wine on a crisp white tablecloth, soft natural warm evening light, clean and bright, no people, no text or logos.. Not a real place, venue or person, so never present it as one; label it \"AI-generated image\" wherever it shows",
+      "source": "higgsfield:01a17bae-4adf-759c-be51-c15bb76febce",
+      "license": "AI-generated (Sundae's Higgsfield account)",
+      "ai": true,
+      "added": "2026-10-27"
     }
   },
   "clips": {

@@ -1,0 +1,29 @@
+{
+  "id": "20261027-042438-4t9m",
+  "at": "2026-10-27T04:24:38.186Z",
+  "asset": "events/fresno-2026-11-18/images/03",
+  "assetTitle": "Seats are limited",
+  "mode": "variant",
+  "text": "Generate a new AI image for the top photo (not a stock photo and not one already used): a close-up of a plated dinner with a glass of red wine on a white tablecloth, warm evening light, no people",
+  "status": "done",
+  "summary": "Changed as asked.",
+  "result": {
+    "id": "03B",
+    "file": "03b-ai-plated-dinner-photo.jpg"
+  },
+  "newImage": {
+    "file": "fresno-2026-11-18-ai-close-up-of-an-elegantly-plated.jpg",
+    "ai": true
+  },
+  "ai": {
+    "usd": 0.006,
+    "provider": "higgsfield"
+  },
+  "finishedAt": "2026-10-27T04:47:18.808Z",
+  "model": "claude-opus-5-5",
+  "usage": {
+    "input_tokens": 36082,
+    "output_tokens": 2172,
+    "calls": 3
+  }
+}
