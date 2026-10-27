@@ -1,0 +1,21 @@
+{
+  "id": "20261027-165426-ui3x",
+  "at": "2026-10-27T16:54:26.019Z",
+  "asset": "events/fresno-2026-11-18/images/01",
+  "assetTitle": "Save your seat",
+  "mode": "update",
+  "text": "http://meet.sundae.com/fresno-nov-2026 get rid of the dinner and lets advertise a sign up to join \"AI, Real Estate & What's Next A Tougher Market Calls for a Different Conversation.. Wednesday, Nov. 18 · 6:00 PM-8:30 PM PT | Fresno, CA Finding opportunities, making deals pencil out, and staying competitive aren't getting any easier. The strategies that worked yesterday may not be enough for tomorrow. Sundae Co-Founder & CEO Josh Stech is excited to partner with Stratton Brown of Deal Champs, b",
+  "status": "done",
+  "summary": "Changed as asked.",
+  "result": {
+    "id": "01",
+    "file": "01-save-your-seat.jpg"
+  },
+  "finishedAt": "2026-10-27T17:16:07.256Z",
+  "model": "claude-opus-5-5",
+  "usage": {
+    "input_tokens": 25675,
+    "output_tokens": 2308,
+    "calls": 2
+  }
+}
