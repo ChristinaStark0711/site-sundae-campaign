@@ -1,0 +1,21 @@
+{
+  "id": "20261028-173922-7p2q",
+  "at": "2026-10-28T17:39:22.789Z",
+  "asset": "events/fresno-2026-11-18/images/04",
+  "assetTitle": "The market has changed",
+  "mode": "update",
+  "text": "While keeping everything very simmilar, we need to advertise a 6pm start time. Can you make this small change?",
+  "status": "done",
+  "summary": "Changed as asked.",
+  "result": {
+    "id": "04",
+    "file": "04-the-market-has-changed.jpg"
+  },
+  "finishedAt": "2026-10-28T17:41:10.728Z",
+  "model": "claude-opus-5-5",
+  "usage": {
+    "input_tokens": 25560,
+    "output_tokens": 1260,
+    "calls": 2
+  }
+}
