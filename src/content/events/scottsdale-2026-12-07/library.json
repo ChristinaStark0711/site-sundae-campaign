@@ -146,6 +146,38 @@
       "pdf": "04-why-sundae-membership.pdf",
       "spec": "10×10 ft (120×120 in) · vector PDF",
       "use": "Booth backdrop (step and repeat). Everything sits in the top 7.5 ft, so a 30 in table in front hides nothing"
+    },
+    {
+      "id": "05",
+      "title": "Add a ZERO — 3D ZERO and cards (TV space right)",
+      "file": "05-add-a-zero-3d.jpg",
+      "pdf": "05-add-a-zero-3d.pdf",
+      "spec": "10×10 ft (120×120 in) · vector PDF",
+      "use": "Booth backdrop with a rollaway TV in front of the right side: the right 4 ft is left clear (only the logo, top right, above the screen)"
+    },
+    {
+      "id": "06",
+      "title": "Add a ZERO — tilted ZERO, ring around the TV",
+      "file": "06-add-a-zero-ring.jpg",
+      "pdf": "06-add-a-zero-ring.pdf",
+      "spec": "10×10 ft (120×120 in) · vector PDF",
+      "use": "Booth backdrop with a rollaway TV in front of the right side: the right 4 ft is left clear (only the logo, top right, above the screen)"
+    },
+    {
+      "id": "07",
+      "title": "Add a ZERO — white slab, red TV side",
+      "file": "07-add-a-zero-white-slab.jpg",
+      "pdf": "07-add-a-zero-white-slab.pdf",
+      "spec": "10×10 ft (120×120 in) · vector PDF",
+      "use": "Booth backdrop with a rollaway TV in front of the right side: the right 4 ft is left clear (only the logo, top right, above the screen)"
+    },
+    {
+      "id": "08",
+      "title": "Add a ZERO — rising bars (TV space right)",
+      "file": "08-add-a-zero-rising-bars.jpg",
+      "pdf": "08-add-a-zero-rising-bars.pdf",
+      "spec": "10×10 ft (120×120 in) · vector PDF",
+      "use": "Booth backdrop with a rollaway TV in front of the right side: the right 4 ft is left clear (only the logo, top right, above the screen)"
     }
   ],
   "tablecloths": [
