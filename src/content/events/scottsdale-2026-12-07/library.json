@@ -213,5 +213,15 @@
       "spec": "6 ft table, 3 sides · one flat 72×88 in vector PDF",
       "use": "Top to bottom of the file: the back drop (29 in, upside down on purpose so it reads the right way from behind the table), the table top (30 in), the front drop (29 in). Order it as a 3-sided cover for a 6 ft table (72 × 30 in top, 29 in drop)"
     }
+  ],
+  "materials": [
+    {
+      "id": "01",
+      "title": "Sundae Membership one-sheet — Carl Bassett",
+      "file": "01-membership-one-sheet-carl.jpg",
+      "pdf": "01-membership-one-sheet-carl.pdf",
+      "spec": "Letter, 8.5×11 in · print PDF",
+      "use": "Booth handout. The one-sheet's words, Carl Bassett's contact details and the photo of Josh Stech with Dr. Phil, in the table cloth design"
+    }
   ]
 }

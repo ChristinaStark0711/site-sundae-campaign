@@ -29,6 +29,7 @@ export default function CreativeLibrary({ scope, lib, base, header, captions, re
   if (lib.reels.length) nav.push(["#reels", `Reels · ${originals(lib.reels).length}`]);
   if (lib.backdrops.length) nav.push(["#backdrops", `Backdrops · ${originals(lib.backdrops).length}`]);
   if (lib.tablecloths.length) nav.push(["#tablecloths", `Table cloth · ${originals(lib.tablecloths).length}`]);
+  if (lib.materials.length) nav.push(["#materials", `Event materials · ${originals(lib.materials).length}`]);
   if (captions?.count) nav.push([captions.href, `Captions · ${captions.count}`]);
   nav.push(["#changes", "Change requests"]);
   const plusVars = (a: Asset[]) => { const v = a.length - originals(a).length; return v ? ` (plus ${n(v, "variation")})` : ""; };
@@ -40,7 +41,7 @@ export default function CreativeLibrary({ scope, lib, base, header, captions, re
           {nav.map(([h, l]) => <a key={h} href={h} className="btn btn-outline btn-sm">{l}</a>)}
         </nav>
         {/* every library gets "Change all" (owner's request, 2026-10-27): the originals of each kind, by their change-box keys */}
-        <ChangeAll keys={{ images: originals(lib.images).map((a) => `${kb}/images/${a.id}`), flyers: originals(lib.flyers).map((a) => `${kb}/flyers/${a.id}`), videos: originals(lib.videos).map((a) => `${kb}/videos/${a.id}`), reels: originals(lib.reels).map((a) => `${kb}/reels/${a.id}`), backdrops: originals(lib.backdrops).map((a) => `${kb}/backdrops/${a.id}`), tablecloths: originals(lib.tablecloths).map((a) => `${kb}/tablecloths/${a.id}`) }} />
+        <ChangeAll keys={{ images: originals(lib.images).map((a) => `${kb}/images/${a.id}`), flyers: originals(lib.flyers).map((a) => `${kb}/flyers/${a.id}`), videos: originals(lib.videos).map((a) => `${kb}/videos/${a.id}`), reels: originals(lib.reels).map((a) => `${kb}/reels/${a.id}`), backdrops: originals(lib.backdrops).map((a) => `${kb}/backdrops/${a.id}`), tablecloths: originals(lib.tablecloths).map((a) => `${kb}/tablecloths/${a.id}`), materials: originals(lib.materials).map((a) => `${kb}/materials/${a.id}`) }} />
       </header>
       {lib.images.length > 0 && (
         <Section id="images" eyebrow="Social images" title={n(originals(lib.images).length, "image")} sub={`Feed (4:5), square, LinkedIn (1.91:1) and Stories (9:16)${plusVars(lib.images)}. Each lists where it runs and which caption it pairs with.`}>
@@ -72,6 +73,12 @@ export default function CreativeLibrary({ scope, lib, base, header, captions, re
       {lib.tablecloths.length > 0 && (
         <Section id="tablecloths" eyebrow="Table cloth" title={n(originals(lib.tablecloths).length, "table cloth option")} sub={`Each Print PDF is one flat, full-size, all-vector file for a 3-sided cover on a 6 ft folding table: 72×88 in, ready to upload to a table-cover printer${plusVars(lib.tablecloths)}. Top to bottom: the back drop (29 in, upside down on purpose so it reads the right way from behind the table), the table top (30 in) and the front drop (29 in). Order it as a "3-sided" or "open-back" throw for a 6 ft table.`}>
           <Gallery items={lib.tablecloths} base={`${base}/tablecloths`} keyBase={`${kb}/tablecloths`} aspect="aspect-[9/11]" cols="sm:grid-cols-2 lg:grid-cols-4" />
+        </Section>
+      )}
+      {/* printed handouts for the booth (one-sheets and the like), when an event has them */}
+      {lib.materials.length > 0 && (
+        <Section id="materials" eyebrow="Event marketing materials" title={n(originals(lib.materials).length, "event marketing material")} sub={`Handouts for the booth${plusVars(lib.materials)}. Each Print PDF is full size and all vector except the photos.`}>
+          <Gallery items={lib.materials} base={`${base}/materials`} keyBase={`${kb}/materials`} aspect="aspect-[17/22]" />
         </Section>
       )}
       <Section id="changes" eyebrow="Change requests" title="What's been asked for" sub="Type a change in the box under any asset, or in Change all at the top for every asset at once. Updates replace the file; variations appear next to the original. Every change publishes automatically once it passes the brand checks; if it needs a new picture, an openly licensed photo is found (or, for a generic image, one is made with AI). One that can't be made says why.">

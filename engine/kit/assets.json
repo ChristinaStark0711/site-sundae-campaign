@@ -203,6 +203,11 @@
       "event": "scottsdale-2026-12-07",
       "what": "QR code to https://sundae.com/hello (redirects to Sundae Membership, sundae.com/membership; the address on the table cloths)",
       "text": true
+    },
+    "sundae-josh-stech-dr-phil.jpg": {
+      "use": "photo",
+      "person": "Josh Stech",
+      "what": "Josh Stech with Dr. Phil (Sundae's own photo, from the CG one-sheet the user supplied 2026-10-29: \"CG_Onesheet - final Carl\"); for Sundae Membership marketing materials. Dr. Phil's endorsement is Sundae's own claim on that one-sheet."
     }
   },
   "clips": {
