@@ -43,7 +43,7 @@ permissions:
 
 jobs:
   change:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04 # pinned: ubuntu-latest moved to 26.04, where Playwright 1.56.1 cannot install chromium (run #33)
     timeout-minutes: 50
     steps:
       - uses: actions/checkout@v4

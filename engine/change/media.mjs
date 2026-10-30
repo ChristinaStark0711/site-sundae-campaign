@@ -32,7 +32,7 @@ export const aiAvailable = () => !!(hfKey().id && hfKey().secret);
 
 const toJpg = (from, to, max) => execFileSync('python3', ['-c', 'import sys;from PIL import Image;im=Image.open(sys.argv[1]).convert("RGB");m=int(sys.argv[3]);im.thumbnail((m,m));im.save(sys.argv[2],quality=88)', from, to, String(max)]);
 // Wikimedia asks for a user agent naming the client and a contact (its User-Agent policy)
-const UA = 'SundaeCampaignHub/1.0 (https://github.com/GabrealMDHindley/site-sundae-campaign; creative change box)';
+const UA = 'SundaeCampaignHub/1.0 (https://github.com/ChristinaStark0711/site-sundae-campaign; creative change box)';
 async function download(url, file, timeoutMs = 60e3) {
   let r;
   for (let i = 0; i < 2; i++) { // one retry after a rate limit

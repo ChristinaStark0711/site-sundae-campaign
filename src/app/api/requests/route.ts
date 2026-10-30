@@ -9,7 +9,7 @@ import index from "@/generated/asset-keys.json";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const REPO = process.env.GITHUB_REPO || "GabrealMDHindley/site-sundae-campaign";
+const REPO = process.env.GITHUB_REPO || "ChristinaStark0711/site-sundae-campaign";
 const WORKFLOW = "creative-change.yml";
 const DAILY_CAP = Number(process.env.CHANGE_DAILY_CAP || 100); // raised from 30 for "Change all" (2026-10-27); keep in step with engine/change/process.mjs
 const MAX_BATCH = 60;
