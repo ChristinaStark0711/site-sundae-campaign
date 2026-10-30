@@ -39,3 +39,5 @@ Guidelines (`clients/sundae/BRAND-SPEC.md` in the studio repo; condensed in `eng
 and Lato everywhere else, palette tokens in `src/app/globals.css`, chart colors in `src/content/palette.ts` (red is an
 accent and never text), AP style in all copy. `public/media/ai-start-frames/` are the Shade Courtyard frames used to
 generate the Manhattan Beach AI B-roll. `robots: noindex` (review build).
+
+Moved to Sundae’s own GitHub and Vercel on 29 Oct 2026.
