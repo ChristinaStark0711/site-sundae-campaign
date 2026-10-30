@@ -1,0 +1,21 @@
+{
+  "id": "20261030-010019-fyh0",
+  "at": "2026-10-30T01:00:19.343Z",
+  "asset": "events/manhattan-beach-2026-10-08/images/01",
+  "assetTitle": "Save your seat",
+  "mode": "variant",
+  "text": "Make a variation of this with a slightly warmer background.",
+  "status": "done",
+  "summary": "Changed as asked.",
+  "result": {
+    "id": "01B",
+    "file": "01b-warm-pink-background.jpg"
+  },
+  "finishedAt": "2026-10-30T01:01:37.192Z",
+  "model": "claude-opus-5-5",
+  "usage": {
+    "input_tokens": 24794,
+    "output_tokens": 1818,
+    "calls": 2
+  }
+}
