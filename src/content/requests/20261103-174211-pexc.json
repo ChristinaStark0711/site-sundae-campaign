@@ -1,0 +1,21 @@
+{
+  "id": "20261103-174211-pexc",
+  "at": "2026-11-03T17:42:11.800Z",
+  "asset": "events/fresno-2026-11-18/images/05C",
+  "assetTitle": "What we’ll cover — Sign up to attend",
+  "mode": "update",
+  "text": "I like this but i want to change the picture to something else of Josh, c",
+  "status": "done",
+  "summary": "Replaced the Sacramento dinner photo at the top with the kit cutout of Josh in his polo, standing on a mist panel to the right of the wordmark; everything else is unchanged.",
+  "result": {
+    "id": "05C",
+    "file": "05c-sign-up-to-attend.jpg"
+  },
+  "finishedAt": "2026-11-03T17:46:00.330Z",
+  "model": "claude-opus-5-5",
+  "usage": {
+    "input_tokens": 40791,
+    "output_tokens": 3984,
+    "calls": 3
+  }
+}
