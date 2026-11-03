@@ -1,0 +1,21 @@
+{
+  "id": "20261103-174310-403g",
+  "at": "2026-11-03T17:43:10.420Z",
+  "asset": "events/fresno-2026-11-18/images/08B",
+  "assetTitle": "Who it’s for — Sign up to attend",
+  "mode": "variant",
+  "text": "I like this, but i want the change to \"who should sign up\" to something more of an action line",
+  "status": "done",
+  "summary": "Changed as asked.",
+  "result": {
+    "id": "08C",
+    "file": "08c-save-your-seat-headline.jpg"
+  },
+  "finishedAt": "2026-11-03T17:48:55.813Z",
+  "model": "claude-opus-5-5",
+  "usage": {
+    "input_tokens": 25601,
+    "output_tokens": 1759,
+    "calls": 2
+  }
+}
