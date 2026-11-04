@@ -1,0 +1,18 @@
+{
+  "id": "20261104-233155-zbrh",
+  "at": "2026-11-04T23:31:55.705Z",
+  "asset": "events/fresno-2026-11-18/images/02B",
+  "assetTitle": "Meet your host — Sign up to attend",
+  "mode": "update",
+  "text": "Next to the QR code please repplace \"Sign up for dinner\" please replace with \"sign up to add a zero to your business\"",
+  "status": "failed",
+  "summary": "Would have changed the QR code label from \"Scan to sign up / Investor dinner in Fresno\" to \"Sign up to add a zero to your business\".",
+  "reason": "This request couldn't be made automatically. Try rewording it.",
+  "finishedAt": "2026-11-04T23:34:51.303Z",
+  "model": "claude-opus-5-5",
+  "usage": {
+    "input_tokens": 11871,
+    "output_tokens": 281,
+    "calls": 1
+  }
+}
