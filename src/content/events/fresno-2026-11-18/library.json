@@ -250,7 +250,9 @@
       "spec": "8.5×11 in · print and PDF",
       "use": "Variation of 03 · LinkedIn document post and partner groups (QR code to the registration page)",
       "pdf": "03b-sign-up-to-attend.pdf",
-      "variantOf": "03"
+      "variantOf": "03",
+      "rev": 1,
+      "updated": "2026-11-04"
     },
     {
       "id": "04",
