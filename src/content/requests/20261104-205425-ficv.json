@@ -1,0 +1,21 @@
+{
+  "id": "20261104-205425-ficv",
+  "at": "2026-11-04T20:54:25.091Z",
+  "asset": "events/fresno-2026-11-18/images/02B",
+  "assetTitle": "Meet your host — Sign up to attend",
+  "mode": "update",
+  "text": "please make the text at the bottom \"josh speaks on frest...\" bigger",
+  "status": "done",
+  "summary": "Changed as asked.",
+  "result": {
+    "id": "02B",
+    "file": "02b-sign-up-to-attend.jpg"
+  },
+  "finishedAt": "2026-11-04T20:55:42.684Z",
+  "model": "claude-opus-5-5",
+  "usage": {
+    "input_tokens": 26682,
+    "output_tokens": 2087,
+    "calls": 2
+  }
+}
