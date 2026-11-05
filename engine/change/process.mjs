@@ -132,6 +132,7 @@ const EDIT_TOOL = {
     image_aspect: { type: 'string', enum: AI_ASPECTS, description: 'need_image: the shape the picture fills, width:height.' },
     summary: { type: 'string', description: 'One plain sentence: what changed (or would change).' },
     reason: { type: 'string', description: 'When holding: why, in one or two plain sentences to the Sundae team.' },
+    hold_kind: { type: 'string', enum: ['earnings_figure', 'needs_file', 'unclear', 'other'], description: 'When holding: which rule. earnings_figure = a specific earnings, income or results figure, a guarantee or a giveaway; needs_file = a logo, clip or photo only Sundae can supply; unclear = unclear or not a design change of this asset.' },
     variant_title: { type: 'string', description: 'New variation only: 2-5 words naming what is different, e.g. "Blue headline box".' },
     source: { type: 'string', description: 'When applying: the COMPLETE new source file (HTML or JSON), not a diff.' },
   } },
@@ -287,6 +288,13 @@ const heldReason = (g) => {
   ].filter(Boolean);
   return `This needs the account owner's approval: it ${kinds.join('; ')}.`;
 };
+// When the model's own hold reason can't be shown (it quotes the new wording), say which rule held it, in fixed words.
+const HOLD_REASONS = {
+  earnings_figure: 'It would add a specific earnings, income or results figure, a guarantee or a giveaway, which Sundae Membership ads can\'t make (FTC Franchise Rule). Taglines like "Add a zero to your business" are fine without a number; send it again without the figure or promise.',
+  needs_file: 'It needs a logo, clip or photo that isn\'t in the creative kit yet. Send the file to the studio team, then send the request again.',
+  unclear: 'It wasn\'t clear what to change on this asset. Send it again, naming the exact words or part of the image to change.',
+};
+const holdReason = (kind) => HOLD_REASONS[kind] || (AUTO ? 'This request couldn\'t be made automatically. Try rewording it, naming the exact words to change.' : 'This request needs a person to look at it.');
 // Model-written text (a summary, a hold reason, review notes, a variation title) reaches the public log only if it adds
 // nothing the original doesn't say: no new number, address, claim, name or alphabet, no markup.
 const publicText = (t, max = 200) => {
@@ -338,12 +346,12 @@ try {
       r = await callModel([{ type: 'text', text: 'BEFORE (as published):' }, before, { type: 'text', text: `${describe()}\n\nNEW KIT FILE ADDED FOR THIS REQUEST: /kit/assets/${newKit.name}\n${newKit.meta.what}\nUse it now (decision "apply"), with its ${newKit.meta.ai ? '"AI-generated image" label' : 'credit line'} visible on the asset.` }], EDIT_TOOL);
       if (r.decision === 'need_image') r = { decision: 'hold', reason: 'The new picture didn\'t fit the request. Try describing the photo differently.', summary: r.summary };
     }
-    if (r.decision === 'hold') hold(publicText(r.reason) || (AUTO ? 'This request couldn\'t be made automatically. Try rewording it.' : 'This request needs a person to look at it.'), r.summary);
+    if (r.decision === 'hold') hold(publicText(r.reason) || holdReason(r.hold_kind), r.summary);
     src = String(r.source || '');
     g = src ? await gate(src) : { problems: ['is empty'] };
     if (g.problems.length) { // one retry with the reasons
       r = await callModel([{ type: 'text', text: 'BEFORE (as published):' }, before, { type: 'text', text: describe() + `\n\nYOUR PREVIOUS ATTEMPT WAS REJECTED because it ${g.problems.join('; ')}. Return a corrected complete source that avoids this.` }], EDIT_TOOL);
-      if (r.decision === 'hold') hold(publicText(r.reason) || (AUTO ? 'This request couldn\'t be made automatically. Try rewording it.' : 'This request needs a person to look at it.'), r.summary);
+      if (r.decision === 'hold') hold(publicText(r.reason) || holdReason(r.hold_kind), r.summary);
       src = String(r.source || '');
       g = src ? await gate(src) : { problems: ['is empty'] };
       if (g.problems.length) fail(`The edit couldn't be made safely: the result ${plainProblem(g.problems[0])}. Nothing was changed.`);
