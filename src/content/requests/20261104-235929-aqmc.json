@@ -1,0 +1,18 @@
+{
+  "id": "20261104-235929-aqmc",
+  "at": "2026-11-04T23:59:29.696Z",
+  "asset": "events/fresno-2026-11-18/images/02B",
+  "assetTitle": "Meet your host — Sign up to attend",
+  "mode": "update",
+  "text": "please remove \"investor dinner in Fresno\" and replace with sign up to learn how to add a zero to your business\" Noting on the page can have the word \"dinner\"",
+  "status": "failed",
+  "summary": "Would have replaced \"Investor dinner in Fresno\" beside the QR code with \"Sign up to learn how to add a zero to your business.\" Nothing was changed.",
+  "reason": "This request couldn't be made automatically. Try rewording it.",
+  "finishedAt": "2026-11-05T00:30:50.082Z",
+  "model": "claude-opus-5-5",
+  "usage": {
+    "input_tokens": 11883,
+    "output_tokens": 463,
+    "calls": 1
+  }
+}
