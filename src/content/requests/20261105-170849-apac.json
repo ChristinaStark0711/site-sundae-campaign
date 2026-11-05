@@ -1,0 +1,18 @@
+{
+  "id": "20261105-170849-apac",
+  "at": "2026-11-05T17:08:49.436Z",
+  "asset": "events/fresno-2026-11-18/images/02B",
+  "assetTitle": "Meet your host — Sign up to attend",
+  "mode": "update",
+  "text": "Remove the wording under \"scan to sign up\"",
+  "status": "failed",
+  "summary": "No change made: the current asset has no wording directly under \"Scan to sign up,\" so we're asking whether the request means the panel headline, the paragraph or both.",
+  "reason": "It wasn't clear what to change on this asset. Send it again, naming the exact words or part of the image to change.",
+  "finishedAt": "2026-11-05T17:09:46.664Z",
+  "model": "claude-opus-5-5",
+  "usage": {
+    "input_tokens": 12125,
+    "output_tokens": 631,
+    "calls": 1
+  }
+}
