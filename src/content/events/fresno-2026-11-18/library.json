@@ -75,6 +75,16 @@
       "variantOf": "03"
     },
     {
+      "id": "03D",
+      "title": "Seats are limited — variation",
+      "file": "03d-variation.jpg",
+      "spec": "1080×1350 · 4:5",
+      "use": "Variation of 03 · Feed and Meta retargeting",
+      "pair": "C05",
+      "variantOf": "03",
+      "updated": "2026-11-05"
+    },
+    {
       "id": "04",
       "title": "The market has changed",
       "file": "04-the-market-has-changed.jpg",
