@@ -1,0 +1,21 @@
+{
+  "id": "20261105-021305-rmg3",
+  "at": "2026-11-05T02:13:05.725Z",
+  "asset": "events/fresno-2026-11-18/images/02B",
+  "assetTitle": "Meet your host — Sign up to attend",
+  "mode": "update",
+  "text": "Remove ‘Investor dinner in Fresno’ and replace it with ‘Sign up to learn how to add a zero to your business.’ Nothing on the image can say ‘dinner.",
+  "status": "done",
+  "summary": "Changed as asked.",
+  "result": {
+    "id": "02B",
+    "file": "02b-sign-up-to-attend.jpg"
+  },
+  "finishedAt": "2026-11-05T02:14:39.677Z",
+  "model": "claude-opus-5-5",
+  "usage": {
+    "input_tokens": 42115,
+    "output_tokens": 4534,
+    "calls": 3
+  }
+}
