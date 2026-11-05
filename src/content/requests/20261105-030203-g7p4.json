@@ -1,0 +1,21 @@
+{
+  "id": "20261105-030203-g7p4",
+  "at": "2026-11-05T03:02:03.039Z",
+  "asset": "events/fresno-2026-11-18/images/02B",
+  "assetTitle": "Meet your host — Sign up to attend",
+  "mode": "update",
+  "text": "Please remove the text below \"scan to sign up\"",
+  "status": "done",
+  "summary": "Removed the line \"Sign up to learn how to add a zero to your business.\" from under \"Scan to sign up\" next to the QR code, and kept everything else as it was.",
+  "result": {
+    "id": "02B",
+    "file": "02b-sign-up-to-attend.jpg"
+  },
+  "finishedAt": "2026-11-05T03:03:46.304Z",
+  "model": "claude-opus-5-5",
+  "usage": {
+    "input_tokens": 27198,
+    "output_tokens": 1373,
+    "calls": 2
+  }
+}
