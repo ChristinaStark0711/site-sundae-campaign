@@ -1,0 +1,21 @@
+{
+  "id": "20261106-181841-rppe",
+  "at": "2026-11-06T18:18:41.390Z",
+  "asset": "events/scottsdale-2026-12-07/materials/04",
+  "assetTitle": "One-sheet — Add a ZERO, white slab (matches backdrop 07)",
+  "mode": "variant",
+  "text": "instead of the header \"everything you need to scale\" replace with \"The Sundae Engine.\" instead of \"why Sundae?\" replace with \"The Sundae Advantage\"",
+  "status": "done",
+  "summary": "Renamed the \"Everything You Need to Scale\" header to \"The Sundae Engine.\" and the \"Why Sundae?\" header to \"The Sundae Advantage\", with \"Sundae\" still in the red highlight box.",
+  "result": {
+    "id": "04B",
+    "file": "04b-sundae-engine-section-headers.jpg"
+  },
+  "finishedAt": "2026-11-06T18:20:21.944Z",
+  "model": "claude-opus-5-5",
+  "usage": {
+    "input_tokens": 38293,
+    "output_tokens": 5819,
+    "calls": 2
+  }
+}

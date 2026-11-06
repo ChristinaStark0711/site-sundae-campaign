@@ -292,6 +292,16 @@
       "updated": "2026-11-06"
     },
     {
+      "id": "04B",
+      "title": "One-sheet — Add a ZERO, white slab (matches backdrop 07) — Sundae Engine section headers",
+      "file": "04b-sundae-engine-section-headers.jpg",
+      "pdf": "04b-sundae-engine-section-headers.pdf",
+      "spec": "Letter, 8.5×11 in · print PDF",
+      "use": "Variation of 04 · Booth handout. The Carl Bassett one-sheet's information (photo of Josh Stech with Dr. Phil, Carl's contact details, QR to sundae.com/hello) in the look of the Add a ZERO backdrops",
+      "variantOf": "04",
+      "updated": "2026-11-06"
+    },
+    {
       "id": "05",
       "title": "One-sheet — Add a ZERO, rising bars (matches backdrop 08)",
       "file": "05-one-sheet-zero-rising-bars.jpg",
