@@ -42,7 +42,10 @@ function inspect({ rootSel, canvas }) {
     const t = el.tagName.toLowerCase();
     out.tags.add(t);
     if (BAD.has(t) && !(t === 'title' && el.closest('head'))) v(`<${t}> element`);
-    if (t === 'meta' && [...el.attributes].some((a) => a.name !== 'charset')) v('<meta> other than charset');
+    // the one other <meta> a source may carry: its real print width, read by render.mjs (backdrops, table cloths,
+    // materials), e.g. <meta name="print-width" content="8.5in">
+    const printWidth = t === 'meta' && el.attributes.length === 2 && el.getAttribute('name') === 'print-width' && /^\d+(?:\.\d+)?in$/.test(el.getAttribute('content') || '');
+    if (t === 'meta' && !printWidth && [...el.attributes].some((a) => a.name !== 'charset')) v('<meta> other than charset or print-width');
     if (t === 'link' && !(el.getAttribute('rel') === 'stylesheet' && /^\/kit\/[a-z0-9-]+\.css$/.test(el.getAttribute('href') || ''))) v(`<link> other than a /kit/ stylesheet`);
     for (const a of el.attributes) {
       const n = a.name.toLowerCase(), val = a.value.trim();
