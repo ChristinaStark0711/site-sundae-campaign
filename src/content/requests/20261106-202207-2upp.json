@@ -1,0 +1,21 @@
+{
+  "id": "20261106-202207-2upp",
+  "at": "2026-11-06T20:22:07.160Z",
+  "asset": "events/scottsdale-2026-12-07/materials/04",
+  "assetTitle": "One-sheet — Add a ZERO, white slab (matches backdrop 07)",
+  "mode": "update",
+  "text": "Can you remove the horizontal line between the Engine and Advantage? Try to center the Dr Phil image with the logo above Remove Carl’s territories, just keep it “Member” Move the entire “Engine” section up a bit since there is a lot of white space above.",
+  "status": "done",
+  "summary": "Changed as asked.",
+  "result": {
+    "id": "04",
+    "file": "04-one-sheet-zero-white-slab.jpg"
+  },
+  "finishedAt": "2026-11-06T20:24:17.094Z",
+  "model": "claude-opus-5-5",
+  "usage": {
+    "input_tokens": 38245,
+    "output_tokens": 7264,
+    "calls": 2
+  }
+}
