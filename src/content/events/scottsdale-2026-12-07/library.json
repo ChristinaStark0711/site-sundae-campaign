@@ -264,6 +264,38 @@
       "use": "Variation of 01 · Booth handout. The one-sheet's words, Carl Bassett's contact details and the photo of Josh Stech with Dr. Phil, in the table cloth design",
       "variantOf": "01",
       "updated": "2026-11-06"
+    },
+    {
+      "id": "02",
+      "title": "One-sheet — Add a ZERO, 3D (matches backdrop 05)",
+      "file": "02-one-sheet-zero-3d.jpg",
+      "pdf": "02-one-sheet-zero-3d.pdf",
+      "spec": "Letter, 8.5×11 in · print PDF",
+      "use": "Booth handout. The Carl Bassett one-sheet's information (photo of Josh Stech with Dr. Phil, Carl's contact details, QR to sundae.com/hello) in the look of the Add a ZERO backdrops"
+    },
+    {
+      "id": "03",
+      "title": "One-sheet — Add a ZERO, tilted tag (matches backdrop 06)",
+      "file": "03-one-sheet-zero-tag.jpg",
+      "pdf": "03-one-sheet-zero-tag.pdf",
+      "spec": "Letter, 8.5×11 in · print PDF",
+      "use": "Booth handout. The Carl Bassett one-sheet's information (photo of Josh Stech with Dr. Phil, Carl's contact details, QR to sundae.com/hello) in the look of the Add a ZERO backdrops"
+    },
+    {
+      "id": "04",
+      "title": "One-sheet — Add a ZERO, white slab (matches backdrop 07)",
+      "file": "04-one-sheet-zero-white-slab.jpg",
+      "pdf": "04-one-sheet-zero-white-slab.pdf",
+      "spec": "Letter, 8.5×11 in · print PDF",
+      "use": "Booth handout. The Carl Bassett one-sheet's information (photo of Josh Stech with Dr. Phil, Carl's contact details, QR to sundae.com/hello) in the look of the Add a ZERO backdrops"
+    },
+    {
+      "id": "05",
+      "title": "One-sheet — Add a ZERO, rising bars (matches backdrop 08)",
+      "file": "05-one-sheet-zero-rising-bars.jpg",
+      "pdf": "05-one-sheet-zero-rising-bars.pdf",
+      "spec": "Letter, 8.5×11 in · print PDF",
+      "use": "Booth handout. The Carl Bassett one-sheet's information (photo of Josh Stech with Dr. Phil, Carl's contact details, QR to sundae.com/hello) in the look of the Add a ZERO backdrops"
     }
   ]
 }
