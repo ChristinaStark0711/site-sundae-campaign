@@ -1,0 +1,21 @@
+{
+  "id": "20261106-173024-nmcz",
+  "at": "2026-11-06T17:30:24.889Z",
+  "asset": "events/scottsdale-2026-12-07/materials/01",
+  "assetTitle": "Sundae Membership one-sheet — Carl Bassett",
+  "mode": "variant",
+  "text": "please make a me few more options. Please have it match the vibe of the table cloths",
+  "status": "done",
+  "summary": "Changed as asked.",
+  "result": {
+    "id": "01B",
+    "file": "01b-all-red-table-cloth-look.jpg"
+  },
+  "finishedAt": "2026-11-06T17:32:54.987Z",
+  "model": "claude-opus-5-5",
+  "usage": {
+    "input_tokens": 37031,
+    "output_tokens": 6861,
+    "calls": 2
+  }
+}

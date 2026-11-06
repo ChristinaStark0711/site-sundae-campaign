@@ -254,6 +254,16 @@
       "pdf": "01-membership-one-sheet-carl.pdf",
       "spec": "Letter, 8.5×11 in · print PDF",
       "use": "Booth handout. The one-sheet's words, Carl Bassett's contact details and the photo of Josh Stech with Dr. Phil, in the table cloth design"
+    },
+    {
+      "id": "01B",
+      "title": "Sundae Membership one-sheet — Carl Bassett — All-red table cloth look",
+      "file": "01b-all-red-table-cloth-look.jpg",
+      "pdf": "01b-all-red-table-cloth-look.pdf",
+      "spec": "Letter, 8.5×11 in · print PDF",
+      "use": "Variation of 01 · Booth handout. The one-sheet's words, Carl Bassett's contact details and the photo of Josh Stech with Dr. Phil, in the table cloth design",
+      "variantOf": "01",
+      "updated": "2026-11-06"
     }
   ]
 }
