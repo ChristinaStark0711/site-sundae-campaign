@@ -1,0 +1,21 @@
+{
+  "id": "20261106-182856-tmdp",
+  "at": "2026-11-06T18:28:56.884Z",
+  "asset": "[removed]",
+  "assetTitle": "One-sheet — Add a ZERO, white slab (matches backdrop 07) — Sundae Engine section headers",
+  "mode": "update",
+  "text": "\"The Sundae Engine\" (remove the period\"; for The Sundae Advantage, remove the red highlight for \"Sundae\" and make the font charcoal like the rest of the header",
+  "status": "done",
+  "summary": "Changed as asked.",
+  "result": {
+    "id": "04B",
+    "file": "04b-sundae-engine-section-headers.jpg"
+  },
+  "finishedAt": "2026-11-06T18:30:28.437Z",
+  "model": "claude-opus-5-5",
+  "usage": {
+    "input_tokens": 38244,
+    "output_tokens": 5524,
+    "calls": 2
+  }
+}
