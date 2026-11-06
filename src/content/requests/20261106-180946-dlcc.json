@@ -1,0 +1,21 @@
+{
+  "id": "20261106-180946-dlcc",
+  "at": "2026-11-06T18:09:46.302Z",
+  "asset": "events/scottsdale-2026-12-07/materials/04",
+  "assetTitle": "One-sheet — Add a ZERO, white slab (matches backdrop 07)",
+  "mode": "update",
+  "text": "can you take off the blue highlight on \"sundae\" above the word \"brand\" and instead make the word Sundae our red color",
+  "status": "done",
+  "summary": "Changed the \"Sundae?\" highlight in the \"Why Sundae?\" heading from blue to Sundae red with white text, since red text isn't allowed under the brand rules.",
+  "result": {
+    "id": "04",
+    "file": "04-one-sheet-zero-white-slab.jpg"
+  },
+  "finishedAt": "2026-11-06T18:11:22.392Z",
+  "model": "claude-opus-5-5",
+  "usage": {
+    "input_tokens": 38249,
+    "output_tokens": 5951,
+    "calls": 2
+  }
+}
