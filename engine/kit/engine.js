@@ -156,14 +156,13 @@
     tl.fromTo(c, { y: 0 }, { y: -2 * U, duration: d + XF, ease: 'none' }, t0);
     return c;
   };
-  const dots = (sc, x, y, t0, size = 1.3 * U) => {
-    const g = el('div', 'dots', '', `left:${x}px;top:${y}px;--d:${size}px;--g:${size * 1.25}px`);
-    for (let i = 0; i < 16; i++) g.appendChild(el('i')); sc.appendChild(g);
-    tl.fromTo(g.children, { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, duration: 0.35, stagger: 0.025, ease: 'power2.out' }, t0 + 0.3);
+  // The 4×4 blue dot grid is retired (Sundae, 2026-11-07: "it doesn't match our vibe"). dots() now places an empty,
+  // invisible marker so the layouts that position against it keep their spacing; nothing is drawn.
+  const dots = (sc, x, y) => {
+    const g = el('div', '', '', `position:absolute;left:${x}px;top:${y}px;width:0;height:0`); sc.appendChild(g);
     return g;
   };
-  // slate circle + 4×4 dot grid: the grid (top-left x, y) is pushed straight away from the circle until every dot
-  // clears its edge by ≥ 3U, then drifts with the circle, so the clear space holds for the whole scene (deck p.11)
+  // slate circle (the dot grid that used to sit beside it is retired; its empty marker still drifts with the circle)
   const ring = (sc, cx, cy, D, x, y, t0, d, ds) => {
     const R = D / 2, p = 2.25 * ds, want = 3 * U, cs = [];
     for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) cs.push([ds / 2 + i * p, ds / 2 + j * p]);

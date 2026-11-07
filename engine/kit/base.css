@@ -69,8 +69,6 @@ b,strong{font-weight:700}
 .shape-circle{position:absolute;background:var(--slate);border-radius:50%}
 .bar{position:absolute;border-radius:999px;background:var(--blue)}
 .bar.red{background:var(--red)}
-.dots{position:absolute;display:grid;grid-template-columns:repeat(4,var(--d,14px));gap:var(--g,12px)}
-.dots i{display:block;width:var(--d,14px);height:var(--d,14px);border-radius:50%;background:var(--blue)}
 
 /* panels, rules, QR tile */
 .panel{background:var(--mist)}
