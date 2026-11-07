@@ -243,7 +243,8 @@
       const ts = o.ts || (V ? 9.5 : SQ ? 8.5 : (o.center ? 9.4 : 8.6));
       if (o.bulbs) bulbs(sc, t0, V ? 9 * U + TAB + 5 * U : TAB + 5 * U, V ? 9 : 13);
       // circleImg: a kit photo set inside the slate circle (the circle composition is used, whatever the scene index)
-      const shapes = (!o.bulbs || V) ? accents(sc, t0, d, o.circleImg ? 0 : SCI) : [];
+      // cards: a right-hand column of info cards in place of the shapes (landscape/square; on a Reel they stack below)
+      const shapes = o.cards ? [] : (!o.bulbs || V) ? accents(sc, t0, d, o.circleImg ? 0 : SCI) : [];
       if (o.circleImg && shapes[0]) {
         const ph = el('img', '', null, 'position:absolute;inset:9%;width:82%;height:82%;border-radius:50%;object-fit:cover;object-position:' + (o.circlePos || '50% 30%') + ';border:' + 0.9 * U + 'px solid var(--white)');
         ph.src = A + o.circleImg; ph.alt = o.circleAlt || ''; shapes[0].appendChild(ph);
@@ -251,11 +252,34 @@
       // vertically centred on Reels, and wherever no shape anchors the lower corner (a bottom-anchored block
       // under the string lights left an empty band)
       const mid = o.center || (o.center !== false && (V || !shapes.length));
-      const { wrap, parts } = textBlock(Object.assign({ align: o.align || 'left' }, o, { ts }, mid ? { top: null, bottom: null } : {}));
+      const side = o.cards && !V;
+      const { wrap, parts } = textBlock(Object.assign({ align: o.align || 'left' }, o, { ts }, mid ? { top: null, bottom: null } : {}, side ? { maxW: W * 0.48 } : {}));
+      if (side) wrap.style.right = 'auto';
       if (mid) centerIn(wrap, V ? 0 : TAB, RSAFE * 0.6); // landscape/square: centred in the space under the brand bar
       wrap.style.transformOrigin = '0% 50%';
-      if (parts.t && !V && !SQ) parts.t._wide = { wrap, shapes, maxW: W - 2 * pad, recenter: !mid }; // long lines: use the full width before wrapping
+      if (parts.t && !V && !SQ && !o.cards) parts.t._wide = { wrap, shapes, maxW: W - 2 * pad, recenter: !mid }; // long lines: use the full width before wrapping
+      if (side) wrap.style.maxWidth = W * 0.48 + 'px';
       sc.appendChild(wrap); animateText(parts, t0);
+      if (o.cards) {
+        // each card: {head, items[], blue?}; white cards carry a slate border, a blue card white text
+        const col = el('div', '', '', V ? `position:absolute;left:${pad}px;right:${pad}px;bottom:${RSAFE + 4 * U}px;display:flex;flex-direction:column;gap:${2 * U}px`
+          : `position:absolute;left:${W * 0.575}px;right:${pad}px;top:${TAB + (H - TAB) / 2}px;transform:translateY(-50%);display:flex;flex-direction:column;gap:${2.4 * U}px`);
+        o.cards.forEach((c, i) => {
+          const fg = c.blue ? 'var(--white)' : 'var(--ink)';
+          const card = el('div', '', '', `background:${c.blue ? 'var(--blue)' : 'var(--white)'};${c.blue ? '' : 'border:' + 0.35 * U + 'px solid var(--slate);'}border-radius:${2 * U}px;padding:${3.2 * U}px ${3.6 * U}px ${3.4 * U}px`);
+          const h = el('div', 'kick', c.head, `color:${fg}`); h.style.fontSize = F.ey * 1.1 + 'px'; card.appendChild(h);
+          const ul = el('div', '', '', `display:flex;flex-wrap:wrap;gap:${1.4 * U}px ${3 * U}px;margin-top:${1.8 * U}px`);
+          c.items.forEach(x => {
+            const li = el('div', '', '', `display:flex;align-items:center;gap:${1 * U}px;font-family:var(--sans);font-weight:700;color:${fg};font-size:${F.body * 1.2}px;line-height:1.25`);
+            const ck = el('i', '', '', `flex:0 0 ${3 * U}px;width:${3 * U}px;height:${3 * U}px;border-radius:50%;background:${c.blue ? 'var(--white)' : 'var(--blue)'};display:grid;place-items:center`);
+            ck.appendChild(el('span', '', '', `width:${1 * U}px;height:${0.55 * U}px;border-left:${0.35 * U}px solid ${c.blue ? 'var(--blue)' : 'var(--white)'};border-bottom:${0.35 * U}px solid ${c.blue ? 'var(--blue)' : 'var(--white)'};transform:rotate(-45deg) translate(${0.1 * U}px,${-0.1 * U}px)`));
+            li.appendChild(ck); li.appendChild(el('span', '', x)); ul.appendChild(li);
+          });
+          card.appendChild(ul); col.appendChild(card);
+          tl.fromTo(card, { opacity: 0, x: 4 * U }, { opacity: 1, x: 0, duration: 0.7, ease: 'power3.out' }, t0 + 0.5 + i * 0.45);
+        });
+        sc.appendChild(col);
+      }
       tl.fromTo(wrap, { scale: 1 }, { scale: 1.03, duration: d + XF, ease: 'none' }, t0);
     },
     josh(sc, o, t0, d) {

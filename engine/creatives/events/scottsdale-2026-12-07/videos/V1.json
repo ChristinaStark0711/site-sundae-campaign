@@ -49,7 +49,23 @@
     "has not."
    ],
    "accent": 1,
-   "center": true
+   "center": true,
+   "cards": [
+    {
+     "head": "The market today",
+     "items": [
+      "Finding profitable deals is harder",
+      "Margins are tighter"
+     ]
+    },
+    {
+     "head": "With Sundae",
+     "items": [
+      "Systems already built, tested and refined in real markets"
+     ],
+     "blue": true
+    }
+   ]
   },
   {
    "type": "list",
@@ -81,7 +97,30 @@
     "You know your market.",
     "We bring the systems."
    ],
-   "accent": 1
+   "accent": 1,
+   "center": true,
+   "cards": [
+    {
+     "head": "You bring",
+     "items": [
+      "Local expertise",
+      "Relationships",
+      "Leadership",
+      "Execution"
+     ]
+    },
+    {
+     "head": "Sundae brings",
+     "items": [
+      "Marketing",
+      "Technology",
+      "Automation",
+      "Capital",
+      "Buyer reach"
+     ],
+     "blue": true
+    }
+   ]
   },
   {
    "type": "details",
