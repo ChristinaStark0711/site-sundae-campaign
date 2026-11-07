@@ -22,6 +22,7 @@
     : SQ ? { ey: 2.2 * U, body: 2.9 * U, sub: 3.3 * U, min: 6.0 * U, chip: 3.0 * U }
       : { ey: 2.3 * U, body: 3.2 * U, sub: 3.6 * U, min: 6.7 * U, chip: 3.2 * U };
   const RSAFE = V ? H * 0.13 : 0; // keep Reel copy above the caption/UI zone
+  if (S.kickerScale) F.ey *= S.kickerScale; // optional: larger eyebrows for the whole video
 
   // Event facts come from the optional SPEC.event block. With NO block, the defaults below (the Oct. 8, 2026 dinner
   // in Manhattan Beach) apply, so every spec written before the block existed renders exactly as delivered. With a
@@ -241,7 +242,12 @@
     title(sc, o, t0, d) {
       const ts = o.ts || (V ? 9.5 : SQ ? 8.5 : (o.center ? 9.4 : 8.6));
       if (o.bulbs) bulbs(sc, t0, V ? 9 * U + TAB + 5 * U : TAB + 5 * U, V ? 9 : 13);
-      const shapes = (!o.bulbs || V) ? accents(sc, t0, d, SCI) : [];
+      // circleImg: a kit photo set inside the slate circle (the circle composition is used, whatever the scene index)
+      const shapes = (!o.bulbs || V) ? accents(sc, t0, d, o.circleImg ? 0 : SCI) : [];
+      if (o.circleImg && shapes[0]) {
+        const ph = el('img', '', null, 'position:absolute;inset:9%;width:82%;height:82%;border-radius:50%;object-fit:cover;object-position:' + (o.circlePos || '50% 30%') + ';border:' + 0.9 * U + 'px solid var(--white)');
+        ph.src = A + o.circleImg; ph.alt = o.circleAlt || ''; shapes[0].appendChild(ph);
+      }
       // vertically centred on Reels, and wherever no shape anchors the lower corner (a bottom-anchored block
       // under the string lights left an empty band)
       const mid = o.center || (o.center !== false && (V || !shapes.length));
@@ -409,6 +415,17 @@
       if (wr.length) { const pl = el('div', 'sub', wr.join('<br>'), 'font-weight:700'); pl.style.fontSize = F.sub * 1.08 + 'px'; dt.appendChild(pl); }
       box.appendChild(dt);
       const p = el('div', 'pill', pillHTML(o.pill || ev('pill'))); p.style.marginTop = 1.4 * U + 'px'; p.style.fontSize = (V ? 4.4 : SQ ? 3.5 : 3.7) * U + 'px'; p.style.padding = `${(V ? 2.4 : 2) * U}px ${(V ? 4.8 : 4.2) * U}px`; box.appendChild(p);
+      if (o.qr) {
+        // optional QR beside the button: the kit file, a white tile, and a short label under it
+        const row = el('div', '', '', `display:flex;align-items:center;gap:${3.2 * U}px;margin-top:${1.4 * U}px`);
+        p.style.marginTop = '0'; box.removeChild(p); row.appendChild(p);
+        const q = el('div', '', '', `display:flex;flex-direction:column;align-items:center;gap:${0.8 * U}px`);
+        const qi = el('img', '', null, `width:${(V ? 24 : 19) * U}px;height:${(V ? 24 : 19) * U}px;background:var(--white);padding:${1 * U}px;border:${0.3 * U}px solid var(--gray);border-radius:${1.2 * U}px`);
+        qi.src = A + o.qr; qi.alt = 'QR code'; q.appendChild(qi);
+        if (o.qrLabel) { const ql = el('div', 'body', o.qrLabel, 'font-weight:700'); ql.style.fontSize = F.body * 0.9 + 'px'; q.appendChild(ql); }
+        row.appendChild(q); box.appendChild(row);
+        tl.fromTo(q, { opacity: 0, scale: 0.85 }, { opacity: 1, scale: 1, duration: 0.6, ease: 'back.out(2)' }, t0 + 1.1);
+      }
       if (o.foot) { const f = el('div', 'body', o.foot); f.style.fontSize = F.body + 'px'; box.appendChild(f); }
       sc.appendChild(box);
       tl.fromTo(logo, { opacity: 0, y: -2 * U }, { opacity: 1, y: 0, duration: 0.6 }, t0);

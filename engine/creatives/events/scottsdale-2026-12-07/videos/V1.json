@@ -32,7 +32,13 @@
     "Stop building.",
     "Start scaling."
    ],
-   "accent": 1
+   "accent": 1,
+   "ts": 10.2,
+   "sub": "Meet us at the Sundae booth at Single Family Rental West",
+   "circleImg": "josh-headshot.jpg",
+   "circlePos": "50% 28%",
+   "circleAlt": "Josh Stech, Sundae co-founder and CEO",
+   "center": true
   },
   {
    "type": "title",
@@ -106,7 +112,10 @@
    "type": "cta",
    "dur": 4.4,
    "when": "Single Family Rental West<br>Dec. 7-9, 2026 · Scottsdale",
-   "foot": "sundae.com/membership"
+   "foot": "sundae.com/membership",
+   "qr": "scottsdale-2026-12-07-qr-membership.svg",
+   "qrLabel": "Scan to learn more"
   }
- ]
+ ],
+ "kickerScale": 1.6
 }
