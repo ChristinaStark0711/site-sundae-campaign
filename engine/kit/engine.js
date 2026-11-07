@@ -181,7 +181,10 @@
     return c;
   };
   // the Courtyard's string lights, drawn flat in the palette: slate wire, blue bulbs
-  const bulbs = (sc, t0, top, n, sag = (V ? 5 : 4) * U) => {
+  // The string lights are retired (Sundae, 2026-11-07: remove "this thing that looks like a string of lights").
+  // bulbs() draws nothing; the old drawing is kept below, unreachable, for reference.
+  const bulbs = () => null;
+  const bulbsRetired = (sc, t0, top, n, sag = (V ? 5 : 4) * U) => {
     const NS = 'http://www.w3.org/2000/svg';
     const svg = document.createElementNS(NS, 'svg'); svg.setAttribute('width', W); svg.setAttribute('height', top + sag + 3 * U);
     svg.style.cssText = 'position:absolute;left:0;top:0;overflow:visible';
@@ -244,7 +247,7 @@
       if (o.bulbs) bulbs(sc, t0, V ? 9 * U + TAB + 5 * U : TAB + 5 * U, V ? 9 : 13);
       // circleImg: a kit photo set inside the slate circle (the circle composition is used, whatever the scene index)
       // cards: a right-hand column of info cards in place of the shapes (landscape/square; on a Reel they stack below)
-      const shapes = o.cards ? [] : (!o.bulbs || V) ? accents(sc, t0, d, o.circleImg ? 0 : SCI) : [];
+      const shapes = o.cards ? [] : accents(sc, t0, d, o.circleImg ? 0 : SCI);
       if (o.circleImg && shapes[0]) {
         const ph = el('img', '', null, 'position:absolute;inset:9%;width:82%;height:82%;border-radius:50%;object-fit:cover;object-position:' + (o.circlePos || '50% 30%') + ';border:' + 0.9 * U + 'px solid var(--white)');
         ph.src = A + o.circleImg; ph.alt = o.circleAlt || ''; shapes[0].appendChild(ph);
@@ -428,7 +431,7 @@
       bulbs(sc, t0, V ? 8 * U : SQ ? 6 * U : 5 * U, V ? 9 : SQ ? 11 : 15);
       if (V) { const D = W * 0.62; circle(sc, W * 0.94, H * 0.86, D, t0, d); dots(sc, W * 0.94 - D * 0.72, H * 0.86 - D * 0.36, t0, 1.5 * U); }
       const box = el('div', '', '', `position:absolute;left:${pad}px;right:${pad}px;top:${V ? '45%' : '53%'};transform:translateY(-50%);display:flex;flex-direction:column;align-items:center;text-align:center;gap:${2.4 * U}px${o.img ? `;background:var(--white);padding:${5 * U}px ${4 * U}px;border-radius:${1.2 * U}px` : ''}`);
-      const logo = el('img', 'logo'); logo.src = A + 'sundae-wordmark-red.svg'; logo.style.width = (V ? 22 : SQ ? 18 : 21) * U + 'px'; logo.style.marginBottom = 1.6 * U + 'px'; box.appendChild(logo);
+      const logo = el('img', 'logo'); logo.src = A + 'sundae-wordmark-red.svg'; logo.style.width = (V ? 32 : SQ ? 27 : 30) * U + 'px'; logo.style.marginBottom = 1.6 * U + 'px'; box.appendChild(logo);
       const t = lines(o.title || ev('nameLines'), 'hd', V ? 11 : SQ ? 9 : 10, o.accent); t._wrap = box; box.appendChild(t);
       const s = el('div', 'sub', phr(o.sub || ev('hostLine'))); s.style.fontSize = F.sub * 1.08 + 'px'; s.style.maxWidth = (V ? W - 2 * pad : W * 0.62) + 'px'; box.appendChild(s);
       // when: a date/time goes in a blue chip; the place line sits beside (landscape) or under (Reel) it
