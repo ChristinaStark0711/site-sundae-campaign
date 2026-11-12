@@ -1,0 +1,18 @@
+{
+  "id": "20261112-202244-7g42",
+  "at": "2026-11-12T20:22:44.016Z",
+  "asset": "events/fresno-2026-11-18/images/10",
+  "assetTitle": "You’re invited — Josh on stage",
+  "mode": "update",
+  "text": "take off the \"youre invited\"",
+  "status": "failed",
+  "summary": "I made no change because \"You're invited\" isn't on the image; it's only in the asset's name.",
+  "reason": "It wasn't clear what to change on this asset. Send it again, naming the exact words or part of the image to change.",
+  "finishedAt": "2026-11-12T20:23:57.359Z",
+  "model": "claude-opus-5-5",
+  "usage": {
+    "input_tokens": 12248,
+    "output_tokens": 325,
+    "calls": 1
+  }
+}
