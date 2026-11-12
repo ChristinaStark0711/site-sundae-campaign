@@ -218,6 +218,14 @@
       "pair": "C11 · C12",
       "rev": 1,
       "updated": "2026-11-12"
+    },
+    {
+      "id": "11",
+      "title": "LinkedIn post — Build a stronger business",
+      "file": "11-linkedin-post-stronger-business.jpg",
+      "spec": "1200×1200 · 1:1",
+      "use": "LinkedIn feed (Josh's profile and Sundae's page)",
+      "pair": "C21"
     }
   ],
   "flyers": [
